@@ -8,7 +8,7 @@
 		<version>2.7.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.epam</groupId>
+	<groupId>com.patrycjagalant</groupId>
 	<artifactId>admissions-committee</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>admissions-committee</name>

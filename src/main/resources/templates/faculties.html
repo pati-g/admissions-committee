@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Fake University | Faculties</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Faculty's name</th>
+        <th>Nr of budget places</th>
+        <th>Total nr of places</th>
+    </tr>
+    <tr th:each="faculty:${faculties}">
+        <td th:text="${faculty.name}">Name</td>
+        <td th:text="${faculty.budgetPlaces}">Budget places</td>
+        <td th:text="${faculty.totalPlaces}">Total places</td>
+    </tr>
+</table>
+</body>
+</html>
