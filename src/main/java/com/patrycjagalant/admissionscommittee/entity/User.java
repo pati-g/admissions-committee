@@ -3,6 +3,8 @@ package com.patrycjagalant.admissionscommittee.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,24 +19,21 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "ID")
     private Long id;
 
-    @Column(name = "username", nullable = false)
-    private String username;
-
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
-
-    @Column(name = "email", nullable = false)
+    @NotNull
+    @Size(min = 2, max = 255)
+    @Column(name = "email")
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @NotNull
+    @Size(min = 2, max = 255)
+    @Column(name = "password")
     private String password;
 
+    @NotNull
+    @Size(min = 2, max = 255)
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;

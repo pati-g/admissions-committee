@@ -3,8 +3,6 @@ package com.patrycjagalant.admissionscommittee.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,24 +16,21 @@ import java.util.Set;
 public class Score {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "applicant_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "applicant_ID")
     @ToString.Exclude
     private Applicant applicant;
 
-    @Column(name = "subject_name", nullable = false)
+    @Column(name = "subject_name")
     private String subjectName;
 
-    @Column(name = "grade_or_score", nullable = false)
+    @Column(name = "grade_or_score")
     private Character gradeOrScore;
 
     @Column(name = "result", nullable = false, length = 4)
     private String result;
 
-    @OneToMany(mappedBy = "scores")
-    @ToString.Exclude
-    private Set<Registration> registrations = new LinkedHashSet<>();
 }

@@ -1,8 +1,10 @@
 package com.patrycjagalant.admissionscommittee.entity;
 
 import lombok.*;
-
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,18 +14,25 @@ import javax.persistence.*;
 @Entity
 @Table(name = "faculties")
 public class Faculty {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "ID")
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @NotNull
+    @Size(min = 2, max = 255)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "budget_places", nullable = false)
+    @NotNull
+    @Min(1)
+    @Column(name = "budget_places")
     private Integer budgetPlaces;
 
-    @Column(name = "total_places", nullable = false)
+    @NotNull
+    @Min(1)
+    @Column(name = "total_places")
     private Integer totalPlaces;
 
 }

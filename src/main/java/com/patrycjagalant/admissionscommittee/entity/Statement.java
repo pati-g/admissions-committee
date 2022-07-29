@@ -3,6 +3,8 @@ package com.patrycjagalant.admissionscommittee.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,17 +18,21 @@ import javax.persistence.*;
 public class Statement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
+    @Column(name = "ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "registration_ID", nullable = false)
+    @NotNull
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "registration_ID")
     @ToString.Exclude
-    private Registration registration;
+    private ApplicationRequest applicationRequest;
 
-    @Column(name = "points", nullable = false)
+    @NotNull
+    @Size(min = 1)
+    @Column(name = "points")
     private Integer points;
 
-    @Column(name = "enrollment", nullable = false)
+    @NotNull
+    @Column(name = "enrollment")
     private Character enrollment;
 }

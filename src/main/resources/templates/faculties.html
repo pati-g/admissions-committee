@@ -5,6 +5,9 @@
     <title>Fake University | Faculties</title>
 </head>
 <body>
+<form th:action="@{/faculties/new}"  method="get">
+    <input type="button" value="Add new"/>
+</form>
 <table>
     <tr>
         <th>Faculty's name</th>
@@ -15,6 +18,8 @@
         <td th:text="${faculty.name}">Name</td>
         <td th:text="${faculty.budgetPlaces}">Budget places</td>
         <td th:text="${faculty.totalPlaces}">Total places</td>
+        <td><a th:href="@{/edit/(id=${faculty.id}}">Edit</a></td>
+        <td><a th:href="@{/edit/(id=${faculty.id}}">Delete</a></td>
     </tr>
 </table>
 </body>
