@@ -1,10 +1,12 @@
 package com.patrycjagalant.admissionscommittee.entity;
 
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,4 +37,17 @@ public class ApplicationRequest {
     @NotNull
     @Column(name = "registration_date")
     private Instant registrationDate;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        ApplicationRequest that = (ApplicationRequest) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

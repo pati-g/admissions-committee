@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 @Component
 public class ScoreDTO {
 

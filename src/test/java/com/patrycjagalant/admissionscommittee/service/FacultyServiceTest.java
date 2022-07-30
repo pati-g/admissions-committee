@@ -16,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.annotation.Bean;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,8 +39,18 @@ class FacultyServiceTest {
         Faculty mockFaculty = new Faculty(1L, "TestName", 10, 20);
         when(facultyRepository.save(any(Faculty.class))).thenReturn(mockFaculty);
         Faculty faculty = facultyService.addFaculty(facultyDTOMock);
-        Assertions.assertEquals("TestName", faculty.getName());
+        assertEquals("TestName", faculty.getName());
     }
-
+    @Test
+    void testEditFaculty(){
+        FacultyDTO facultyDTOMock = new FacultyDTO(null, "ChangedName", null, 25);
+        Faculty facultyMock = new Faculty(1L, "TestName", 10, 20);
+        when(facultyRepository.save(any(Faculty.class))).thenReturn(facultyMock);
+        when(facultyRepository.getReferenceById(1L)).thenReturn(facultyMock);
+        Faculty faculty = facultyService.editFaculty(facultyDTOMock, facultyMock.getId());
+        assertEquals("ChangedName", faculty.getName());
+        assertEquals(25, faculty.getTotalPlaces());
+        assertEquals(10, faculty.getBudgetPlaces());
+    }
 
 }

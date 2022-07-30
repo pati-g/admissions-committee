@@ -1,10 +1,12 @@
 package com.patrycjagalant.admissionscommittee.entity;
 
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,4 +43,17 @@ public class User {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
     @ToString.Exclude
     private Applicant applicant;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        User user = (User) o;
+        return id != null && Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

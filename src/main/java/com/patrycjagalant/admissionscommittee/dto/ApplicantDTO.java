@@ -1,9 +1,6 @@
 package com.patrycjagalant.admissionscommittee.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashSet;
@@ -12,6 +9,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 @Component
 public class ApplicantDTO {
 

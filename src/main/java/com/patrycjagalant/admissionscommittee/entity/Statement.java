@@ -1,10 +1,12 @@
 package com.patrycjagalant.admissionscommittee.entity;
 
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,4 +37,17 @@ public class Statement {
     @NotNull
     @Column(name = "enrollment")
     private Character enrollment;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Statement statement = (Statement) o;
+        return id != null && Objects.equals(id, statement.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

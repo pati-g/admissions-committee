@@ -1,5 +1,6 @@
 package com.patrycjagalant.admissionscommittee.service;
 
+import com.patrycjagalant.admissionscommittee.dto.ApplicantDTO;
 import com.patrycjagalant.admissionscommittee.entity.Applicant;
 import com.patrycjagalant.admissionscommittee.repository.ApplicantRepository;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,11 @@ public class ApplicantService {
     }
 
     @Transactional
-    public void updateApplicantData(Applicant applicant, Long id) {
-        //Applicant current = applicantRepository.getReferenceById(id);
-        applicantRepository.save(applicant);
+    public void updateApplicantData(ApplicantDTO applicantdto, Long id) {
+        Applicant current = applicantRepository.getReferenceById(id);
+//        ModelMapper modelMapper = new ModelMapper();
+//        current = modelMapper.map(applicantdto, Applicant.class);
+        applicantRepository.save(current);
     }
 
     // Admin only

@@ -1,8 +1,10 @@
 package com.patrycjagalant.admissionscommittee.entity;
 
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,4 +35,16 @@ public class Score {
     @Column(name = "result", nullable = false, length = 4)
     private String result;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Score score = (Score) o;
+        return id != null && Objects.equals(id, score.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

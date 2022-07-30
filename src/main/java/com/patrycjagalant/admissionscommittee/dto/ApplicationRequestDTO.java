@@ -10,6 +10,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 @Component
 public class ApplicationRequestDTO {
 

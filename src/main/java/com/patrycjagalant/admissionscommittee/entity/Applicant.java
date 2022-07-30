@@ -1,11 +1,18 @@
 package com.patrycjagalant.admissionscommittee.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.Hibernate;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -66,4 +73,17 @@ public class Applicant {
     @OneToMany(mappedBy = "applicant")
     @ToString.Exclude
     private Set<ApplicationRequest> applicationRequests = new LinkedHashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Applicant applicant = (Applicant) o;
+        return id != null && Objects.equals(id, applicant.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
