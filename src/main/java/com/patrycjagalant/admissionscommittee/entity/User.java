@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
@@ -16,7 +17,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "users", indexes = {
         @Index(name = "email", columnList = "email", unique = true),
-        @Index(name = "username", columnList = "username", unique = true)
 })
 public class User {
     @Id
@@ -24,12 +24,12 @@ public class User {
     @Column(name = "ID")
     private Long id;
 
-    @NotNull
+    @NotBlank(message = "E-mail is mandatory")
     @Size(min = 2, max = 255)
     @Column(name = "email")
     private String email;
 
-    @NotNull
+    @NotBlank(message = "Password is mandatory")
     @Size(min = 2, max = 255)
     @Column(name = "password")
     private String password;

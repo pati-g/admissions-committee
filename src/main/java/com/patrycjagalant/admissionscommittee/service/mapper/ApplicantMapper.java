@@ -1,4 +1,4 @@
-package com.patrycjagalant.admissionscommittee.mapper;
+package com.patrycjagalant.admissionscommittee.service.mapper;
 
 import com.patrycjagalant.admissionscommittee.dto.ApplicantDTO;
 import com.patrycjagalant.admissionscommittee.entity.Applicant;
@@ -15,9 +15,7 @@ public class ApplicantMapper {
         applicantDTO.setFirstName(applicant.getFirstName());
         applicantDTO.setLastName(applicant.getLastName());
         applicantDTO.setRegion(applicant.getRegion());
-      //  applicantDTO.setScores(applicant.getScores());
-      //  applicantDTO.setUser(applicant.getUser());
-      //  applicantDTO.setApplicationRequests(applicant.getApplicationRequests());
+
         return applicantDTO;
     }
 
@@ -29,16 +27,18 @@ public class ApplicantMapper {
         applicant.setFirstName(applicantDto.getFirstName());
         applicant.setLastName(applicantDto.getLastName());
         applicant.setRegion(applicantDto.getRegion());
+
         return applicant;
     }
 
-    public static Applicant mapToEntity(ApplicantDTO applicantDto, Applicant applicant) {
+    public static void mapToEntity(ApplicantDTO applicantDto, Applicant applicant) {
         String certificate = applicantDto.getCertificate();
         String city = applicantDto.getCity();
         String institution = applicantDto.getEducationalInstitution();
         String firstname = applicantDto.getFirstName();
         String lastname = applicantDto.getLastName();
         String region = applicantDto.getRegion();
+
         if (certificate != null && !certificate.isEmpty())
             applicant.setCertificate(certificate);
         if (city != null && !city.isEmpty())
@@ -51,6 +51,5 @@ public class ApplicantMapper {
             applicant.setLastName(lastname);
         if (region != null && !region.isEmpty())
             applicant.setRegion(region);
-        return applicant;
     }
 }

@@ -37,17 +37,24 @@ class FacultyServiceTest {
     void testAddFacultyHappyPath(){
         FacultyDTO facultyDTOMock = new FacultyDTO(1L, "TestName", 10, 20);
         Faculty mockFaculty = new Faculty(1L, "TestName", 10, 20);
+
         when(facultyRepository.save(any(Faculty.class))).thenReturn(mockFaculty);
+
         Faculty faculty = facultyService.addFaculty(facultyDTOMock);
+
         assertEquals("TestName", faculty.getName());
     }
+
     @Test
-    void testEditFaculty(){
+    void testEditFacultyHappyPath(){
         FacultyDTO facultyDTOMock = new FacultyDTO(null, "ChangedName", null, 25);
         Faculty facultyMock = new Faculty(1L, "TestName", 10, 20);
+
         when(facultyRepository.save(any(Faculty.class))).thenReturn(facultyMock);
         when(facultyRepository.getReferenceById(1L)).thenReturn(facultyMock);
+
         Faculty faculty = facultyService.editFaculty(facultyDTOMock, facultyMock.getId());
+
         assertEquals("ChangedName", faculty.getName());
         assertEquals(25, faculty.getTotalPlaces());
         assertEquals(10, faculty.getBudgetPlaces());

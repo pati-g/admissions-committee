@@ -4,7 +4,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
@@ -23,18 +23,18 @@ public class Statement {
     @Column(name = "ID")
     private Long id;
 
-    @NotNull
+    @NotBlank
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "registration_ID")
     @ToString.Exclude
     private ApplicationRequest applicationRequest;
 
-    @NotNull
+    @NotBlank(message = "Please provide a valid number of points (only integers are allowed)")
     @Size(min = 1)
     @Column(name = "points")
     private Integer points;
 
-    @NotNull
+    @NotBlank
     @Column(name = "enrollment")
     private Character enrollment;
 

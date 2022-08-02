@@ -4,7 +4,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -24,17 +24,19 @@ public class ApplicationRequest {
     @Column(name = "ID", nullable = false)
     private Long id;
 
+    @NotBlank
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "applicant_ID")
     @ToString.Exclude
     private Applicant applicant;
 
+    @NotBlank
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "faculty_ID")
     @ToString.Exclude
     private Faculty faculty;
 
-    @NotNull
+    @NotBlank
     @Column(name = "registration_date")
     private Instant registrationDate;
 

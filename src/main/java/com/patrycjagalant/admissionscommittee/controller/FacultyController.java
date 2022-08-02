@@ -13,43 +13,66 @@ import javax.validation.Valid;
 @RequestMapping("/faculties")
 public class FacultyController {
     private final FacultyService facultyService;
+    private static final String FACULTIES = "faculties";
 
     public FacultyController(FacultyService facultyService) {
         this.facultyService = facultyService;
     }
 
-    @GetMapping("/all")
-    public String getAllFaculties(Model model) {
-        model.addAttribute("faculties", facultyService.getAllFaculties());
-        return "faculties";
+    @GetMapping
+    public String getAllFaculties (Model model) {
+       // @RequestParam(required = false) int page,
+        // int pagenr = page >= 0 ? page : 0;
+        model.addAttribute(FACULTIES, facultyService.getAllFaculties());
+        return FACULTIES;
     }
 
+//    @GetMapping("/{id}")
+//    public String getFacultyById(Model model) {
+//        model.addAttribute(FACULTIES, facultyService.getAllFaculties());
+//    }
+
 // For admin only (manage faculties):
+
     @GetMapping("/new")
     public String addNewFacultyForm() {
         return "addFaculty";
     }
+
     @GetMapping("/edit")
     public String editFacultyForm(){
         return "editFaculty";
     }
+
     @PostMapping("/add")
-    public String addNewFaculty(@Valid FacultyDTO facultyDTO, BindingResult result) {
+    public String addNewFaculty(@Valid @RequestBody FacultyDTO facultyDTO, BindingResult result) {
+
         if (result.hasErrors()) {
-            return "faculties/new";
+            return "/faculties/new";
         }
+
         facultyService.addFaculty(facultyDTO);
         // add a message that a new faculty has been created
-        return "faculties";
+        return FACULTIES;
     }
+
     @PutMapping("/edit/{id}")
-    public String editFaculty(@RequestBody FacultyDTO facultyDTO, @PathVariable Long id) {
+    public String editFaculty(@Valid @RequestBody FacultyDTO facultyDTO, BindingResult result, @PathVariable Long id) {
+
+        if (result.hasErrors()) {
+            return "/faculties/new";
+        }
+
         facultyService.editFaculty(facultyDTO, id);
-        return "faculties";
+        // add a message that the faculty has been successfully edited
+        return FACULTIES;
     }
+
     @DeleteMapping("/delete/{id}")
     public String deleteFaculty(@PathVariable("id") Long id) {
+
         facultyService.deleteFaculty(id);
-        return "faculties";
+        // message that faculty has been deleted
+        return FACULTIES;
     }
 }

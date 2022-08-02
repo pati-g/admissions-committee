@@ -1,7 +1,8 @@
-package com.patrycjagalant.admissionscommittee.mapper;
+package com.patrycjagalant.admissionscommittee.service.mapper;
 
 import com.patrycjagalant.admissionscommittee.dto.FacultyDTO;
 import com.patrycjagalant.admissionscommittee.entity.Faculty;
+import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

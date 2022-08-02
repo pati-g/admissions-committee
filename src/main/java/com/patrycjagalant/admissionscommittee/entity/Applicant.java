@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.LinkedHashSet;
@@ -27,32 +28,31 @@ public class Applicant {
     @Column(name = "ID")
     private Long id;
 
-    @NotNull
+    @NotBlank(message = "First name is mandatory")
     @Size(min = 2, max = 255)
     @Column(name = "first_name")
     private String firstName;
 
-    @NotNull
+    @NotBlank(message = "Last name is mandatory")
     @Size(min = 2, max = 255)
     @Column(name = "last_name")
     private String lastName;
 
-    @NotNull
+    @NotBlank(message = "City is mandatory")
     @Size(min = 2, max = 255)
     @Column(name = "city")
     private String city;
 
-    @NotNull
+    @NotBlank(message = "Region is mandatory")
     @Size(min = 2, max = 255)
     @Column(name = "region")
     private String region;
 
-    @NotNull
+    @NotBlank(message = "Educational institution is mandatory")
     @Size(min = 2, max = 255)
     @Column(name = "educational_institution")
     private String educationalInstitution;
 
-    @NotNull
     @Size(min = 2, max = 255)
     @Column(name = "certificate")
     private String certificate;
@@ -61,6 +61,7 @@ public class Applicant {
     @Column(name = "is_blocked")
     private boolean isBlocked;
 
+    @NotBlank
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_ID")
     @ToString.Exclude

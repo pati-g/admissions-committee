@@ -2,8 +2,10 @@ package com.patrycjagalant.admissionscommittee.service;
 
 import com.patrycjagalant.admissionscommittee.dto.FacultyDTO;
 import com.patrycjagalant.admissionscommittee.entity.Faculty;
-import com.patrycjagalant.admissionscommittee.mapper.FacultyMapper;
+import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
 import com.patrycjagalant.admissionscommittee.repository.FacultyRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -11,9 +13,21 @@ import java.util.List;
 
 @Service
 public class FacultyService {
+    private static final int PAGE_SIZE = 10;
     private final FacultyRepository facultyRepository;
-    public List<Faculty> getAllFaculties() { return facultyRepository.findAll(); }
-    public  Faculty findByName(String name) { return facultyRepository.findByName(name); }
+    public List<Faculty> getAllFaculties() {
+        return facultyRepository.findAll();
+    }
+
+    public  FacultyDTO findByName(String name) {
+        Faculty faculty= facultyRepository.findByName(name);
+        return FacultyMapper.mapToDto(faculty);
+    }
+
+    public FacultyDTO getOne(Long id) {
+        Faculty faculty = facultyRepository.getReferenceById(id);
+        return FacultyMapper.mapToDto(faculty);
+    }
 
     public FacultyService(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
