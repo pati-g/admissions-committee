@@ -14,7 +14,6 @@ import java.time.Instant;
 @Component
 public class ApplicationRequestDTO {
 
-    private Long id;
     private ApplicantDTO applicant;
     private FacultyDTO faculty;
     private Instant registrationDate;

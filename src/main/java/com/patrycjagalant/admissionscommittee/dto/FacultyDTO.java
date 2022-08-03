@@ -14,7 +14,6 @@ import javax.validation.constraints.NotBlank;
 @Component
 public class FacultyDTO {
 
-    private Long id;
     @NotBlank
     private String name;
     @NotBlank

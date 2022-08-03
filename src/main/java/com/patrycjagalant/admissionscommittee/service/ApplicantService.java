@@ -4,11 +4,12 @@ import com.patrycjagalant.admissionscommittee.dto.ApplicantDTO;
 import com.patrycjagalant.admissionscommittee.entity.Applicant;
 import com.patrycjagalant.admissionscommittee.service.mapper.ApplicantMapper;
 import com.patrycjagalant.admissionscommittee.repository.ApplicantRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class ApplicantService {
@@ -36,14 +37,15 @@ public class ApplicantService {
     }
 
     // Admin only
-    public List<ApplicantDTO> getAllApplicants() {
-        List<Applicant> applicants = applicantRepository.findAll();
-        List<ApplicantDTO> applicantDTOS = new ArrayList<>();
-        for (Applicant applicant: applicants) {
-            applicantDTOS.add(ApplicantMapper.mapToDto(applicant));
-        }
-        return applicantDTOS;
+    public Page<Applicant> getAllApplicants(int page, int size, Sort.Direction sort, String sortBy) {
+        return applicantRepository.findAll(PageRequest.of(page, size, Sort.by(sort, sortBy)));
+//        List<ApplicantDTO> applicantDTOS = new ArrayList<>();
+//        for (Applicant applicant: applicants) {
+//            applicantDTOS.add(ApplicantMapper.mapToDto(applicant));
+//        }
+//        return applicantDTOS;
     }
+
     public void blockApplicant(Applicant applicant) {
         applicant.setBlocked(true);
         applicantRepository.save(applicant);

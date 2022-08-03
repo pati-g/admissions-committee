@@ -2,6 +2,7 @@ package com.patrycjagalant.admissionscommittee.controller;
 
 import com.patrycjagalant.admissionscommittee.dto.FacultyDTO;
 import com.patrycjagalant.admissionscommittee.service.FacultyService;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,17 +21,24 @@ public class FacultyController {
     }
 
     @GetMapping
-    public String getAllFaculties (Model model) {
-       // @RequestParam(required = false) int page,
-        // int pagenr = page >= 0 ? page : 0;
-        model.addAttribute(FACULTIES, facultyService.getAllFaculties());
+    public String getAllFaculties (@RequestParam(required = false) Integer page,
+                                   @RequestParam(required = false) Integer size,
+                                   @RequestParam(required = false) String sortByParam,
+                                   Sort.Direction sort, Model model) {
+        int pageNumber = page != null && page >= 0 ? page : 0;
+        int sizeNumber = size != null && size > 0 ? size : 5;
+        String sortBy = sortByParam != null ? sortByParam : "name";
+        Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
+
+        model.addAttribute(FACULTIES, facultyService.getAllFaculties(pageNumber, sizeNumber, sortDirection, sortBy));
         return FACULTIES;
     }
 
-//    @GetMapping("/{id}")
-//    public String getFacultyById(Model model) {
-//        model.addAttribute(FACULTIES, facultyService.getAllFaculties());
-//    }
+    @GetMapping("/{id}")
+    public String getOneFaculty(Model model, @PathVariable long id) {
+        model.addAttribute("faculty", facultyService.getOne(id));
+        return "faculty_view";
+    }
 
 // For admin only (manage faculties):
 

@@ -14,7 +14,6 @@ import java.util.Set;
 @Component
 public class ApplicantDTO {
 
-    private Long id;
     @NotBlank
     private String firstName;
     @NotBlank
