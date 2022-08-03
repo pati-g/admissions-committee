@@ -16,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.context.annotation.Bean;
 
 
+import java.sql.Timestamp;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +37,7 @@ class FacultyServiceTest {
 
     @Test
     void testAddFacultyHappyPath(){
-        FacultyDTO facultyDTOMock = new FacultyDTO(1L, "TestName", 10, 20);
+        FacultyDTO facultyDTOMock = new FacultyDTO( "TestName", 10, 20);
         Faculty mockFaculty = new Faculty(1L, "TestName", 10, 20);
 
         when(facultyRepository.save(any(Faculty.class))).thenReturn(mockFaculty);
@@ -47,7 +49,7 @@ class FacultyServiceTest {
 
     @Test
     void testEditFacultyHappyPath(){
-        FacultyDTO facultyDTOMock = new FacultyDTO(null, "ChangedName", null, 25);
+        FacultyDTO facultyDTOMock = new FacultyDTO("ChangedName", null, 25);
         Faculty facultyMock = new Faculty(1L, "TestName", 10, 20);
 
         when(facultyRepository.save(any(Faculty.class))).thenReturn(facultyMock);

@@ -14,7 +14,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @Entity
-@Table(name = "registrations", indexes = {
+@Table(name = "Application_Requests", indexes = {
         @Index(name = "faculty_ID", columnList = "faculty_ID"),
         @Index(name = "applicant_ID", columnList = "applicant_ID"),
 })

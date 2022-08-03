@@ -14,7 +14,6 @@ import java.util.Set;
 @Component
 public class ApplicantDTO {
 
-    private Long id;
     @NotBlank
     private String firstName;
     @NotBlank
@@ -26,9 +25,4 @@ public class ApplicantDTO {
     @NotBlank
     private String educationalInstitution;
     private String certificate;
-    private boolean isBlocked;
-    @NotBlank
-    private UserDTO user;
-    private Set<ScoreDTO> scores = new LinkedHashSet<>();
-    private Set<ApplicationRequestDTO> applicationRequests = new LinkedHashSet<>();
 }

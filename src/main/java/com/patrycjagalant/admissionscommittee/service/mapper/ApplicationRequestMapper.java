@@ -13,7 +13,6 @@ public class ApplicationRequestMapper {
     public static ApplicationRequestDTO mapToDto(ApplicationRequest applicationRequest) {
         ApplicationRequestDTO applicationRequestDTO = new ApplicationRequestDTO();
 
-        applicationRequestDTO.setId(applicationRequest.getId());
         applicationRequestDTO.setRegistrationDate(applicationRequest.getRegistrationDate());
         applicationRequestDTO.setApplicant(ApplicantMapper.mapToDto(applicationRequest.getApplicant()));
         applicationRequestDTO.setFaculty(FacultyMapper.mapToDto(applicationRequest.getFaculty()));

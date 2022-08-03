@@ -14,7 +14,6 @@ import javax.validation.constraints.NotBlank;
 @Component
 public class StatementDTO {
 
-    private Long id;
     private ApplicationRequestDTO applicationRequest;
     @NotBlank
     private Integer points;

@@ -11,7 +11,6 @@ public class FacultyMapper {
     public static FacultyDTO mapToDto(Faculty faculty) {
         FacultyDTO facultyDTO = new FacultyDTO();
 
-        facultyDTO.setId(faculty.getId());
         facultyDTO.setName(faculty.getName());
         facultyDTO.setBudgetPlaces(faculty.getBudgetPlaces());
         facultyDTO.setTotalPlaces(faculty.getTotalPlaces());

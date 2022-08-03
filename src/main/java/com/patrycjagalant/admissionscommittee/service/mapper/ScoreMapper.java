@@ -12,7 +12,6 @@ public class ScoreMapper {
     public static ScoreDTO mapToDto(Score score) {
         ScoreDTO scoreDTO = new ScoreDTO();
         
-        scoreDTO.setId(score.getId());
         scoreDTO.setGradeOrScore(score.getGradeOrScore());
         scoreDTO.setApplicant(ApplicantMapper.mapToDto(score.getApplicant()));
         scoreDTO.setResult(score.getResult());

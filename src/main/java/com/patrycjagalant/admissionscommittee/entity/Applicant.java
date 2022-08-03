@@ -57,12 +57,8 @@ public class Applicant {
     @Column(name = "certificate")
     private String certificate;
 
-    @NotNull
-    @Column(name = "is_blocked")
-    private boolean isBlocked;
-
     @NotBlank
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_ID")
     @ToString.Exclude
     private User user;

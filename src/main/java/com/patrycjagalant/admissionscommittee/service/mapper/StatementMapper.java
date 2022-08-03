@@ -12,7 +12,6 @@ public class StatementMapper {
     public static StatementDTO mapToDto(Statement statement) {
         StatementDTO statementDTO = new StatementDTO();
 
-        statementDTO.setId(statement.getId());
         statementDTO.setPoints(statement.getPoints());
         statementDTO.setEnrollment(statement.getEnrollment());
         statementDTO.setApplicationRequest(ApplicationRequestMapper.mapToDto(statement.getApplicationRequest()));

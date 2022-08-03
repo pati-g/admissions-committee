@@ -40,11 +40,11 @@ class FacultyValidationTest {
     @Test
     void whenAddNewFaculty_And_GivenIncorrectInput_ThenThrowException() {
         FacultyDTO testDTO1 = new FacultyDTO();
-        FacultyDTO testDTO2 = new FacultyDTO(null, "Psychology", null, null);
-        FacultyDTO testDTO3 = new FacultyDTO(null, null, 0, 10);
+        FacultyDTO testDTO2 = new FacultyDTO("Psychology", null, null);
+        FacultyDTO testDTO3 = new FacultyDTO(null, 0, 10);
 
-        assertThrows(MethodArgumentNotValidException.class, () -> facultyController.addNewFaculty(testDTO1, result));
-        assertThrows(MethodArgumentNotValidException.class, () -> facultyController.addNewFaculty(testDTO2, result));
-        assertThrows(MethodArgumentNotValidException.class, () -> facultyController.addNewFaculty(testDTO3, result));
+        assertThrows(MethodArgumentNotValidException.class, () -> facultyController.addFaculty(testDTO1, result));
+        assertThrows(MethodArgumentNotValidException.class, () -> facultyController.addFaculty(testDTO2, result));
+        assertThrows(MethodArgumentNotValidException.class, () -> facultyController.addFaculty(testDTO3, result));
     }
 }

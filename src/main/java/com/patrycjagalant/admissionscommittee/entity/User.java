@@ -40,6 +40,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @NotNull
+    @Column(name = "is_blocked")
+    private boolean isBlocked;
+
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
     @ToString.Exclude
     private Applicant applicant;

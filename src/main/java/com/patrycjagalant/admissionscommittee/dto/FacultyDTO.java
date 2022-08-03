@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,12 +15,11 @@ import javax.validation.constraints.NotBlank;
 @Component
 public class FacultyDTO {
 
-    private Long id;
     @NotBlank
     private String name;
-    @NotBlank
+    @NotNull
     private Integer budgetPlaces;
-    @NotBlank
+    @NotNull
     private Integer totalPlaces;
 
 }

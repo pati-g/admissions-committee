@@ -4,10 +4,11 @@ import com.patrycjagalant.admissionscommittee.dto.StatementDTO;
 import com.patrycjagalant.admissionscommittee.entity.Statement;
 import com.patrycjagalant.admissionscommittee.service.mapper.StatementMapper;
 import com.patrycjagalant.admissionscommittee.repository.StatementRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class StatementService {
 
@@ -37,13 +38,13 @@ public class StatementService {
 //    }
 
     // Read all requests
-    public List<StatementDTO> getAll() {
-        List<Statement> statements = statementRepository.findAll();
-        List<StatementDTO> statementDTOS = new ArrayList<>();
-        for (Statement request: statements) {
-            statementDTOS.add(StatementMapper.mapToDto(request));
-        }
-        return statementDTOS;
+    public Page<Statement> getAll(int page, int size, Sort.Direction sort, String sortBy) {
+        return statementRepository.findAll(PageRequest.of(page, size, Sort.by(sort, sortBy)));
+//        List<StatementDTO> statementDTOS = new ArrayList<>();
+//        for (Statement request: statements) {
+//            statementDTOS.add(StatementMapper.mapToDto(request));
+//        }
+//        return statementDTOS;
     }
 
     // Update a request

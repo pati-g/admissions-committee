@@ -14,7 +14,6 @@ import javax.validation.constraints.NotBlank;
 @Component
 public class ScoreDTO {
 
-    private Long id;
     private ApplicantDTO applicant;
     @NotBlank
     private String subjectName;

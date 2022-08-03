@@ -6,17 +6,21 @@ import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
 import com.patrycjagalant.admissionscommittee.repository.FacultyRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @Service
 public class FacultyService {
-    private static final int PAGE_SIZE = 10;
     private final FacultyRepository facultyRepository;
-    public List<Faculty> getAllFaculties() {
-        return facultyRepository.findAll();
+
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
+    }
+
+    public Page<Faculty> getAllFaculties(int page, int size, Sort.Direction sort, String sortBy) {
+        return facultyRepository.findAll(PageRequest.of(page, size, Sort.by(sort, sortBy)));
     }
 
     public  FacultyDTO findByName(String name) {
@@ -24,14 +28,10 @@ public class FacultyService {
         return FacultyMapper.mapToDto(faculty);
     }
 
-    public FacultyDTO getOne(Long id) {
-        Faculty faculty = facultyRepository.getReferenceById(id);
-        return FacultyMapper.mapToDto(faculty);
+    public Faculty getOne(Long id) {
+        return facultyRepository.getReferenceById(id);
     }
 
-    public FacultyService(FacultyRepository facultyRepository) {
-        this.facultyRepository = facultyRepository;
-    }
 
     // Accessible only to admin:
     public void deleteFaculty(Long id) {facultyRepository.deleteById(id);}
@@ -40,9 +40,9 @@ public class FacultyService {
         return facultyRepository.save(faculty);}
     @Transactional
     public Faculty editFaculty(FacultyDTO facultyDTO, Long id) {
-        Faculty currentFaculty = facultyRepository.getReferenceById(id);
+        Faculty currentFaculty = facultyRepository.findById(id).orElseThrow();
         FacultyMapper.mapToEntity(currentFaculty, facultyDTO);
-        return facultyRepository.save(currentFaculty);
+        return currentFaculty;
     }
 
 
