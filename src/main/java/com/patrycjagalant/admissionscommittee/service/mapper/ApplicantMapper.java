@@ -5,8 +5,10 @@ import com.patrycjagalant.admissionscommittee.entity.Applicant;
 
 public class ApplicantMapper {
     private ApplicantMapper(){}
+
     public static ApplicantDTO mapToDto (Applicant applicant) {
         ApplicantDTO applicantDTO = new ApplicantDTO();
+        applicantDTO.setId(applicant.getId());
         applicantDTO.setCertificate(applicant.getCertificate());
         applicantDTO.setCity(applicant.getCity());
         applicantDTO.setEducationalInstitution(applicant.getEducationalInstitution());

@@ -4,12 +4,11 @@ import com.patrycjagalant.admissionscommittee.dto.FacultyDTO;
 import com.patrycjagalant.admissionscommittee.entity.Faculty;
 import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
 import com.patrycjagalant.admissionscommittee.repository.FacultyRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class FacultyService {
@@ -19,8 +18,17 @@ public class FacultyService {
         this.facultyRepository = facultyRepository;
     }
 
-    public Page<Faculty> getAllFaculties(int page, int size, Sort.Direction sort, String sortBy) {
-        return facultyRepository.findAll(PageRequest.of(page, size, Sort.by(sort, sortBy)));
+    public Page<FacultyDTO> getAllFaculties(int pagestr, int sizestr, Sort.Direction sort, String sortBy) {
+        long facultiesTotal = facultyRepository.count();
+        if((long) pagestr * sizestr > facultiesTotal) {
+            pagestr = 1;
+            sizestr = 5;
+        }
+
+        Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
+        Page<Faculty> facultyPage = facultyRepository.findAll(PageRequest.of(pagestr-1, sizestr, Sort.by(sortDirection, sortBy)));
+        List<FacultyDTO> facultyDTOS = FacultyMapper.mapToDto(facultyPage.getContent());
+        return new PageImpl<>(facultyDTOS, PageRequest.of(pagestr-1, sizestr, Sort.by(sortDirection, sortBy)), facultiesTotal);
     }
 
     public  FacultyDTO findByName(String name) {
@@ -44,6 +52,5 @@ public class FacultyService {
         FacultyMapper.mapToEntity(currentFaculty, facultyDTO);
         return currentFaculty;
     }
-
 
 }

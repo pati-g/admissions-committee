@@ -19,7 +19,7 @@ public class ApplicantController {
 
     // Register
     @GetMapping("/register")
-    public String startRegistration(){ return "registerApplicant"; }
+    public String startRegistration(){ return "/applicants/registerApplicant"; }
 
     // implement PRG here - post-redirect-get
     @PostMapping("/register")
@@ -53,10 +53,10 @@ public class ApplicantController {
                                    Sort.Direction sort, Model model) {
         int pageNumber = page != null && page >= 0 ? page : 0;
         int sizeNumber = size != null && size > 0 ? size : 5;
-        String sortByParam = sortBy != null ? sortBy : "name";
+        String sortByParam = sortBy != null ? sortBy : "lastName";
         Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
         model.addAttribute("applicants", applicantService.getAllApplicants(pageNumber, sizeNumber, sortDirection, sortByParam));
-        return "applicants";
+        return "applicants/applicants";
     }
 
 //    // Block applicant

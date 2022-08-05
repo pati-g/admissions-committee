@@ -1,8 +1,6 @@
 package com.patrycjagalant.admissionscommittee.dto;
 
 import lombok.*;
-import org.springframework.stereotype.Component;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
@@ -12,9 +10,10 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @ToString
 @EqualsAndHashCode
-@Component
 public class UserDTO {
 
+    @NotBlank
+    private long id;
     @NotBlank
     @Email
     private String email;

@@ -1,8 +1,6 @@
 package com.patrycjagalant.admissionscommittee.dto;
 
 import lombok.*;
-import org.springframework.stereotype.Component;
-
 import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
@@ -11,9 +9,9 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @ToString
 @EqualsAndHashCode
-@Component
 public class ScoreDTO {
 
+    private long id;
     private ApplicantDTO applicant;
     @NotBlank
     private String subjectName;

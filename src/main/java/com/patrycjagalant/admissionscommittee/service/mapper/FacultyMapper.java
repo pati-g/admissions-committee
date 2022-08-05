@@ -3,21 +3,27 @@ package com.patrycjagalant.admissionscommittee.service.mapper;
 import com.patrycjagalant.admissionscommittee.dto.FacultyDTO;
 import com.patrycjagalant.admissionscommittee.entity.Faculty;
 
-import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FacultyMapper {
     private FacultyMapper(){}
-    @Transactional
+
     public static FacultyDTO mapToDto(Faculty faculty) {
         FacultyDTO facultyDTO = new FacultyDTO();
 
+        facultyDTO.setId(faculty.getId());
         facultyDTO.setName(faculty.getName());
         facultyDTO.setBudgetPlaces(faculty.getBudgetPlaces());
         facultyDTO.setTotalPlaces(faculty.getTotalPlaces());
 
         return facultyDTO;
     }
-    @Transactional
+
+    public static List<FacultyDTO> mapToDto(List<Faculty> faculties) {
+        return faculties.stream().map(FacultyMapper::mapToDto).collect(Collectors.toList());
+    }
+
     public static Faculty mapToEntity(FacultyDTO facultyDTO) {
         Faculty faculty = new Faculty();
 
@@ -27,7 +33,7 @@ public class FacultyMapper {
 
         return faculty;
     }
-    @Transactional
+
     public static void mapToEntity(Faculty faculty, FacultyDTO facultyDTO) {
         String name = facultyDTO.getName();
         Integer budget = facultyDTO.getBudgetPlaces();
@@ -35,9 +41,7 @@ public class FacultyMapper {
 
         if (name != null && !name.isEmpty())
             faculty.setName(name);
-        if (budget != null)
-            faculty.setBudgetPlaces(budget);
-        if (total != null)
-            faculty.setTotalPlaces(total);
+        faculty.setBudgetPlaces(budget);
+        faculty.setTotalPlaces(total);
     }
 }

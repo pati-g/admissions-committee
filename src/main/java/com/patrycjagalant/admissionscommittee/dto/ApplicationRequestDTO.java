@@ -1,8 +1,6 @@
 package com.patrycjagalant.admissionscommittee.dto;
 
 import lombok.*;
-import org.springframework.stereotype.Component;
-
 import java.time.Instant;
 
 @AllArgsConstructor
@@ -11,9 +9,9 @@ import java.time.Instant;
 @Setter
 @ToString
 @EqualsAndHashCode
-@Component
 public class ApplicationRequestDTO {
 
+    private long id;
     private ApplicantDTO applicant;
     private FacultyDTO faculty;
     private Instant registrationDate;

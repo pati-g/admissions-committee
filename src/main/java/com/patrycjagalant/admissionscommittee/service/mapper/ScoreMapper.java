@@ -3,15 +3,13 @@ package com.patrycjagalant.admissionscommittee.service.mapper;
 import com.patrycjagalant.admissionscommittee.dto.ScoreDTO;
 import com.patrycjagalant.admissionscommittee.entity.Score;
 
-import javax.transaction.Transactional;
-
 public class ScoreMapper {
-    private ScoreMapper(){}
+    private ScoreMapper() {
+    }
 
-    @Transactional
     public static ScoreDTO mapToDto(Score score) {
         ScoreDTO scoreDTO = new ScoreDTO();
-        
+        scoreDTO.setId(score.getId());
         scoreDTO.setGradeOrScore(score.getGradeOrScore());
         scoreDTO.setApplicant(ApplicantMapper.mapToDto(score.getApplicant()));
         scoreDTO.setResult(score.getResult());
@@ -19,7 +17,7 @@ public class ScoreMapper {
 
         return scoreDTO;
     }
-    @Transactional
+
     public static Score mapToEntity(ScoreDTO scoreDTO) {
         Score score = new Score();
 
@@ -30,7 +28,7 @@ public class ScoreMapper {
 
         return score;
     }
-    @Transactional
+
     public static void mapToEntity(Score score, ScoreDTO scoreDTO) {
         Character gradeOrScore = scoreDTO.getGradeOrScore();
         String result = scoreDTO.getResult();

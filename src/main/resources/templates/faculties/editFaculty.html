@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit faculty</title>
+</head>
+<body>
+<!--action url needs to be changed - edit/+id number-->
+<form action="#" th:action="@{/edit/id}" th:object="${faculty}" method="post">
+    <table border="1">
+        <tr>
+            <td><label th:text="#{msg.id}" /></td>
+            <td><input type="number" th:field="*{id}" /></td>
+        </tr>
+        <tr>
+            <td><label th:text="#{msg.name}" /></td>
+            <td><input type="text" th:field="*{name}" /></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="Submit" /></td>
+        </tr>
+    </table>
+</form>
+<!--<form action="/edit/{id}" method="post">-->
+<!--  <input type="hidden" name="_method" value="PUT">-->
+<!--  <label for="email">E-mail address:</label><br>-->
+<!--  <input type="email" id="email" name="email" value="example@gmail.com" required><br><br>-->
+<!--  <label for="password">Change password:</label><br>-->
+<!--  <input type="text" id="password" name="password" value="password" required><br><br>-->
+<!--  <label for="pass2">Repeat new password:</label><br>-->
+<!--  <input type="text" id="pass2" name="pass2" value="password" required><br><br>-->
+<!--  <input type="submit" value="Save changes">-->
+</form><br><br>
+</body>
+</html>
