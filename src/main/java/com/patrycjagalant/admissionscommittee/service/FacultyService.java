@@ -25,7 +25,7 @@ public class FacultyService {
             sizestr = 5;
         }
 
-        Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
+        Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.DESC;
         Page<Faculty> facultyPage = facultyRepository.findAll(PageRequest.of(pagestr-1, sizestr, Sort.by(sortDirection, sortBy)));
         List<FacultyDTO> facultyDTOS = FacultyMapper.mapToDto(facultyPage.getContent());
         return new PageImpl<>(facultyDTOS, PageRequest.of(pagestr-1, sizestr, Sort.by(sortDirection, sortBy)), facultiesTotal);
@@ -36,10 +36,10 @@ public class FacultyService {
         return FacultyMapper.mapToDto(faculty);
     }
 
-    public Faculty getOne(Long id) {
-        return facultyRepository.getReferenceById(id);
+    public FacultyDTO getOne(Long id) {
+        Faculty faculty = facultyRepository.getReferenceById(id);
+        return FacultyMapper.mapToDto(faculty);
     }
-
 
     // Accessible only to admin:
     public void deleteFaculty(Long id) {facultyRepository.deleteById(id);}

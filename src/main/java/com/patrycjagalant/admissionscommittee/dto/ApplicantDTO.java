@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 @EqualsAndHashCode
 public class ApplicantDTO {
 
-    @NotBlank
     private long id;
     @NotBlank
     private String firstName;

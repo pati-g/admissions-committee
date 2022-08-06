@@ -12,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 @EqualsAndHashCode
 public class UserDTO {
 
-    @NotBlank
     private long id;
     @NotBlank
     @Email

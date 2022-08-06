@@ -11,7 +11,6 @@ import javax.validation.constraints.NotBlank;
 @EqualsAndHashCode
 public class StatementDTO {
 
-    @NotBlank
     private long id;
     private ApplicationRequestDTO applicationRequest;
     @NotBlank

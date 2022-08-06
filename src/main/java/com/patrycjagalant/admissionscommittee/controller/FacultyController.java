@@ -27,7 +27,7 @@ public class FacultyController {
     @GetMapping
     public String getAllFaculties(@RequestParam(defaultValue = "1") String page,
                                   @RequestParam(defaultValue = "5") String size,
-                                  @RequestParam(defaultValue = "name") String sortBy,
+                                  @RequestParam(defaultValue = "id") String sortBy,
                                   Sort.Direction sort, Model model) {
         int pageNumber = isNumeric(page) ? Math.max(Integer.parseInt(page), 1) : 1;
         int sizeNumber = isNumeric(size) ? Math.max(Integer.parseInt(size), 0) : 5;
@@ -36,7 +36,7 @@ public class FacultyController {
     }
 
     public boolean isNumeric(String strNum) {
-        Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+        Pattern pattern = Pattern.compile("-?\\d+(\\d+)?");
         if (strNum == null) {
             return false;
         }
@@ -52,9 +52,14 @@ public class FacultyController {
     }
 
     @GetMapping("/{id}")
-    public String getOneFaculty(Model model, @PathVariable long id) {
-        model.addAttribute("faculty", facultyService.getOne(id));
-        return "faculties/facultyView";
+    public String viewFaculty(Model model, @PathVariable("id") String idString) {
+        if (isNumeric(idString)) {
+            long id = Long.parseLong(idString);
+            FacultyDTO facultyDTO = facultyService.getOne(id);
+            model.addAttribute("facultyDTO", facultyDTO);
+            return "faculties/facultyView";
+        }
+        return "redirect:/faculties";
     }
 
 // For admin only (manage faculties):
@@ -65,9 +70,15 @@ public class FacultyController {
         return "faculties/addFaculty";
     }
 
-    @GetMapping("/edit")
-    public String editFacultyForm() {
-        return "faculties/editFaculty";
+    @GetMapping("/{id}/edit")
+    public String editFacultyForm(Model model, @PathVariable("id") String idString) {
+        if (isNumeric(idString)) {
+            long id = Long.parseLong(idString);
+            FacultyDTO facultyDTO = facultyService.getOne(id);
+            model.addAttribute("facultyDTO", facultyDTO);
+            return "faculties/editFaculty";
+        }
+        return "redirect:/faculties";
     }
 
     @PostMapping("/add")
@@ -80,8 +91,8 @@ public class FacultyController {
         return RESULT_MESSAGE;
     }
 
-    @PutMapping("/edit/{id}")
-    public String editFaculty(@Valid @RequestBody FacultyDTO facultyDTO, BindingResult result, @PathVariable Long id) {
+    @RequestMapping(value = "/{id}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
+    public String editFaculty(@Valid @ModelAttribute FacultyDTO facultyDTO, BindingResult result, @PathVariable Long id) {
         if (result.hasErrors()) {
             return "/faculties/new";
         }

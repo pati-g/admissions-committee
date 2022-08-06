@@ -12,8 +12,7 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode
 public class FacultyDTO {
 
-    @NotNull
-    private long id;
+    private Long id;
     @NotBlank
     private String name;
     @NotNull
