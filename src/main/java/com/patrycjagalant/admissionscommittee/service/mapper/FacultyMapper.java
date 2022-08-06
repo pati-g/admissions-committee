@@ -7,9 +7,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FacultyMapper {
-    private FacultyMapper(){}
 
-    public static FacultyDTO mapToDto(Faculty faculty) {
+    public FacultyDTO mapToDto(Faculty faculty) {
         FacultyDTO facultyDTO = new FacultyDTO();
 
         facultyDTO.setId(faculty.getId());
@@ -20,11 +19,12 @@ public class FacultyMapper {
         return facultyDTO;
     }
 
-    public static List<FacultyDTO> mapToDto(List<Faculty> faculties) {
-        return faculties.stream().map(FacultyMapper::mapToDto).collect(Collectors.toList());
+    public List<FacultyDTO> mapToDto(List<Faculty> faculties) {
+        FacultyMapper mapper = new FacultyMapper();
+        return faculties.stream().map(mapper::mapToDto).collect(Collectors.toList());
     }
 
-    public static Faculty mapToEntity(FacultyDTO facultyDTO) {
+    public Faculty mapToEntity(FacultyDTO facultyDTO) {
         Faculty faculty = new Faculty();
 
         faculty.setName(facultyDTO.getName());
@@ -34,7 +34,7 @@ public class FacultyMapper {
         return faculty;
     }
 
-    public static void mapToEntity(Faculty faculty, FacultyDTO facultyDTO) {
+    public void mapToEntity(Faculty faculty, FacultyDTO facultyDTO) {
         String name = facultyDTO.getName();
         Integer budget = facultyDTO.getBudgetPlaces();
         Integer total = facultyDTO.getTotalPlaces();

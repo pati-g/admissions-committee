@@ -9,19 +9,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
-import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping("/faculties")
 public class FacultyController {
     private final FacultyService facultyService;
+    private final ParamValidator validator;
     private static final String FACULTIES = "faculties/faculties";
     private static final String RESULT_MESSAGE = "message";
 
-    public FacultyController(FacultyService facultyService) {
+    public FacultyController(FacultyService facultyService, ParamValidator validator) {
         this.facultyService = facultyService;
+        this.validator = validator;
     }
 
     @GetMapping
@@ -29,18 +29,10 @@ public class FacultyController {
                                   @RequestParam(defaultValue = "5") String size,
                                   @RequestParam(defaultValue = "id") String sortBy,
                                   Sort.Direction sort, Model model) {
-        int pageNumber = isNumeric(page) ? Math.max(Integer.parseInt(page), 1) : 1;
-        int sizeNumber = isNumeric(size) ? Math.max(Integer.parseInt(size), 0) : 5;
+        int pageNumber = validator.isNumeric(page) ? Math.max(Integer.parseInt(page), 1) : 1;
+        int sizeNumber = validator.isNumeric(size) ? Math.max(Integer.parseInt(size), 0) : 5;
         Page<FacultyDTO> facultyDTOPage = facultyService.getAllFaculties(pageNumber, sizeNumber, sort, sortBy);
         return addPaginationModel(pageNumber, facultyDTOPage, model);
-    }
-
-    public boolean isNumeric(String strNum) {
-        Pattern pattern = Pattern.compile("-?\\d+(\\d+)?");
-        if (strNum == null) {
-            return false;
-        }
-        return pattern.matcher(strNum).matches();
     }
 
     private String addPaginationModel(int page, Page<FacultyDTO> paginated, Model model) {
@@ -53,9 +45,9 @@ public class FacultyController {
 
     @GetMapping("/{id}")
     public String viewFaculty(Model model, @PathVariable("id") String idString) {
-        if (isNumeric(idString)) {
+        if (validator.isNumeric(idString)) {
             long id = Long.parseLong(idString);
-            FacultyDTO facultyDTO = facultyService.getOne(id);
+            FacultyDTO facultyDTO = facultyService.getById(id);
             model.addAttribute("facultyDTO", facultyDTO);
             return "faculties/facultyView";
         }
@@ -72,9 +64,9 @@ public class FacultyController {
 
     @GetMapping("/{id}/edit")
     public String editFacultyForm(Model model, @PathVariable("id") String idString) {
-        if (isNumeric(idString)) {
+        if (validator.isNumeric(idString)) {
             long id = Long.parseLong(idString);
-            FacultyDTO facultyDTO = facultyService.getOne(id);
+            FacultyDTO facultyDTO = facultyService.getById(id);
             model.addAttribute("facultyDTO", facultyDTO);
             return "faculties/editFaculty";
         }

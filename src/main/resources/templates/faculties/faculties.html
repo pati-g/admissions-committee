@@ -13,11 +13,9 @@
 
 <body class="d-flex flex-column min-vh-100">
 <nav th:insert="fragments/navbar::navbar"></nav>
-<br>
-<a th:href="@{/faculties/new}">
-    <button type="button">Add new</button>
-</a>
-<br>
+<div class = "p-5">
+<a class="btn btn-outline-primary" th:href="@{/faculties/new}" role="button">Add new</a>
+<br><br>
 <div class="table-responsive">
 <table class="table">
     <tbody>
@@ -30,22 +28,21 @@
         <td th:text="${faculty.name}">Name</td>
         <td th:text="${faculty.budgetPlaces}">Budget places</td>
         <td th:text="${faculty.totalPlaces}">Total places</td>
-        <td><a th:href="@{/faculties/{id}/(id = ${faculty.getId})}">View</a></td>
-        <td><a th:href="@{/faculties/{id}/edit(id = ${faculty.getId})}">Edit</a></td>
+        <td><a class="btn btn-outline-primary" th:href="@{/faculties/{id}/(id = ${faculty.getId})}">View</a></td>
+        <td><a class="btn btn-outline-info" th:href="@{/faculties/{id}/edit(id = ${faculty.getId})}">Edit</a></td>
         <td>
             <form th:action="@{/faculties/delete/{id}(id = ${faculty.getId})}" th:object="${faculty}" th:method="delete">
-                <button type="submit" onClick="return confirm('Are you sure you want to delete this faculty?')">Delete</button>
+                <button class="btn btn-outline-dark" type="submit" onClick="return confirm('Are you sure you want to delete this faculty?')">Delete</button>
             </form>
             </td>
     </tr>
     </tbody>
 </table>
 </div>
-<div class="row h-100 justify-content-center align-items-center">
-    <div class="col-10 col-md-8 col-lg-4">
-<nav th:if="${totalPages > 1}" class="pagination"
+<br>
+<nav th:if="${totalPages > 1}" class="pagination  justify-content-center"
      aria-label="Page navigation for list of faculties">
-    <ul class="pagination">
+    <ul class="pagination justify-content-center">
         <li class="page-item">
             <a class="page-link" th:href="@{/faculties(size=${faculties.size}, page=${currentPage-1 > 0 ? currentPage-1 : 1})}" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
@@ -64,7 +61,6 @@
         </li>
     </ul>
 </nav>
-    </div>
 </div>
 <footer class="mt-auto" th:insert="fragments/footer::footer"></footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>

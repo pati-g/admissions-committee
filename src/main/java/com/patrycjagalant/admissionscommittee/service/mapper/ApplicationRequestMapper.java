@@ -6,30 +6,36 @@ import com.patrycjagalant.admissionscommittee.entity.ApplicationRequest;
 
 
 public class ApplicationRequestMapper {
-    private ApplicationRequestMapper(){}
 
-    public static ApplicationRequestDTO mapToDto(ApplicationRequest applicationRequest) {
+    public ApplicationRequestDTO mapToDto(ApplicationRequest applicationRequest) {
         ApplicationRequestDTO applicationRequestDTO = new ApplicationRequestDTO();
+        ApplicantMapper applicantMapper = new ApplicantMapper();
+        FacultyMapper facultyMapper = new FacultyMapper();
 
         applicationRequestDTO.setId(applicationRequest.getId());
         applicationRequestDTO.setRegistrationDate(applicationRequest.getRegistrationDate());
-        applicationRequestDTO.setApplicant(ApplicantMapper.mapToDto(applicationRequest.getApplicant()));
-        applicationRequestDTO.setFaculty(FacultyMapper.mapToDto(applicationRequest.getFaculty()));
+        applicationRequestDTO.setApplicant(applicantMapper.mapToDto(applicationRequest.getApplicant()));
+        applicationRequestDTO.setFaculty(facultyMapper.mapToDto(applicationRequest.getFaculty()));
         return applicationRequestDTO;
     }
 
-    public static ApplicationRequest mapToEntity(ApplicationRequestDTO applicationRequestDTO) {
+    public ApplicationRequest mapToEntity(ApplicationRequestDTO applicationRequestDTO) {
         ApplicationRequest applicationRequest = new ApplicationRequest();
+        ApplicantMapper applicantMapper = new ApplicantMapper();
+        FacultyMapper facultyMapper = new FacultyMapper();
+
         applicationRequest.setRegistrationDate(applicationRequestDTO.getRegistrationDate());
-        applicationRequest.setApplicant(ApplicantMapper.mapToEntity(applicationRequestDTO.getApplicant()));
-        applicationRequest.setFaculty(FacultyMapper.mapToEntity(applicationRequestDTO.getFaculty()));
+        applicationRequest.setApplicant(applicantMapper.mapToEntity(applicationRequestDTO.getApplicant()));
+        applicationRequest.setFaculty(facultyMapper.mapToEntity(applicationRequestDTO.getFaculty()));
         return applicationRequest;
     }
 
-    public static void mapToEntity(ApplicationRequest applicationRequest, ApplicationRequestDTO applicationRequestDTO) {
+    public void mapToEntity(ApplicationRequest applicationRequest, ApplicationRequestDTO applicationRequestDTO) {
+        FacultyMapper facultyMapper = new FacultyMapper();
+        ApplicantMapper applicantMapper = new ApplicantMapper();
         if (applicationRequestDTO.getApplicant() != null)
-            applicationRequest.setApplicant(ApplicantMapper.mapToEntity(applicationRequestDTO.getApplicant()));
+            applicationRequest.setApplicant(applicantMapper.mapToEntity(applicationRequestDTO.getApplicant()));
         if (applicationRequestDTO.getFaculty() != null)
-            applicationRequest.setFaculty(FacultyMapper.mapToEntity(applicationRequestDTO.getFaculty()));
+            applicationRequest.setFaculty(facultyMapper.mapToEntity(applicationRequestDTO.getFaculty()));
     }
 }
