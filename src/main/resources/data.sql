@@ -29,16 +29,17 @@ INSERT INTO Faculties (name, budget_places, total_places) VALUES ('2Architectura
 INSERT INTO Faculties (name, budget_places, total_places) VALUES ('2Physical education', 50, 100);
 INSERT INTO Faculties (name, budget_places, total_places) VALUES ('2Neurobiology', 25, 55);
 
-INSERT INTO Users (id, email, password) VALUES (1, 'nr_one@test.com', 'p@ssw0rd');
-INSERT INTO Users (id, email, password) VALUES (2, 'nr_two@test.com', 'p@ssw0rd');
-INSERT INTO Users (id, email, password) VALUES (3, 'nr_three@test.com', 'p@ssw0rd');
-INSERT INTO Users (id, email, password) VALUES (4, 'nr_four@test.com', 'p@ssw0rd');
-INSERT INTO Users (id, email, password) VALUES (5, 'nr_five@test.com', 'p@ssw0rd');
-INSERT INTO Users (id, email, password) VALUES (6, 'nr_six@test.com', 'p@ssw0rd');
-INSERT INTO Users (id, email, password) VALUES (7, 'nr_seven@test.com', 'p@ssw0rd');
-INSERT INTO Users (id, email, password) VALUES (8, 'nr_eight@test.com', 'p@ssw0rd');
-INSERT INTO Users (id, email, password) VALUES (9, 'nr_nine@test.com', 'p@ssw0rd');
-INSERT INTO Users (id, email, password) VALUES (10, 'nr_ten@test.com', 'p@ssw0rd');
+INSERT INTO Users (id, email, password) VALUES (1, 'nr_one@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
+INSERT INTO Users (id, email, password) VALUES (2, 'nr_two@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
+INSERT INTO Users (id, email, password) VALUES (3, 'nr_three@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
+INSERT INTO Users (id, email, password) VALUES (4, 'nr_four@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
+INSERT INTO Users (id, email, password) VALUES (5, 'nr_five@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
+INSERT INTO Users (id, email, password) VALUES (6, 'nr_six@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
+INSERT INTO Users (id, email, password) VALUES (7, 'nr_seven@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
+INSERT INTO Users (id, email, password) VALUES (8, 'nr_eight@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
+INSERT INTO Users (id, email, password) VALUES (9, 'nr_nine@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
+INSERT INTO Users (id, email, password) VALUES (10, 'nr_ten@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
+INSERT INTO Users (id, email, password, role) VALUES (11, 'admin@test.com', '$2a$09$qNXp.ttKG0iREYnUds2Fqes8.kxInQ/5ogsxLmV5eCogDAL2CRkmi', 'ADMIN');
 
 INSERT INTO Applicants (first_name, last_name, city, region, educational_institution, user_ID) VALUES ('Adam', 'Smith', 'Gdansk', 'Pomorskie', 'UG', 1);
 INSERT INTO Applicants (first_name, last_name, city, region, educational_institution, user_ID) VALUES ('Pola', 'Jones', 'Warsaw', 'Mazowiecki', 'UW', 2);

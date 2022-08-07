@@ -16,6 +16,7 @@ public class ApplicantMapper {
         applicantDTO.setEducationalInstitution(applicant.getEducationalInstitution());
         applicantDTO.setFirstName(applicant.getFirstName());
         applicantDTO.setLastName(applicant.getLastName());
+        applicantDTO.setFullName(applicant.getLastName() + " " + applicant.getFirstName());
         applicantDTO.setRegion(applicant.getRegion());
 
         return applicantDTO;

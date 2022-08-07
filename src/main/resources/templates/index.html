@@ -1,34 +1,14 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
 <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-    <meta content="Home page" name="description"/>
-    <meta content="Patrycja Galant" name="author"/>
-    <title th:text="${@environment.getProperty('app-title')} + ' | Home'"></title>
-    <link rel="icon" th:href="@{../static/favicon.ico}" type="image/ico"/>
-    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
-          integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" rel="stylesheet">
+    <title>Home</title>
 </head>
-<body class="d-flex flex-column min-vh-100">
-<nav th:insert="fragments/navbar::navbar"></nav>
-
-<div class="bg-image p-5 text-center shadow-1-strong rounded mb-5 text-white"
-     style="background-image: url('images/bg-photo.jpg')">
-    <div class="text-center my-5">
-        <img alt="Graduation hat icon" class="img-fluid rounded-circle mb-4" th:src="@{/images/favicon.ico}"
-             width="50"/>
+<body>
+<div layout:fragment="content" class="text-center">
+        <img alt="Graduation hat icon" class="img-fluid mb-4" th:src="@{/static/favicon.ico}" width="50"/>
         <h1 class="text-white fs-3 fw-bolder">Welcome to Admissions Committee</h1>
         <p class="text-white-50 mb-0">Start your educational journey here!</p>
-    </div>
-    <div class="container">
-        <img class="img-fluid" th:src="@{/images/students_sitting_on_stairs.jpeg}"/>
-    </div>
+        <img class="pt-4 img-fluid" th:src="@{/images/students_sitting_on_stairs.jpeg}"/>
 </div>
-<footer class="mt-auto" th:insert="fragments/footer::footer"></footer>
-<script crossorigin="anonymous"
-        integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

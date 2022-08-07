@@ -1,9 +1,13 @@
 package com.patrycjagalant.admissionscommittee.controller;
 
 import com.patrycjagalant.admissionscommittee.dto.ApplicantDTO;
-import com.patrycjagalant.admissionscommittee.entity.User;
+import com.patrycjagalant.admissionscommittee.dto.FacultyDTO;
+import com.patrycjagalant.admissionscommittee.entity.Applicant;
 import com.patrycjagalant.admissionscommittee.service.ApplicantService;
+import com.patrycjagalant.admissionscommittee.service.mapper.ApplicantMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,59 +21,78 @@ public class ApplicantController {
     private final ApplicantService applicantService;
     public ApplicantController(ApplicantService applicantService) { this.applicantService = applicantService; }
 
-    // Register
-    @GetMapping("/register")
-    public String startRegistration(){ return "/applicants/registerApplicant"; }
-
-    // implement PRG here - post-redirect-get
-    @PostMapping("/register")
-    public String submitRegistration(@Valid @ModelAttribute("applicantDTO") ApplicantDTO applicantDTO, BindingResult result){
-        if (result.hasErrors()) {
-            return "/applicant";
+    @GetMapping("/{id}/edit")
+    public String editApplicantData(Model model, @PathVariable("id") String idString) {
+        if (ParamValidator.isNumeric(idString)) {
+            long id = Long.parseLong(idString);
+            ApplicantDTO applicantDTO = applicantService.getById(id);
+            model.addAttribute("applicantDTO", applicantDTO);
+            return "applicants/editProfile";
         }
-        // Change new user to logged-in user data from session?
-        User user = new User();
-        applicantService.addApplicant(applicantDTO, user);
-        String msg = "Your data has been successfully submitted.";
-        return "message";
+        return "redirect:/";
     }
 
-    @PutMapping()
-    public String editProfile(@Valid @ModelAttribute("applicantDTO") ApplicantDTO applicantDTO, BindingResult result) {
+    @RequestMapping(value = "/{id}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
+    public String editApplicant(@Valid @ModelAttribute ApplicantDTO applicantDTO,
+                                BindingResult result,
+                                @PathVariable Long id,
+                                Model model) {
         if (result.hasErrors()) {
-            return "/editProfile";
+            return "redirect:/applicant/{id}/edit";
         }
-        Long id = 0L;
-        applicantService.editApplicant(applicantDTO, id);
-        String msg = "Changes in the faculty have been saved.";
-        return "message";
+        Applicant applicant = applicantService.editApplicant(applicantDTO, id);
+        ApplicantMapper mapper = new ApplicantMapper();
+        if (applicantDTO.equals(mapper.mapToDto(applicant))) {
+            return "redirect:/";
+        }
+        else {
+            return "redirect:/applicant/{id}/edit";
+        }
     }
 
     //Admin only
     @GetMapping("/all")
-    public String getAllApplicants(@RequestParam(required = false) Integer page,
-                                   @RequestParam(required = false) Integer size,
-                                   @RequestParam(required = false) String sortBy,
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String getAllApplicants(@RequestParam(required = false) String page,
+                                   @RequestParam(required = false) String size,
+                                   @RequestParam(defaultValue = "lastName") String sortBy,
                                    Sort.Direction sort, Model model) {
-        int pageNumber = page != null && page >= 0 ? page : 0;
-        int sizeNumber = size != null && size > 0 ? size : 5;
-        String sortByParam = sortBy != null ? sortBy : "lastName";
-        Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
-        model.addAttribute("applicants", applicantService.getAllApplicants(pageNumber, sizeNumber, sortDirection, sortByParam));
+        int pageNumber = ParamValidator.isNumeric(page) ? Math.max(Integer.parseInt(page), 1) : 1;
+        int sizeNumber = ParamValidator.isNumeric(size) ? Math.max(Integer.parseInt(size), 0) : 5;
+        Page<ApplicantDTO> applicantDTOPage = applicantService.getAllApplicants(pageNumber, sizeNumber, sort, sortBy);
+        return addPaginationModel(pageNumber, applicantDTOPage, model);
+    }
+
+    private String addPaginationModel(int page, Page<ApplicantDTO> paginated, Model model) {
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", paginated.getTotalPages());
+        model.addAttribute("totalItems", paginated.getTotalElements());
+        model.addAttribute("applicants", paginated);
         return "applicants/applicants";
     }
 
-//    // Block applicant
-//    @PutMapping("/{id}")
-//    public String changeApplicantBlockedStatus(@PathVariable Long id) {
-//        boolean isBlocked = applicantService.changeBlockedStatus(id);
-//        String msg = "";
-//        if (isBlocked) {
-//            msg = "Applicant has been blocked";
-//        }
-//        else {
-//            msg = "Applicant has been unblocked";
-//        }
-//        return "message";
-//    }
+    // Block applicant
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String changeApplicantBlockedStatus(@PathVariable Long id) {
+        boolean isBlocked = applicantService.changeBlockedStatus(id);
+        String msg = "";
+        if (isBlocked) {
+            msg = "Applicant has been blocked";
+        }
+        else {
+            msg = "Applicant has been unblocked";
+        }
+        return "message";
+    }
+
+    @RequestMapping(value = "/delete/{id}", method = {RequestMethod.DELETE, RequestMethod.POST})
+    public String deleteApplicant(@PathVariable String id) {
+        if (id.matches("(\\d)+")) {
+            long idNumber = Long.parseLong(id);
+            applicantService.deleteApplicant(idNumber);
+
+        }
+        return "redirect:/applicant/all";
+    }
 }

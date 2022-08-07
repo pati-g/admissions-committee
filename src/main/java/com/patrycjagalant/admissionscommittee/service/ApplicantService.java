@@ -1,16 +1,13 @@
 package com.patrycjagalant.admissionscommittee.service;
 
 import com.patrycjagalant.admissionscommittee.dto.ApplicantDTO;
-import com.patrycjagalant.admissionscommittee.dto.FacultyDTO;
 import com.patrycjagalant.admissionscommittee.entity.Applicant;
-import com.patrycjagalant.admissionscommittee.entity.Faculty;
 import com.patrycjagalant.admissionscommittee.entity.User;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.repository.UserRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.ApplicantMapper;
 import com.patrycjagalant.admissionscommittee.repository.ApplicantRepository;
-import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -45,7 +42,6 @@ public class ApplicantService {
         return applicantRepository.save(newApplicant);
     }
 
-    // View currently logged in applicant's data (or chosen applicant - admin)
     public ApplicantDTO getById(Long id) {
         Applicant applicant = applicantRepository.findById(id).orElseThrow(NoSuchApplicantException::new);
         ApplicantMapper applicantMapper = new ApplicantMapper();
@@ -59,7 +55,7 @@ public class ApplicantService {
             page = 1;
             size = 5;
         }
-        Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.DESC;
+        Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
         Page<Applicant> applicantPage = applicantRepository.findAll(PageRequest.of(page-1, size, Sort.by(sortDirection, sortBy)));
         ApplicantMapper applicantMapper = new ApplicantMapper();
         List<ApplicantDTO> applicantDTOS = applicantMapper.mapToDto(applicantPage.getContent());

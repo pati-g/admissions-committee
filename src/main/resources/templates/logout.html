@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+  <title>Log out</title>
+</head>
+<body>
+<div layout:fragment="content">
+<div class="container main-content">
+  <ul class="list-group">
+    <li class="list-group-item list-group-item-info"><h3>You have been successfully logged out.</h3></li>
+  </ul>
+  <br><br>
+  <a class="btn btn-outline-primary" th:href="@{/index}">Return home</a>
+</div>
+</div>
+</body>
+</html>

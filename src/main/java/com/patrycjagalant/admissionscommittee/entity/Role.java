@@ -1,8 +1,16 @@
 package com.patrycjagalant.admissionscommittee.entity;
 
-import lombok.ToString;
-
-@ToString
 public enum Role {
-    USER, ADMIN
+    USER("user"), ADMIN("admin");
+
+    private final String label;
+
+    private Role(String label){
+        this.label = label;
+    }
+
+    @Override
+    public String toString() {
+        return this.label;
+    }
 }

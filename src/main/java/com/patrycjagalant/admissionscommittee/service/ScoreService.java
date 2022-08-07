@@ -12,11 +12,15 @@ import java.util.List;
 public class ScoreService {
 
     private final ScoreRepository scoreRepository;
-    public ScoreService(ScoreRepository scoreRepository) { this.scoreRepository = scoreRepository; }
+    private final ScoreMapper mapper;
+    public ScoreService(ScoreRepository scoreRepository, ScoreMapper mapper) {
+        this.scoreRepository = scoreRepository;
+        this.mapper = mapper;
+    }
 
     // Create a new score
     public void addNewScore(ScoreDTO scoreDTO) {
-        Score newScore = ScoreMapper.mapToEntity(scoreDTO);
+        Score newScore = mapper.mapToEntity(scoreDTO);
         scoreRepository.save(newScore);
     }
 
@@ -24,7 +28,7 @@ public class ScoreService {
     public void addListOfScores(List<ScoreDTO> scoreDTOS) {
         List<Score> scores = new ArrayList<>();
         for (ScoreDTO scoreDTO: scoreDTOS) {
-            scores.add(ScoreMapper.mapToEntity(scoreDTO));
+            scores.add(mapper.mapToEntity(scoreDTO));
         }
         scoreRepository.saveAll(scores);
     }
@@ -32,7 +36,7 @@ public class ScoreService {
     // Read a specific score
     public ScoreDTO getScoreById(Long id) {
         Score score = scoreRepository.getReferenceById(id);
-        return ScoreMapper.mapToDto(score);
+        return mapper.mapToDto(score);
     }
 
     // Read all scores for specific applicant
@@ -40,7 +44,7 @@ public class ScoreService {
         List<Score> scores = scoreRepository.findByApplicantId(applicantID);
         List<ScoreDTO> scoreDTOS = new ArrayList<>();
         for (Score score: scores) {
-            scoreDTOS.add(ScoreMapper.mapToDto(score));
+            scoreDTOS.add(mapper.mapToDto(score));
         }
         return scoreDTOS;
     }
@@ -51,7 +55,7 @@ public class ScoreService {
     @Transactional
     public void updateScore(ScoreDTO scoreDTO, Long id) {
         Score score = scoreRepository.getReferenceById(id);
-        ScoreMapper.mapToEntity(score, scoreDTO);
+        mapper.mapToEntity(score, scoreDTO);
         scoreRepository.save(score);
     }
     // Delete a score

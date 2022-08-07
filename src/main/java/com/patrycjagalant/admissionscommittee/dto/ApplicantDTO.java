@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 public class ApplicantDTO {
 
     private long id;
+    private String fullName;
     @NotBlank
     private String firstName;
     @NotBlank
@@ -21,5 +22,6 @@ public class ApplicantDTO {
     private String region;
     @NotBlank
     private String educationalInstitution;
+    private String email;
     private String certificate;
 }

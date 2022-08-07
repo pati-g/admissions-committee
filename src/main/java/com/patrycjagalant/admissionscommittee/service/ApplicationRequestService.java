@@ -15,19 +15,23 @@ import java.util.List;
 public class ApplicationRequestService {
 
     private final ApplicationRequestRepository applicationRequestRepository;
+    private final ApplicationRequestMapper mapper;
 
-    public ApplicationRequestService(ApplicationRequestRepository applicationRequestRepository) { this.applicationRequestRepository = applicationRequestRepository; }
+    public ApplicationRequestService(ApplicationRequestRepository applicationRequestRepository, ApplicationRequestMapper mapper) {
+        this.applicationRequestRepository = applicationRequestRepository;
+        this.mapper = mapper;
+    }
 
     // Create
     public void addNewRequest(ApplicationRequestDTO applicationRequestDTO) {
-        ApplicationRequest applicationRequest = ApplicationRequestMapper.mapToEntity(applicationRequestDTO);
+        ApplicationRequest applicationRequest = mapper.mapToEntity(applicationRequestDTO);
         applicationRequestRepository.save(applicationRequest);
     }
 
     // Read request by id
     public ApplicationRequestDTO getRequestById(Long id) {
         ApplicationRequest request = applicationRequestRepository.getReferenceById(id);
-        return ApplicationRequestMapper.mapToDto(request);
+        return mapper.mapToDto(request);
     }
 
     // Read requests for one applicant
@@ -35,7 +39,7 @@ public class ApplicationRequestService {
         List<ApplicationRequest> requests = applicationRequestRepository.findByApplicantId(id);
         List<ApplicationRequestDTO> requestDTOS = new ArrayList<>();
         for (ApplicationRequest request: requests) {
-            requestDTOS.add(ApplicationRequestMapper.mapToDto(request));
+            requestDTOS.add(mapper.mapToDto(request));
         }
         return requestDTOS;
     }
@@ -43,18 +47,13 @@ public class ApplicationRequestService {
     // Read all requests
     public Page<ApplicationRequest> getAll(int page, int size, Sort.Direction sort, String sortBy) {
         return applicationRequestRepository.findAll(PageRequest.of(page, size, Sort.by(sort, sortBy)));
-//        List<ApplicationRequestDTO> requestDTOS = new ArrayList<>();
-//        for (ApplicationRequest request: requests) {
-//            requestDTOS.add(ApplicationRequestMapper.mapToDto(request));
-//        }
-//        return requestDTOS;
     }
 
     // Update a request
     @Transactional
     public void editApplicationRequest(ApplicationRequestDTO requestDTO, Long id) {
         ApplicationRequest request = applicationRequestRepository.getReferenceById(id);
-        ApplicationRequestMapper.mapToEntity(request, requestDTO);
+        mapper.mapToEntity(request, requestDTO);
         applicationRequestRepository.save(request);
     }
 
