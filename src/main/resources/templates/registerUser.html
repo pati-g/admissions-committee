@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>Register</title>
+</head>
+<body>
+<div layout:fragment="content" class="text-center">
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-10 col-md-8 col-lg-6">
+            <h1 class="py-5">Registration form</h1>
+            <form method="post" th:action="@{/register}" th:object="${user}">
+                <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger py-0">
+                    <p>Please correct errors listed below</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input class="form-control" id="email" placeholder="user@example.com" required th:field="*{email}"
+                           type="text"/>
+                    <span class="help-block" th:if="${#fields.hasErrors('email')}">
+                <p th:errors="*{email}" class="text-danger py-0">E-mail error</p>
+                   </span></div>
+                <br>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input class="form-control" id="password" required th:field="*{password}"
+                           type="password"/>
+                    <span class="help-block" th:if="${#fields.hasErrors('password')}">
+                <p th:errors="*{password}" class="text-danger py-0">Password error</p>
+                   </span>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="matchingPassword">Confirm password</label>
+                    <input class="form-control" id="matchingPassword" required th:field="*{matchingPassword}" type="password"/>
+                    <span class="help-block" th:if="${#fields.hasErrors('matchingPassword')}">
+                <p th:errors="*{matchingPassword}" class="text-danger py-0">Password error</p>
+                   </span>
+                </div>
+<!--                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+                <br><br>
+                <input class="btn btn-primary" type="submit" value="Register">
+
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

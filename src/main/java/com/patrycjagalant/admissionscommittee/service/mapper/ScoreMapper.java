@@ -1,12 +1,12 @@
 package com.patrycjagalant.admissionscommittee.service.mapper;
 
-import com.patrycjagalant.admissionscommittee.dto.ScoreDTO;
+import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.entity.Score;
 
 public class ScoreMapper {
 
-    public ScoreDTO mapToDto(Score score) {
-        ScoreDTO scoreDTO = new ScoreDTO();
+    public ScoreDto mapToDto(Score score) {
+        ScoreDto scoreDTO = new ScoreDto();
         ApplicantMapper mapper = new ApplicantMapper();
         scoreDTO.setId(score.getId());
         scoreDTO.setGradeOrScore(score.getGradeOrScore());
@@ -17,7 +17,7 @@ public class ScoreMapper {
         return scoreDTO;
     }
 
-    public Score mapToEntity(ScoreDTO scoreDTO) {
+    public Score mapToEntity(ScoreDto scoreDTO) {
         Score score = new Score();
         ApplicantMapper mapper = new ApplicantMapper();
 
@@ -29,7 +29,7 @@ public class ScoreMapper {
         return score;
     }
 
-    public void mapToEntity(Score score, ScoreDTO scoreDTO) {
+    public void mapToEntity(Score score, ScoreDto scoreDTO) {
         Character gradeOrScore = scoreDTO.getGradeOrScore();
         String result = scoreDTO.getResult();
         String subject = scoreDTO.getSubjectName();

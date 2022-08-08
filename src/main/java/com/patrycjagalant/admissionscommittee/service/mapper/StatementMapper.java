@@ -1,15 +1,15 @@
 package com.patrycjagalant.admissionscommittee.service.mapper;
 
-import com.patrycjagalant.admissionscommittee.dto.StatementDTO;
+import com.patrycjagalant.admissionscommittee.dto.StatementDto;
 import com.patrycjagalant.admissionscommittee.entity.Statement;
 
 public class StatementMapper {
 
 
-    public StatementDTO mapToDto(Statement statement) {
+    public StatementDto mapToDto(Statement statement) {
         ApplicationRequestMapper mapper = new ApplicationRequestMapper();
 
-        StatementDTO statementDTO = new StatementDTO();
+        StatementDto statementDTO = new StatementDto();
         statementDTO.setId(statement.getId());
         statementDTO.setPoints(statement.getPoints());
         statementDTO.setEnrollment(statement.getEnrollment());
@@ -18,7 +18,7 @@ public class StatementMapper {
         return statementDTO;
     }
 
-    public Statement mapToEntity(StatementDTO statementDTO) {
+    public Statement mapToEntity(StatementDto statementDTO) {
         Statement statement = new Statement();
         ApplicationRequestMapper mapper = new ApplicationRequestMapper();
 
@@ -29,7 +29,7 @@ public class StatementMapper {
         return statement;
     }
 
-    public void mapToEntity(Statement statement, StatementDTO statementDTO) {
+    public void mapToEntity(Statement statement, StatementDto statementDTO) {
         Integer points = statementDTO.getPoints();
         Character enrollment = statementDTO.getEnrollment();
         ApplicationRequestMapper mapper = new ApplicationRequestMapper();

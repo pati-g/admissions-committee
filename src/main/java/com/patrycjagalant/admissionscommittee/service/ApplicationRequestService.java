@@ -1,6 +1,6 @@
 package com.patrycjagalant.admissionscommittee.service;
 
-import com.patrycjagalant.admissionscommittee.dto.ApplicationRequestDTO;
+import com.patrycjagalant.admissionscommittee.dto.ApplicationRequestDto;
 import com.patrycjagalant.admissionscommittee.entity.ApplicationRequest;
 import com.patrycjagalant.admissionscommittee.service.mapper.ApplicationRequestMapper;
 import com.patrycjagalant.admissionscommittee.repository.ApplicationRequestRepository;
@@ -23,21 +23,21 @@ public class ApplicationRequestService {
     }
 
     // Create
-    public void addNewRequest(ApplicationRequestDTO applicationRequestDTO) {
+    public void addNewRequest(ApplicationRequestDto applicationRequestDTO) {
         ApplicationRequest applicationRequest = mapper.mapToEntity(applicationRequestDTO);
         applicationRequestRepository.save(applicationRequest);
     }
 
     // Read request by id
-    public ApplicationRequestDTO getRequestById(Long id) {
+    public ApplicationRequestDto getRequestById(Long id) {
         ApplicationRequest request = applicationRequestRepository.getReferenceById(id);
         return mapper.mapToDto(request);
     }
 
     // Read requests for one applicant
-    public List<ApplicationRequestDTO> getAllForApplicantId(Long id) {
+    public List<ApplicationRequestDto> getAllForApplicantId(Long id) {
         List<ApplicationRequest> requests = applicationRequestRepository.findByApplicantId(id);
-        List<ApplicationRequestDTO> requestDTOS = new ArrayList<>();
+        List<ApplicationRequestDto> requestDTOS = new ArrayList<>();
         for (ApplicationRequest request: requests) {
             requestDTOS.add(mapper.mapToDto(request));
         }
@@ -51,7 +51,7 @@ public class ApplicationRequestService {
 
     // Update a request
     @Transactional
-    public void editApplicationRequest(ApplicationRequestDTO requestDTO, Long id) {
+    public void editApplicationRequest(ApplicationRequestDto requestDTO, Long id) {
         ApplicationRequest request = applicationRequestRepository.getReferenceById(id);
         mapper.mapToEntity(request, requestDTO);
         applicationRequestRepository.save(request);

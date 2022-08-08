@@ -6,17 +6,18 @@ import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode
-public class FacultyDTO {
+@Data
+public class FacultyDto {
 
+    @EqualsAndHashCode.Exclude
     private Long id;
+
     @NotBlank
     private String name;
+
     @NotNull
     private Integer budgetPlaces;
+
     @NotNull
     private Integer totalPlaces;
 

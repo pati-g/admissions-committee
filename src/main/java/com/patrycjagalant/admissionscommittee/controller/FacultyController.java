@@ -1,9 +1,8 @@
 package com.patrycjagalant.admissionscommittee.controller;
 
-import com.patrycjagalant.admissionscommittee.dto.FacultyDTO;
-import com.patrycjagalant.admissionscommittee.entity.Faculty;
+import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
 import com.patrycjagalant.admissionscommittee.service.FacultyService;
-import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
+import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,11 +15,11 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/faculties")
 public class FacultyController {
-    public static final String FACULTIES_NEW = "/faculties/new";
+    public static final String FACULTIES_NEW = "redirect:/faculties/new";
     public static final String FACULTY_DTO = "facultyDTO";
     public static final String REDIRECT_FACULTIES = "redirect:/faculties";
     private final FacultyService facultyService;
-    private static final String FACULTIES = "faculties/faculties";
+    private static final String FACULTIES = "/faculties/faculties";
 
     public FacultyController(FacultyService facultyService) {
         this.facultyService = facultyService;
@@ -33,11 +32,11 @@ public class FacultyController {
                                   Sort.Direction sort, Model model) {
         int pageNumber = ParamValidator.isNumeric(page) ? Math.max(Integer.parseInt(page), 1) : 1;
         int sizeNumber = ParamValidator.isNumeric(size) ? Math.max(Integer.parseInt(size), 0) : 5;
-        Page<FacultyDTO> facultyDTOPage = facultyService.getAllFaculties(pageNumber, sizeNumber, sort, sortBy);
+        Page<FacultyDto> facultyDTOPage = facultyService.getAllFaculties(pageNumber, sizeNumber, sort, sortBy);
         return addPaginationModel(pageNumber, facultyDTOPage, model);
     }
 
-    private String addPaginationModel(int page, Page<FacultyDTO> paginated, Model model) {
+    private String addPaginationModel(int page, Page<FacultyDto> paginated, Model model) {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", paginated.getTotalPages());
         model.addAttribute("totalItems", paginated.getTotalElements());
@@ -49,7 +48,7 @@ public class FacultyController {
     public String viewFaculty(Model model, @PathVariable("id") String idString) {
         if (ParamValidator.isNumeric(idString)) {
             long id = Long.parseLong(idString);
-            FacultyDTO facultyDTO = facultyService.getById(id);
+            FacultyDto facultyDTO = facultyService.getById(id);
             model.addAttribute(FACULTY_DTO, facultyDTO);
             return "faculties/facultyView";
         }
@@ -60,7 +59,7 @@ public class FacultyController {
 
     @GetMapping("/new")
     public String addNewFacultyForm(Model model) {
-        model.addAttribute(FACULTY_DTO, new FacultyDTO());
+        model.addAttribute(FACULTY_DTO, new FacultyDto());
         return "faculties/addFaculty";
     }
 
@@ -69,7 +68,7 @@ public class FacultyController {
     public String editFacultyForm(Model model, @PathVariable("id") String idString) {
         if (ParamValidator.isNumeric(idString)) {
             long id = Long.parseLong(idString);
-            FacultyDTO facultyDTO = facultyService.getById(id);
+            FacultyDto facultyDTO = facultyService.getById(id);
             model.addAttribute(FACULTY_DTO, facultyDTO);
             return "faculties/editFaculty";
         }
@@ -78,14 +77,13 @@ public class FacultyController {
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String addFaculty(@Valid @ModelAttribute(FACULTY_DTO) FacultyDTO facultyDTO, BindingResult result, Model model) {
+    public String addFaculty(@Valid @ModelAttribute(FACULTY_DTO) FacultyDto facultyDTO, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return FACULTIES_NEW;
         }
-        Faculty faculty = facultyService.addFaculty(facultyDTO);
-        FacultyMapper mapper = new FacultyMapper();
-        if (facultyDTO.equals(mapper.mapToDto(faculty))) {
-            return FACULTIES;
+        FacultyDto faculty = facultyService.addFaculty(facultyDTO);
+        if (facultyDTO.equals(faculty)) {
+            return REDIRECT_FACULTIES;
         }
         else {
             //do something
@@ -95,7 +93,7 @@ public class FacultyController {
 
     @RequestMapping(value = "/{id}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String editFaculty(@Valid @ModelAttribute FacultyDTO facultyDTO, BindingResult result, @PathVariable Long id) {
+    public String editFaculty(@Valid @ModelAttribute FacultyDto facultyDTO, BindingResult result, @PathVariable Long id) {
         if (result.hasErrors()) {
             return FACULTIES_NEW;
         }

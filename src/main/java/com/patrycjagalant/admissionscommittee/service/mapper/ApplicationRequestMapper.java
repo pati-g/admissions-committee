@@ -1,14 +1,14 @@
 package com.patrycjagalant.admissionscommittee.service.mapper;
 
 
-import com.patrycjagalant.admissionscommittee.dto.ApplicationRequestDTO;
+import com.patrycjagalant.admissionscommittee.dto.ApplicationRequestDto;
 import com.patrycjagalant.admissionscommittee.entity.ApplicationRequest;
 
 
 public class ApplicationRequestMapper {
 
-    public ApplicationRequestDTO mapToDto(ApplicationRequest applicationRequest) {
-        ApplicationRequestDTO applicationRequestDTO = new ApplicationRequestDTO();
+    public ApplicationRequestDto mapToDto(ApplicationRequest applicationRequest) {
+        ApplicationRequestDto applicationRequestDTO = new ApplicationRequestDto();
         ApplicantMapper applicantMapper = new ApplicantMapper();
         FacultyMapper facultyMapper = new FacultyMapper();
 
@@ -19,7 +19,7 @@ public class ApplicationRequestMapper {
         return applicationRequestDTO;
     }
 
-    public ApplicationRequest mapToEntity(ApplicationRequestDTO applicationRequestDTO) {
+    public ApplicationRequest mapToEntity(ApplicationRequestDto applicationRequestDTO) {
         ApplicationRequest applicationRequest = new ApplicationRequest();
         ApplicantMapper applicantMapper = new ApplicantMapper();
         FacultyMapper facultyMapper = new FacultyMapper();
@@ -30,7 +30,7 @@ public class ApplicationRequestMapper {
         return applicationRequest;
     }
 
-    public void mapToEntity(ApplicationRequest applicationRequest, ApplicationRequestDTO applicationRequestDTO) {
+    public void mapToEntity(ApplicationRequest applicationRequest, ApplicationRequestDto applicationRequestDTO) {
         FacultyMapper facultyMapper = new FacultyMapper();
         ApplicantMapper applicantMapper = new ApplicantMapper();
         if (applicationRequestDTO.getApplicant() != null)

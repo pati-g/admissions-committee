@@ -5,16 +5,21 @@ import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode
-public class StatementDTO {
+@Data
+public class ScoreDto {
 
     private long id;
-    private ApplicationRequestDTO applicationRequest;
+
     @NotBlank
-    private Integer points;
+    private ApplicantDto applicant;
+
     @NotBlank
-    private Character enrollment;
+    private String subjectName;
+
+    @NotBlank
+    private Character gradeOrScore;
+
+    @NotBlank
+    private String result;
+
 }

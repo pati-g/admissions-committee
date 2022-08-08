@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class ApplicationRequestController {
-    // Create new: ApplicantDTO clicks the 'apply' button next to chosen faculty, gets signed up, applicationRequest gets created
+    // Create new: ApplicantDto clicks the 'apply' button next to chosen faculty, gets signed up, applicationRequest gets created
 
     // Show all for logged in applicant: return list of application requests for applicant who is logged in
 

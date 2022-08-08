@@ -5,14 +5,16 @@ import java.time.Instant;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode
-public class ApplicationRequestDTO {
+@Data
+public class ApplicationRequestDto {
 
+    @EqualsAndHashCode.Exclude
     private long id;
-    private ApplicantDTO applicant;
-    private FacultyDTO faculty;
+
+    private ApplicantDto applicant;
+
+    private FacultyDto faculty;
+
+    @EqualsAndHashCode.Exclude
     private Instant registrationDate;
 }
