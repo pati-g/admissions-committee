@@ -1,6 +1,6 @@
 package com.patrycjagalant.admissionscommittee.config;
 
-import com.patrycjagalant.admissionscommittee.service.UserAuthService;
+import com.patrycjagalant.admissionscommittee.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,22 +10,22 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 @Configuration
-@RequiredArgsConstructor
+@RequiredArgsConstructor()
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-    private final UserAuthService userAuthService;
+    private final UserService userService;
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userAuthService);
-        provider.setPasswordEncoder(new BCryptPasswordEncoder(9));
+        provider.setUserDetailsService(userService);
+        provider.setPasswordEncoder(new Argon2PasswordEncoder());
         provider.setAuthoritiesMapper(authoritiesMapper());
         return provider;
     }
@@ -46,7 +46,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .antMatchers("/", "/index", "/register", "/static/favicon.ico", "/images/*", "/faculties", "/faculties/{id:\\d+}").permitAll()
+                        .antMatchers("/", "/index", "/h2-console/**", "/register", "/static/favicon.ico", "/images/*", "/faculties", "/faculties/{id:\\d+}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin()
@@ -58,6 +58,8 @@ public class SecurityConfig {
                         .clearAuthentication(true)
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessUrl("/logout-success").permitAll();
+        // Remove code below after changing DB to MySQL!
+        http.csrf().disable().headers().frameOptions().disable();
         return http.build();
     }
 }

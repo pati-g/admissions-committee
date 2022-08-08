@@ -1,4 +1,4 @@
-package com.patrycjagalant.admissionscommittee.controller;
+package com.patrycjagalant.admissionscommittee.utils;
 
 
 import java.util.regex.Pattern;

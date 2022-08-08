@@ -1,21 +1,5 @@
 package com.patrycjagalant.admissionscommittee.service;
 
-import com.patrycjagalant.admissionscommittee.controller.FacultyController;
-import com.patrycjagalant.admissionscommittee.dto.FacultyDTO;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 //
 //@RunWith(SpringRunner.class)
 //@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -39,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
 //
 ////    @Test
 ////    void whenAddNewFaculty_And_GivenIncorrectInput_ThenThrowException() {
-////        FacultyDTO testDTO1 = new FacultyDTO();
-////        FacultyDTO testDTO2 = new FacultyDTO(null,"Psychology", null, null);
-////        FacultyDTO testDTO3 = new FacultyDTO(null, null, 0, 10);
+////        FacultyDto testDTO1 = new FacultyDto();
+////        FacultyDto testDTO2 = new FacultyDto(null,"Psychology", null, null);
+////        FacultyDto testDTO3 = new FacultyDto(null, null, 0, 10);
 ////
 //////        assertThrows(MethodArgumentNotValidException.class, () -> facultyController.addFaculty(testDTO1, result));
 //////        assertThrows(MethodArgumentNotValidException.class, () -> facultyController.addFaculty(testDTO2, result));

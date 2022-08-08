@@ -1,6 +1,6 @@
 package com.patrycjagalant.admissionscommittee.service.mapper;
 
-import com.patrycjagalant.admissionscommittee.dto.ApplicantDTO;
+import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.entity.Applicant;
 
 import java.util.List;
@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 public class ApplicantMapper {
 
-    public ApplicantDTO mapToDto (Applicant applicant) {
-        ApplicantDTO applicantDTO = new ApplicantDTO();
+    public ApplicantDto mapToDto (Applicant applicant) {
+        ApplicantDto applicantDTO = new ApplicantDto();
         applicantDTO.setId(applicant.getId());
         applicantDTO.setCertificate(applicant.getCertificate());
         applicantDTO.setCity(applicant.getCity());
@@ -22,12 +22,12 @@ public class ApplicantMapper {
         return applicantDTO;
     }
 
-    public List<ApplicantDTO> mapToDto(List<Applicant> applicants) {
+    public List<ApplicantDto> mapToDto(List<Applicant> applicants) {
         ApplicantMapper mapper = new ApplicantMapper();
         return applicants.stream().map(mapper::mapToDto).collect(Collectors.toList());
     }
 
-    public Applicant mapToEntity(ApplicantDTO applicantDto) {
+    public Applicant mapToEntity(ApplicantDto applicantDto) {
         Applicant applicant = new Applicant();
         applicant.setCertificate(applicantDto.getCertificate());
         applicant.setCity(applicantDto.getCity());
@@ -39,7 +39,7 @@ public class ApplicantMapper {
         return applicant;
     }
 
-    public void mapToEntity(ApplicantDTO applicantDto, Applicant applicant) {
+    public void mapToEntity(ApplicantDto applicantDto, Applicant applicant) {
         String certificate = applicantDto.getCertificate();
         String city = applicantDto.getCity();
         String institution = applicantDto.getEducationalInstitution();

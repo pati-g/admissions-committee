@@ -7,21 +7,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomepageController {
     @GetMapping(value = {"/", "/index"})
-    public String homePage(Model model) {
-        return "index";
-    }
-    @GetMapping("/register")
-    public String getRegisterPage(Model model) {
-        return "register";
-    }
+    public String homePage(Model model) { return "index"; }
 
     @GetMapping("/login")
-    public String getLoginPage(Model model) {
+    public String showLoginPage(Model model) {
         return "login";
     }
 
     @GetMapping("/logout-success")
-    public String getLogoutPage(Model model) {
+    public String showLogoutPage(Model model) {
         return "logout";
     }
 }

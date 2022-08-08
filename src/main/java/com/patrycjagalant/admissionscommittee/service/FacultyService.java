@@ -1,9 +1,8 @@
 package com.patrycjagalant.admissionscommittee.service;
 
-import com.patrycjagalant.admissionscommittee.dto.FacultyDTO;
+import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
 import com.patrycjagalant.admissionscommittee.entity.Faculty;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
-import com.patrycjagalant.admissionscommittee.service.mapper.ApplicantMapper;
 import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
 import com.patrycjagalant.admissionscommittee.repository.FacultyRepository;
 import org.springframework.data.domain.*;
@@ -15,10 +14,13 @@ import java.util.List;
 @Service
 public class FacultyService {
     private final FacultyRepository facultyRepository;
-    public FacultyService(FacultyRepository facultyRepository) {
+
+    private final FacultyMapper facultyMapper;
+    public FacultyService(FacultyRepository facultyRepository, FacultyMapper facultyMapper) {
         this.facultyRepository = facultyRepository;
+        this.facultyMapper = facultyMapper;
     }
-    public Page<FacultyDTO> getAllFaculties(int page, int size, Sort.Direction sort, String sortBy) {
+    public Page<FacultyDto> getAllFaculties(int page, int size, Sort.Direction sort, String sortBy) {
         long facultiesTotal = facultyRepository.count();
         if((long) page * size > facultiesTotal) {
             page = 1;
@@ -27,40 +29,36 @@ public class FacultyService {
 
         Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.DESC;
         Page<Faculty> facultyPage = facultyRepository.findAll(PageRequest.of(page-1, size, Sort.by(sortDirection, sortBy)));
-        FacultyMapper facultyMapper = new FacultyMapper();
-        List<FacultyDTO> facultyDTOS = facultyMapper.mapToDto(facultyPage.getContent());
-        return new PageImpl<>(facultyDTOS, PageRequest.of(page-1, size, Sort.by(sortDirection, sortBy)), facultiesTotal);
+        List<FacultyDto> facultyDtos = facultyMapper.mapToDto(facultyPage.getContent());
+        return new PageImpl<>(facultyDtos, PageRequest.of(page-1, size, Sort.by(sortDirection, sortBy)), facultiesTotal);
     }
 
-    public  FacultyDTO findByName(String name) {
+    public FacultyDto findByName(String name) {
         Faculty faculty= facultyRepository.findByName(name);
-        FacultyMapper facultyMapper = new FacultyMapper();
         return facultyMapper.mapToDto(faculty);
     }
 
-    public FacultyDTO getById(Long id) {
+    public FacultyDto getById(Long id) throws NoSuchFacultyException {
         Faculty faculty = facultyRepository.findById(id).orElseThrow(NoSuchFacultyException::new);
-        FacultyMapper facultyMapper = new FacultyMapper();
         return facultyMapper.mapToDto(faculty);
     }
 
     // Accessible only to admin:
-    public void deleteFaculty(Long id) {
+    public void deleteFaculty(Long id) throws NoSuchFacultyException {
         if(facultyRepository.findById(id).isPresent()) {
             facultyRepository.deleteById(id);
         }
         else {
-            throw new NoSuchFacultyException();
+            throw new NoSuchFacultyException("Couldn't find faculty with id: " + id);
         }
     }
-    public Faculty addFaculty(FacultyDTO facultyDTO) {
-        FacultyMapper facultyMapper = new FacultyMapper();
+    public FacultyDto addFaculty(FacultyDto facultyDTO) {
         Faculty faculty = facultyMapper.mapToEntity(facultyDTO);
-        return facultyRepository.save(faculty);}
+        return facultyMapper.mapToDto(facultyRepository.save(faculty));
+    }
     @Transactional
-    public Faculty editFaculty(FacultyDTO facultyDTO, Long id) {
+    public Faculty editFaculty(FacultyDto facultyDTO, Long id) throws NoSuchFacultyException {
         Faculty currentFaculty = facultyRepository.findById(id).orElseThrow(NoSuchFacultyException::new);
-        FacultyMapper facultyMapper = new FacultyMapper();
         facultyMapper.mapToEntity(currentFaculty, facultyDTO);
         return currentFaculty;
     }

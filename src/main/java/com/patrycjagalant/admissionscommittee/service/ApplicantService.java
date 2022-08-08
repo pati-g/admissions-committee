@@ -1,6 +1,6 @@
 package com.patrycjagalant.admissionscommittee.service;
 
-import com.patrycjagalant.admissionscommittee.dto.ApplicantDTO;
+import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.entity.Applicant;
 import com.patrycjagalant.admissionscommittee.entity.User;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
@@ -28,28 +28,28 @@ public class ApplicantService {
     }
 
     @Transactional
-    public Applicant editApplicant(ApplicantDTO applicantdto, Long id) {
+    public ApplicantDto editApplicant(ApplicantDto applicantdto, Long id) {
         Applicant current = applicantRepository.getReferenceById(id);
         ApplicantMapper applicantMapper = new ApplicantMapper();
         applicantMapper.mapToEntity(applicantdto, current);
-        return current;
+        return applicantMapper.mapToDto(current);
     }
 
-    public Applicant addApplicant(ApplicantDTO applicantDTO, User loggedUser) {
+    public Applicant addApplicant(ApplicantDto applicantDTO, User loggedUser) {
         ApplicantMapper applicantMapper = new ApplicantMapper();
         Applicant newApplicant = applicantMapper.mapToEntity(applicantDTO);
         newApplicant.setUser(loggedUser);
         return applicantRepository.save(newApplicant);
     }
 
-    public ApplicantDTO getById(Long id) {
+    public ApplicantDto getById(Long id) throws NoSuchApplicantException {
         Applicant applicant = applicantRepository.findById(id).orElseThrow(NoSuchApplicantException::new);
         ApplicantMapper applicantMapper = new ApplicantMapper();
         return applicantMapper.mapToDto(applicant);
     }
 
     // Admin only
-    public Page<ApplicantDTO> getAllApplicants(int page, int size, Sort.Direction sort, String sortBy) {
+    public Page<ApplicantDto> getAllApplicants(int page, int size, Sort.Direction sort, String sortBy) {
         long facultiesTotal = applicantRepository.count();
         if((long) page * size > facultiesTotal) {
             page = 1;
@@ -58,8 +58,8 @@ public class ApplicantService {
         Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
         Page<Applicant> applicantPage = applicantRepository.findAll(PageRequest.of(page-1, size, Sort.by(sortDirection, sortBy)));
         ApplicantMapper applicantMapper = new ApplicantMapper();
-        List<ApplicantDTO> applicantDTOS = applicantMapper.mapToDto(applicantPage.getContent());
-        return new PageImpl<>(applicantDTOS, PageRequest.of(page-1, size, Sort.by(sortDirection, sortBy)), facultiesTotal);
+        List<ApplicantDto> applicantDtos = applicantMapper.mapToDto(applicantPage.getContent());
+        return new PageImpl<>(applicantDtos, PageRequest.of(page-1, size, Sort.by(sortDirection, sortBy)), facultiesTotal);
     }
 
     @Transactional
@@ -70,7 +70,7 @@ public class ApplicantService {
         return user.isBlocked();
     }
 
-    public void deleteApplicant(Long id) {
+    public void deleteApplicant(Long id) throws NoSuchFacultyException {
         if(applicantRepository.findById(id).isPresent()) {
             applicantRepository.deleteById(id);
         }

@@ -1,10 +1,10 @@
 package com.patrycjagalant.admissionscommittee.controller;
 
-import com.patrycjagalant.admissionscommittee.dto.ApplicantDTO;
-import com.patrycjagalant.admissionscommittee.dto.FacultyDTO;
-import com.patrycjagalant.admissionscommittee.entity.Applicant;
+import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
+import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
+import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.service.ApplicantService;
-import com.patrycjagalant.admissionscommittee.service.mapper.ApplicantMapper;
+import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,10 +22,10 @@ public class ApplicantController {
     public ApplicantController(ApplicantService applicantService) { this.applicantService = applicantService; }
 
     @GetMapping("/{id}/edit")
-    public String editApplicantData(Model model, @PathVariable("id") String idString) {
+    public String editApplicantData(Model model, @PathVariable("id") String idString) throws NoSuchApplicantException {
         if (ParamValidator.isNumeric(idString)) {
             long id = Long.parseLong(idString);
-            ApplicantDTO applicantDTO = applicantService.getById(id);
+            ApplicantDto applicantDTO = applicantService.getById(id);
             model.addAttribute("applicantDTO", applicantDTO);
             return "applicants/editProfile";
         }
@@ -33,16 +33,15 @@ public class ApplicantController {
     }
 
     @RequestMapping(value = "/{id}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
-    public String editApplicant(@Valid @ModelAttribute ApplicantDTO applicantDTO,
+    public String editApplicant(@Valid @ModelAttribute ApplicantDto applicantDTO,
                                 BindingResult result,
-                                @PathVariable Long id,
+                                @PathVariable String id,
                                 Model model) {
-        if (result.hasErrors()) {
+        if (result.hasErrors() || ParamValidator.isNumeric(id)) {
             return "redirect:/applicant/{id}/edit";
         }
-        Applicant applicant = applicantService.editApplicant(applicantDTO, id);
-        ApplicantMapper mapper = new ApplicantMapper();
-        if (applicantDTO.equals(mapper.mapToDto(applicant))) {
+        ApplicantDto applicant = applicantService.editApplicant(applicantDTO, Long.parseLong(id));
+        if (applicantDTO.equals(applicant)) {
             return "redirect:/";
         }
         else {
@@ -59,11 +58,11 @@ public class ApplicantController {
                                    Sort.Direction sort, Model model) {
         int pageNumber = ParamValidator.isNumeric(page) ? Math.max(Integer.parseInt(page), 1) : 1;
         int sizeNumber = ParamValidator.isNumeric(size) ? Math.max(Integer.parseInt(size), 0) : 5;
-        Page<ApplicantDTO> applicantDTOPage = applicantService.getAllApplicants(pageNumber, sizeNumber, sort, sortBy);
+        Page<ApplicantDto> applicantDTOPage = applicantService.getAllApplicants(pageNumber, sizeNumber, sort, sortBy);
         return addPaginationModel(pageNumber, applicantDTOPage, model);
     }
 
-    private String addPaginationModel(int page, Page<ApplicantDTO> paginated, Model model) {
+    private String addPaginationModel(int page, Page<ApplicantDto> paginated, Model model) {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", paginated.getTotalPages());
         model.addAttribute("totalItems", paginated.getTotalElements());
@@ -74,24 +73,29 @@ public class ApplicantController {
     // Block applicant
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String changeApplicantBlockedStatus(@PathVariable Long id) {
-        boolean isBlocked = applicantService.changeBlockedStatus(id);
-        String msg = "";
-        if (isBlocked) {
-            msg = "Applicant has been blocked";
+    public String changeApplicantBlockedStatus(@PathVariable String id, Model model) {
+        String msg = "Incorrect ID: " + id;
+        if(ParamValidator.isNumeric(id)) {
+            boolean isBlocked = applicantService.changeBlockedStatus(Long.parseLong(id));
+            if (isBlocked) {
+                msg = "Applicant has been blocked";
+            } else {
+                msg = "Applicant has been unblocked";
+            }
         }
-        else {
-            msg = "Applicant has been unblocked";
-        }
-        return "message";
+        model.addAttribute("msg", msg);
+        return "redirect:/applicant/all";
     }
 
     @RequestMapping(value = "/delete/{id}", method = {RequestMethod.DELETE, RequestMethod.POST})
-    public String deleteApplicant(@PathVariable String id) {
+    public String deleteApplicant(@PathVariable String id, Model model) throws NoSuchFacultyException {
         if (id.matches("(\\d)+")) {
             long idNumber = Long.parseLong(id);
             applicantService.deleteApplicant(idNumber);
-
+            model.addAttribute("msg", "Applicant " + idNumber + " has been deleted");
+        }
+        else {
+            model.addAttribute("msg", "Incorrect ID: " + id);
         }
         return "redirect:/applicant/all";
     }

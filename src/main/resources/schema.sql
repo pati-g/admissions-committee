@@ -7,7 +7,8 @@ ID bigint PRIMARY KEY AUTO_INCREMENT,
 email varchar(255) NOT NULL UNIQUE,
 password varchar(255) NOT NULL,
 role varchar(255) DEFAULT 'USER',
-is_blocked boolean DEFAULT 'false'
+is_blocked boolean DEFAULT 'false',
+is_enabled boolean DEFAULT 'true'
 );
 
 CREATE TABLE Applicants (

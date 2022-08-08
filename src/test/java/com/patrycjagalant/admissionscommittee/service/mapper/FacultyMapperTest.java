@@ -1,20 +1,22 @@
 package com.patrycjagalant.admissionscommittee.service.mapper;
 
-import com.patrycjagalant.admissionscommittee.dto.FacultyDTO;
+import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
 import com.patrycjagalant.admissionscommittee.entity.Faculty;
-import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FacultyMapperTest {
 
+    @Autowired
+    FacultyMapper mapper;
     @Test
     void testMapDtoToEntityHappyPath(){
-        FacultyDTO facultyDTO = new FacultyDTO("ChangedName", null, 30);
+        FacultyDto facultyDTO = new FacultyDto(null, "ChangedName", null, 30);
         Faculty faculty = new Faculty(1L, "TestName", 10, 20);
-        FacultyMapper.mapToEntity(faculty, facultyDTO);
+        mapper.mapToEntity(faculty, facultyDTO);
         assertEquals("ChangedName", faculty.getName());
         assertEquals(10, faculty.getBudgetPlaces());
         assertEquals(30, faculty.getTotalPlaces());
@@ -23,7 +25,7 @@ class FacultyMapperTest {
     @Test
     void testMapToDtoHappyPath(){
         Faculty faculty = new Faculty(1L, "TestName", 10, 20);
-        FacultyDTO dto = FacultyMapper.mapToDto(faculty);
+        FacultyDto dto = mapper.mapToDto(faculty);
         Assertions.assertNotNull(dto);
         assertEquals("TestName", dto.getName());
         assertEquals(10, dto.getBudgetPlaces());
@@ -38,20 +40,20 @@ class FacultyMapperTest {
         Faculty result5 = new Faculty(4L, "Math", 23, 70);
         Faculty result6 = new Faculty(5L, "Physics", 41, 80);
 
-        FacultyDTO testDtoToNewEntity = new FacultyDTO("Molecular", 5, 30);
-        FacultyDTO testDtoToEntityEditFields2 = new FacultyDTO("WF", null, null);
-        FacultyDTO testDtoToEntityEditFields1 = new FacultyDTO("Spanish", 55, 75);
-        FacultyDTO testDtoToEntityEditFields3 = new FacultyDTO(null, null, 30);
+        FacultyDto testDtoToNewEntity = new FacultyDto(null, "Molecular", 5, 30);
+        FacultyDto testDtoToEntityEditFields2 = new FacultyDto(null, "WF", null, null);
+        FacultyDto testDtoToEntityEditFields1 = new FacultyDto(null, "Spanish", 55, 75);
+        FacultyDto testDtoToEntityEditFields3 = new FacultyDto(null, null, null, 30);
 
-        FacultyDTO result1 = FacultyMapper.mapToDto(testEntityToDto1);
-        FacultyDTO result2 = FacultyMapper.mapToDto(testEntityToDto2);
-        Faculty result3 = FacultyMapper.mapToEntity(testDtoToNewEntity);
-        FacultyMapper.mapToEntity(result4, testDtoToEntityEditFields1);
-        FacultyMapper.mapToEntity(result5, testDtoToEntityEditFields2);
-        FacultyMapper.mapToEntity(result6, testDtoToEntityEditFields3);
+        FacultyDto result1 = mapper.mapToDto(testEntityToDto1);
+        FacultyDto result2 = mapper.mapToDto(testEntityToDto2);
+        Faculty result3 = mapper.mapToEntity(testDtoToNewEntity);
+        mapper.mapToEntity(result4, testDtoToEntityEditFields1);
+        mapper.mapToEntity(result5, testDtoToEntityEditFields2);
+        mapper.mapToEntity(result6, testDtoToEntityEditFields3);
 
-        assertEquals(new FacultyDTO( "Bio", 9, 40), result1);
-        assertEquals(new FacultyDTO( "Chem", 15, 50), result2);
+        assertEquals(new FacultyDto(null, "Bio", 9, 40), result1);
+        assertEquals(new FacultyDto(null, "Chem", 15, 50), result2);
 
         assertNotNull(result3);
         assertEquals("Molecular", result3.getName());
