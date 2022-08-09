@@ -2,44 +2,44 @@ package com.patrycjagalant.admissionscommittee.service.mapper;
 
 import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.entity.Score;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ScoreMapper {
 
     public ScoreDto mapToDto(Score score) {
-        ScoreDto scoreDTO = new ScoreDto();
+        if (score == null) {
+            return null;
+        }
         ApplicantMapper mapper = new ApplicantMapper();
-        scoreDTO.setId(score.getId());
-        scoreDTO.setGradeOrScore(score.getGradeOrScore());
-        scoreDTO.setApplicant(mapper.mapToDto(score.getApplicant()));
-        scoreDTO.setResult(score.getResult());
-        scoreDTO.setSubjectName(score.getSubjectName());
+        return ScoreDto.builder()
+                .id(score.getId())
+                .applicant(mapper.mapToDto(score.getApplicant()))
+                .result(score.getResult())
+                .subjectName(score.getSubjectName()).build();
+    }
 
-        return scoreDTO;
+    public Set<ScoreDto> mapToDto(Set<Score> scores) {
+        ScoreMapper mapper = new ScoreMapper();
+        return scores.stream().map(mapper::mapToDto).collect(Collectors.toSet());
     }
 
     public Score mapToEntity(ScoreDto scoreDTO) {
-        Score score = new Score();
         ApplicantMapper mapper = new ApplicantMapper();
-
-        score.setGradeOrScore(scoreDTO.getGradeOrScore());
-        score.setApplicant(mapper.mapToEntity(scoreDTO.getApplicant()));
-        score.setResult(scoreDTO.getResult());
-        score.setSubjectName(scoreDTO.getSubjectName());
-
-        return score;
+        return Score.builder()
+                .applicant(mapper.mapToEntity(scoreDTO.getApplicant()))
+                .result(scoreDTO.getResult())
+                .subjectName(scoreDTO.getSubjectName()).build();
     }
 
     public void mapToEntity(Score score, ScoreDto scoreDTO) {
-        Character gradeOrScore = scoreDTO.getGradeOrScore();
-        String result = scoreDTO.getResult();
+        Integer result = scoreDTO.getResult();
         String subject = scoreDTO.getSubjectName();
         ApplicantMapper mapper = new ApplicantMapper();
 
         if (scoreDTO.getApplicant() != null)
             score.setApplicant(mapper.mapToEntity(scoreDTO.getApplicant()));
-        if (gradeOrScore != null)
-            score.setGradeOrScore(gradeOrScore);
-        if (result != null && !result.isEmpty())
+        if (result != null)
             score.setResult(result);
         if (subject != null && !subject.isEmpty())
             score.setSubjectName(subject);

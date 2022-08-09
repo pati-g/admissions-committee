@@ -1,12 +1,12 @@
 package com.patrycjagalant.admissionscommittee.dto;
 
 import lombok.*;
-
 import javax.validation.constraints.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class FacultyDto {
 
     @EqualsAndHashCode.Exclude

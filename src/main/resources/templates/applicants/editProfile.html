@@ -4,58 +4,105 @@
     <title>Edit your profile</title>
 </head>
 <body>
-<div layout:fragment="content" class="text-center">
+<div layout:fragment="content">
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
-            <h1 class="py-5">Edit your profile</h1>
-            <form th:method="put" th:action="@{/applicant/{id}/edit(id = ${applicantDTO.getId})}" th:object="${applicantDTO}">
-                <div class="form-group">
-                    <label for="fname">First name</label>
-                    <input class="form-control" id="fname" placeholder="*{firstName}" required th:field="*{firstName}"
+            <h1 class="py-5 text-center">Edit your profile</h1>
+            <form th:method="put" th:action="@{/applicant/edit}" th:object="${userDTO}" class="text-dark">
+                <div class="form-floating mb-3">
+                    <input readonly disabled class="form-control" id="username" placeholder="*{username}" required th:field="*{username}"
                            type="text"/>
+                    <label for="username">Username</label>
                 </div>
                 <br>
-                <div class="form-group">
-                    <label for="lname">Last name</label>
-                    <input class="form-control" id="lname" placeholder="*{lastName}" required th:field="*{lastName}"
-                           type="text"/>
-                </div>
-                <br>
-                <div class="form-group">
-                    <label for="city">City</label>
-                    <input class="form-control" id="city" placeholder="*{city}" required th:field="*{city}"
-                           type="text"/>
-                </div>
-                <br>
-                <div class="form-group">
-                    <label for="region">Region</label>
-                    <input class="form-control" id="region" placeholder="*{region}" required th:field="*{region}"
-                           type="text"/>
-                </div>
-                <br>
-                <div class="form-group">
-                    <label for="inst">Educational institution</label>
-                    <input class="form-control" id="inst" placeholder="*{educationalInstitution}" required th:field="*{educationalInstitution}"
-                           type="text"/>
-                </div>
-                <br>
-                <div class="form-group">
-                    <label for="certificate">Certificate</label>
-                    <input class="form-control" id="certificate" placeholder="*{certificate}" required th:field="*{certificate}"
-                           type="text"/>
-                </div>
-                <br>
-                <div class="form-group">
-                    <label for="email">E-mail</label>
+                <div class="form-floating mb-3">
                     <input class="form-control" id="email" placeholder="*{email}" required th:field="*{email}"
                            type="text"/>
+                    <label for="email">E-mail</label>
                 </div>
                 <br><br>
-                <input class="btn btn-primary" type="submit" value="Submit changes">
+                <div class="form-floating mb-3 has-feedback">
+                    <input class="form-control" id="password" required th:field="*{password}"
+                           type="password"/>
+                    <label for="password">Change password</label>
+                    <div class="py-2"><input type="checkbox" onclick="show1()"><span class="text-light px-2">Show Password</span></div>
+
+                    <span class="help-block" th:if="${#fields.hasErrors('password')}">
+                <p th:errors="*{password}" class="text-danger py-0">Password error</p>
+                   </span>
+                </div>
+                <script>
+                    function show1() {
+  var x = document.getElementById("password");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+                </script>
+                <br>
+                <div class="form-floating mb-3">
+                    <input class="form-control" id="matchingPassword" required th:field="*{matchingPassword}" type="password"/>
+                    <label for="matchingPassword">Confirm new password</label>
+                    <div class="py-2"><input type="checkbox" onclick="show2()"><span class="text-light px-2">Show Password</span></div>
+                    <span class="help-block" th:if="${#fields.hasErrors('matchingPassword')}">
+                <p th:errors="*{matchingPassword}" class="text-danger py-0">Password error</p>
+                   </span>
+                </div>
+                <script>
+                    function show2() {
+  var x = document.getElementById("matchingPassword");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+                </script>
+                <div class="text-center">
+                    <input class="btn btn-primary" type="submit" value="Submit changes"></div>
+            </form>                <br><br>
+            <form class="text-dark" th:method="put" th:if="${applicantDTO != null}" th:action="@{/applicant/edit}" th:object="${applicantDTO}">
+                <div class="form-floating mb-3">
+                    <input class="form-control" id="fname" placeholder="*{firstName}" required th:field="*{firstName}"
+                           type="text"/>
+                    <label for="fname">First name</label>
+                </div>
+                <br>
+                <div class="form-floating mb-3">
+                    <input class="form-control" id="lname" placeholder="*{lastName}" required th:field="*{lastName}"
+                           type="text"/>
+                    <label for="lname">Last name</label>
+                </div>
+                <br>
+                <div class="form-floating mb-3">
+                    <input class="form-control" id="city" placeholder="*{city}" required th:field="*{city}"
+                           type="text"/>
+                    <label for="city">City</label>
+                </div>
+                <br>
+                <div class="form-floating mb-3">
+                    <input class="form-control" id="region" placeholder="*{region}" required th:field="*{region}"
+                           type="text"/>
+                    <label for="region">Region</label>
+                </div>
+                <br>
+                <div class="form-floating mb-3">
+                    <input class="form-control" id="inst" placeholder="*{educationalInstitution}" required th:field="*{educationalInstitution}"
+                           type="text"/>
+                    <label for="inst">Educational institution</label>
+                </div>
+                <div class="form-group mb-3">
+                        <label for="certificate" class="form-label"><span class="text-light">(Optional) Upload a scan of your certificate</span></label>
+                        <input class="form-control" type="file" id="certificate">
+                </div>
+                <div class="text-center">
+                <input class="btn btn-primary" type="submit" value="Submit changes"></div>
             </form>
+
     </div>
     </div>
-</div>
 </div>
 </body>
 </html>

@@ -3,31 +3,35 @@ package com.patrycjagalant.admissionscommittee.service.mapper;
 
 import com.patrycjagalant.admissionscommittee.dto.ApplicationRequestDto;
 import com.patrycjagalant.admissionscommittee.entity.ApplicationRequest;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class ApplicationRequestMapper {
 
     public ApplicationRequestDto mapToDto(ApplicationRequest applicationRequest) {
-        ApplicationRequestDto applicationRequestDTO = new ApplicationRequestDto();
         ApplicantMapper applicantMapper = new ApplicantMapper();
         FacultyMapper facultyMapper = new FacultyMapper();
+        return ApplicationRequestDto.builder()
+                .id(applicationRequest.getId())
+                .registrationDate(applicationRequest.getRegistrationDate())
+                .applicant(applicantMapper.mapToDto(applicationRequest.getApplicant()))
+                .faculty(facultyMapper.mapToDto(applicationRequest.getFaculty())).build();
+    }
 
-        applicationRequestDTO.setId(applicationRequest.getId());
-        applicationRequestDTO.setRegistrationDate(applicationRequest.getRegistrationDate());
-        applicationRequestDTO.setApplicant(applicantMapper.mapToDto(applicationRequest.getApplicant()));
-        applicationRequestDTO.setFaculty(facultyMapper.mapToDto(applicationRequest.getFaculty()));
-        return applicationRequestDTO;
+    public Set<ApplicationRequestDto> mapToDto(Set<ApplicationRequest> applicationRequests) {
+        ApplicationRequestMapper mapper = new ApplicationRequestMapper();
+        return applicationRequests.stream().map(mapper::mapToDto).collect(Collectors.toSet());
     }
 
     public ApplicationRequest mapToEntity(ApplicationRequestDto applicationRequestDTO) {
-        ApplicationRequest applicationRequest = new ApplicationRequest();
         ApplicantMapper applicantMapper = new ApplicantMapper();
         FacultyMapper facultyMapper = new FacultyMapper();
 
-        applicationRequest.setRegistrationDate(applicationRequestDTO.getRegistrationDate());
-        applicationRequest.setApplicant(applicantMapper.mapToEntity(applicationRequestDTO.getApplicant()));
-        applicationRequest.setFaculty(facultyMapper.mapToEntity(applicationRequestDTO.getFaculty()));
-        return applicationRequest;
+        return ApplicationRequest.builder()
+                .registrationDate(applicationRequestDTO.getRegistrationDate())
+                .applicant(applicantMapper.mapToEntity(applicationRequestDTO.getApplicant()))
+                .faculty(facultyMapper.mapToEntity(applicationRequestDTO.getFaculty())).build();
     }
 
     public void mapToEntity(ApplicationRequest applicationRequest, ApplicationRequestDto applicationRequestDTO) {

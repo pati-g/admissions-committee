@@ -1,11 +1,8 @@
 package com.patrycjagalant.admissionscommittee.entity;
 
 import lombok.*;
-import org.hibernate.Hibernate;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,6 +10,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @Entity
+@Builder
 @Table(name = "scores", indexes = {
         @Index(name = "applicant_ID", columnList = "applicant_ID")
 })
@@ -32,24 +30,8 @@ public class Score {
     @Column(name = "subject_name")
     private String subjectName;
 
-    @NotBlank
-    @Column(name = "grade_or_score")
-    private Character gradeOrScore;
-
     @NotBlank(message = "Please provide a valid result")
-    @Column(name = "result", nullable = false, length = 4)
-    private String result;
+    @Column(name = "result", nullable = false)
+    private Integer result;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Score score = (Score) o;
-        return id != null && Objects.equals(id, score.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

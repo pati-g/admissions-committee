@@ -5,32 +5,28 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <h1 class="py-5">View faculty details</h1>
-    <form th:object="${facultyDTO}">
-      <div class="form-group row">
-        <label for="name" class="col-sm-3 col-form-label"><b>Faculty Name:</b></label>
-        <div class="col-sm-9">
-        <input readonly class="form-control-plaintext" id="name" th:value="*{name}" type="text"/>
-        </div>
+  <div class="row h-100 justify-content-center align-items-center">
+    <div class="col-10 col-md-8 col-lg-6">
+    <h1 class="py-3 text-center">View faculty details</h1>
+    <form class="text-dark" th:object="${facultyDTO}">
+      <div class="form-floating mb-3">
+        <input readonly disabled class="form-control" id="name" th:value="*{name}" type="text"/>
+        <label for="name"><b>Faculty Name</b></label>
       </div>
       <br>
-      <div class="form-group row">
-        <label for="budget" class="col-sm-3 col-form-label"><b>Budget places:</b></label>
-        <div class="col-sm-9">
-        <input readonly class="form-control-plaintext" id="budget" th:value="*{budgetPlaces}" type="text"/>
-        </div>
+      <div class="form-floating mb-3">
+        <input readonly disabled class="form-control" id="budget" th:value="*{budgetPlaces}" type="text"/>
+        <label for="budget"><b>Budget places</b></label>
       </div>
       <br>
-      <div class="form-group row">
-        <label for="total" class="col-sm-3 col-form-label"><b>Total places: </b></label>
-        <div class="col-sm-9">
-        <input readonly class="form-control-plaintext" id="total" th:value="*{totalPlaces}" type="text"/>
-        </div>
+      <div class="form-floating mb-3">
+        <input readonly disabled class="form-control" id="total" th:value="*{totalPlaces}" type="text"/>
+        <label for="total"><b>Total places</b></label>
       </div>
       <br><br>
-      <td>
+      <div class="text-center">
         <a th:href="@{/faculties/{id}/edit(id = ${facultyDTO.getId})}" class="btn btn-primary" role="button">Edit</a>
-      </td>
+      </div>
     </form>
 </div>
 </body>

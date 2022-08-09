@@ -4,6 +4,7 @@
 DROP TABLE IF EXISTS Users, Applicants, Faculties, Scores, Registrations, Statements;
 CREATE TABLE Users (
 ID bigint PRIMARY KEY AUTO_INCREMENT,
+username varchar(50) NOT NULL UNIQUE,
 email varchar(255) NOT NULL UNIQUE,
 password varchar(255) NOT NULL,
 role varchar(255) DEFAULT 'USER',
@@ -34,10 +35,10 @@ CREATE TABLE Scores (
 ID bigint PRIMARY KEY AUTO_INCREMENT,
 applicant_ID bigint NOT NULL,
 subject_name varchar(255) NOT NULL,
-grade_or_score char(1) NOT NULL,
-result varchar(4) NOT NULL,
+result int NOT NULL,
 FOREIGN KEY (applicant_ID) REFERENCES Applicants(ID)
 );
+
 CREATE TABLE Application_Requests (
 ID bigint PRIMARY KEY AUTO_INCREMENT,
 applicant_ID bigint NOT NULL,

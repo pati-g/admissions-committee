@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head th:fragment="head-fragment">
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,7 +19,7 @@
 </head>
 <body>
 <nav th:insert="fragments/navbar::navbar"></nav>
-<div class="p-5 text-center shadow-1-strong mb-5 text-white min-vh-100">
+<div class="p-3 shadow-1-strong mb-3 text-white min-vh-100">
   <main role="main">
     <div layout:fragment="content"></div>
   </main>

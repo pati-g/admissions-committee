@@ -9,17 +9,22 @@ import java.util.stream.Collectors;
 public class ApplicantMapper {
 
     public ApplicantDto mapToDto (Applicant applicant) {
-        ApplicantDto applicantDTO = new ApplicantDto();
-        applicantDTO.setId(applicant.getId());
-        applicantDTO.setCertificate(applicant.getCertificate());
-        applicantDTO.setCity(applicant.getCity());
-        applicantDTO.setEducationalInstitution(applicant.getEducationalInstitution());
-        applicantDTO.setFirstName(applicant.getFirstName());
-        applicantDTO.setLastName(applicant.getLastName());
-        applicantDTO.setFullName(applicant.getLastName() + " " + applicant.getFirstName());
-        applicantDTO.setRegion(applicant.getRegion());
-
-        return applicantDTO;
+        UserMapper userMapper = new UserMapper();
+        ScoreMapper scoreMapper = new ScoreMapper();
+        ApplicationRequestMapper applicationRequestMapper = new ApplicationRequestMapper();
+        return ApplicantDto.builder()
+                .id(applicant.getId())
+                .fullName(applicant.getLastName() + " " + applicant.getFirstName())
+                .firstName(applicant.getFirstName())
+                .lastName(applicant.getLastName())
+                .city(applicant.getCity())
+                .region(applicant.getRegion())
+                .educationalInstitution(applicant.getEducationalInstitution())
+                .certificate(applicant.getCertificate())
+                .userDetails(userMapper.mapToDTO(applicant.getUser()))
+                .scores(scoreMapper.mapToDto(applicant.getScores()))
+                .applicationRequests(applicationRequestMapper.mapToDto(applicant.getApplicationRequests()))
+                .build();
     }
 
     public List<ApplicantDto> mapToDto(List<Applicant> applicants) {
@@ -28,15 +33,13 @@ public class ApplicantMapper {
     }
 
     public Applicant mapToEntity(ApplicantDto applicantDto) {
-        Applicant applicant = new Applicant();
-        applicant.setCertificate(applicantDto.getCertificate());
-        applicant.setCity(applicantDto.getCity());
-        applicant.setEducationalInstitution(applicantDto.getEducationalInstitution());
-        applicant.setFirstName(applicantDto.getFirstName());
-        applicant.setLastName(applicantDto.getLastName());
-        applicant.setRegion(applicantDto.getRegion());
-
-        return applicant;
+        return Applicant.builder()
+                .certificate(applicantDto.getCertificate())
+                .city(applicantDto.getCity())
+                .educationalInstitution(applicantDto.getEducationalInstitution())
+                .firstName(applicantDto.getFirstName())
+                .lastName(applicantDto.getLastName())
+                .region(applicantDto.getRegion()).build();
     }
 
     public void mapToEntity(ApplicantDto applicantDto, Applicant applicant) {

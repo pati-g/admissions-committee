@@ -5,33 +5,39 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="container main-content">
-        <h3>Please log in to continue</h3>
-        <form th:action="@{/login}" method="post">
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-10 col-md-8 col-lg-6">
+            <h1 class="py-5 text-center">Please log in to continue</h1>
+        <form th:action="@{/login}" method="post" class="text-dark mb-6">
             <div th:if="${param.error}">
                 <div class="alert alert-danger">
                     Invalid username or password.
                 </div>
             </div>
-            <div class="form-group row">
-                <label for="username" class="col-sm-2 col-form-label">E-mail address</label>
-                <div class="col-sm-6">
-                    <input type="text" id="username" name="username" class="form-control" placeholder="user@gmail.com" autofocus="autofocus">
-                </div>
+            <div class="form-floating mb-3 mt-3">
+                    <input type="text" id="username" name="username" class="form-control" placeholder="user_123 or user@domain.com" autofocus="autofocus">
+                    <label for="username">Username/e-mail address</label>
             </div>
-            <div class="form-group row">
-                <label for="password" class="col-sm-2 col-form-label">Password</label>
-                <div class="col-sm-6">
-                    <input type="password" id="password" name="password" class="form-control" placeholder="password" autofocus="autofocus">
-                </div>
+            <div class="form-floating mb-3 mt-3 has-feedback">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="password" autofocus="autofocus"/>
+                    <label for="password">Password</label>
+                    <div class="py-2"><input type="checkbox" onclick="show()"><span class="text-light px-2">Show Password</span></div>
+                    <script>
+                    function show() {
+  var x = document.getElementById("password");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+</script>
             </div>
-            <div class="form-group row">
-                <div class="col-sm-2">
-                    <button type="submit" class="btn btn-primary">Log in</button>
+                    <div class="text-center"><button type="submit" class="btn btn-primary">Log in</button>
                 </div>
-            </div>
         </form>
     </div>
+</div>
 </div>
 </body>
 </html>

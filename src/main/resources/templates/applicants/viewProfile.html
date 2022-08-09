@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <title>Profile details</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1 class="py-5">View faculty details</h1>
+    <form th:object="${applicantDTO}">
+        <div class="form-group row">
+            <label for="name" class="col-sm-3 col-form-label"><b>Full Name:</b></label>
+            <div class="col-sm-9">
+                <input readonly class="form-control-plaintext" id="name" th:value="*{name}" type="text"/>
+            </div>
+        </div>
+        <br>
+        <div class="form-group row">
+            <label for="budget" class="col-sm-3 col-form-label"><b>Budget places:</b></label>
+            <div class="col-sm-9">
+                <input readonly class="form-control-plaintext" id="budget" th:value="*{budgetPlaces}" type="text"/>
+            </div>
+        </div>
+        <br>
+        <div class="form-group row">
+            <label for="total" class="col-sm-3 col-form-label"><b>Total places: </b></label>
+            <div class="col-sm-9">
+                <input readonly class="form-control-plaintext" id="total" th:value="*{totalPlaces}" type="text"/>
+            </div>
+        </div>
+        <br><br>
+        <td>
+            <a th:href="@{/faculties/{id}/edit(id = ${facultyDTO.getId})}" class="btn btn-primary" role="button">Edit</a>
+        </td>
+    </form>
+</div>
+</body>
+</html>

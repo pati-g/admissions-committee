@@ -9,14 +9,11 @@ import java.util.stream.Collectors;
 public class FacultyMapper {
 
     public FacultyDto mapToDto(Faculty faculty) {
-        FacultyDto facultyDTO = new FacultyDto();
-
-        facultyDTO.setId(faculty.getId());
-        facultyDTO.setName(faculty.getName());
-        facultyDTO.setBudgetPlaces(faculty.getBudgetPlaces());
-        facultyDTO.setTotalPlaces(faculty.getTotalPlaces());
-
-        return facultyDTO;
+        return FacultyDto.builder()
+                .id(faculty.getId())
+                .name(faculty.getName())
+                .budgetPlaces(faculty.getBudgetPlaces())
+                .totalPlaces(faculty.getTotalPlaces()).build();
     }
 
     public List<FacultyDto> mapToDto(List<Faculty> faculties) {
@@ -25,13 +22,10 @@ public class FacultyMapper {
     }
 
     public Faculty mapToEntity(FacultyDto facultyDTO) {
-        Faculty faculty = new Faculty();
-
-        faculty.setName(facultyDTO.getName());
-        faculty.setBudgetPlaces(facultyDTO.getBudgetPlaces());
-        faculty.setTotalPlaces(facultyDTO.getTotalPlaces());
-
-        return faculty;
+        return Faculty.builder()
+                .name(facultyDTO.getName())
+                .budgetPlaces(facultyDTO.getBudgetPlaces())
+                .totalPlaces(facultyDTO.getTotalPlaces()).build();
     }
 
     public void mapToEntity(Faculty faculty, FacultyDto facultyDTO) {

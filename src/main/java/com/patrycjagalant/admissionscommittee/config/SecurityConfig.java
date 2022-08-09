@@ -51,6 +51,8 @@ public class SecurityConfig {
                 )
                 .formLogin()
                         .loginPage("/login")
+                        .usernameParameter("email")
+                        .usernameParameter("username")
                         .permitAll()
                         .and()
                 .logout()

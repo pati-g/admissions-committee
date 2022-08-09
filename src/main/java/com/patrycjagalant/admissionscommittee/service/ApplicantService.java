@@ -28,8 +28,8 @@ public class ApplicantService {
     }
 
     @Transactional
-    public ApplicantDto editApplicant(ApplicantDto applicantdto, Long id) {
-        Applicant current = applicantRepository.getReferenceById(id);
+    public ApplicantDto editApplicant(ApplicantDto applicantdto, Long userID) throws NoSuchApplicantException {
+        Applicant current = applicantRepository.findByUserId(userID).orElseThrow(NoSuchApplicantException::new);
         ApplicantMapper applicantMapper = new ApplicantMapper();
         applicantMapper.mapToEntity(applicantdto, current);
         return applicantMapper.mapToDto(current);
@@ -42,10 +42,15 @@ public class ApplicantService {
         return applicantRepository.save(newApplicant);
     }
 
-    public ApplicantDto getById(Long id) throws NoSuchApplicantException {
-        Applicant applicant = applicantRepository.findById(id).orElseThrow(NoSuchApplicantException::new);
+    public ApplicantDto getById(Long id) {
+        Applicant applicant = applicantRepository.findByUserId(id).orElse(null);
         ApplicantMapper applicantMapper = new ApplicantMapper();
-        return applicantMapper.mapToDto(applicant);
+        if (applicant != null) {
+            return applicantMapper.mapToDto(applicant);
+        }
+        else {
+            return null;
+        }
     }
 
     // Admin only

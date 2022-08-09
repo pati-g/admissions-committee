@@ -29,17 +29,17 @@ INSERT INTO Faculties (name, budget_places, total_places) VALUES ('2Architectura
 INSERT INTO Faculties (name, budget_places, total_places) VALUES ('2Physical education', 50, 100);
 INSERT INTO Faculties (name, budget_places, total_places) VALUES ('2Neurobiology', 25, 55);
 
-INSERT INTO Users (id, email, password) VALUES (100, 'nr_one@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
-INSERT INTO Users (id, email, password) VALUES (200, 'nr_two@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
-INSERT INTO Users (id, email, password) VALUES (300, 'nr_three@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
-INSERT INTO Users (id, email, password) VALUES (400, 'nr_four@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
-INSERT INTO Users (id, email, password) VALUES (500, 'nr_five@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
-INSERT INTO Users (id, email, password) VALUES (600, 'nr_six@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
-INSERT INTO Users (id, email, password) VALUES (700, 'nr_seven@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
-INSERT INTO Users (id, email, password) VALUES (800, 'nr_eight@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
-INSERT INTO Users (id, email, password) VALUES (900, 'nr_nine@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
-INSERT INTO Users (id, email, password) VALUES (1000, 'nr_ten@test.com', '$2a$09$.vxilgIA16afHNEXT0Mr1OtPjQp4USEFCV57EOj.Cbz6m.osfqiWK');
-INSERT INTO Users (id, email, password, role) VALUES (1100, 'admin@test.com', '$2a$09$qNXp.ttKG0iREYnUds2Fqes8.kxInQ/5ogsxLmV5eCogDAL2CRkmi', 'ADMIN');
+INSERT INTO Users (id, username, email, password) VALUES (100, 'one', 'nr_one@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (200, 'two', 'nr_two@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (300, 'three', 'nr_three@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (400, 'four', 'nr_four@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (500, 'five', 'nr_five@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (600, 'six', 'nr_six@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (700, 'seven', 'nr_seven@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (800, 'eight', 'nr_eight@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (900, 'nine', 'nr_nine@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1000, 'ten', 'nr_ten@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password, role) VALUES (1100, 'admin', 'admin@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg', 'ADMIN');
 
 INSERT INTO Applicants (first_name, last_name, city, region, educational_institution, user_ID) VALUES ('Adam', 'Smith', 'Gdansk', 'Pomorskie', 'UG', 100);
 INSERT INTO Applicants (first_name, last_name, city, region, educational_institution, user_ID) VALUES ('Pola', 'Jones', 'Warsaw', 'Mazowiecki', 'UW', 200);

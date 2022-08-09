@@ -3,10 +3,12 @@ package com.patrycjagalant.admissionscommittee.dto;
 import lombok.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Builder
 public class ApplicantDto {
 
     @EqualsAndHashCode.Exclude
@@ -35,6 +37,13 @@ public class ApplicantDto {
     private String educationalInstitution;
 
     private String email;
+
+    @NotBlank
+    private UserDto userDetails;
+
+    private Set<ScoreDto> scores;
+
+    private Set<ApplicationRequestDto> applicationRequests;
 
     private String certificate;
 }

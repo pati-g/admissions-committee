@@ -1,24 +1,19 @@
 package com.patrycjagalant.admissionscommittee.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import org.hibernate.Hibernate;
-
+import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
 @Entity
+@Builder
 @Table(name = "applicants", indexes = {
         @Index(name = "user_ID", columnList = "user_ID", unique = true)
 })
@@ -58,7 +53,7 @@ public class Applicant {
     private String certificate;
 
     @NotBlank
-    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_ID")
     @ToString.Exclude
     private User user;
@@ -71,16 +66,4 @@ public class Applicant {
     @ToString.Exclude
     private Set<ApplicationRequest> applicationRequests = new LinkedHashSet<>();
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Applicant applicant = (Applicant) o;
-        return id != null && Objects.equals(id, applicant.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class StatementDto {
 
     @EqualsAndHashCode.Exclude

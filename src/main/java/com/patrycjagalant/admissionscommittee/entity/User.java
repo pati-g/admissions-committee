@@ -1,24 +1,22 @@
 package com.patrycjagalant.admissionscommittee.entity;
 
 import lombok.*;
-import org.hibernate.Hibernate;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
 @Entity
 @Table(name = "users", indexes = {
@@ -29,6 +27,12 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
+
+    @NotBlank
+    @Size(min = 2, max = 50)
+    @Pattern(regexp = "^[\\p{L}\\d_-]{2,}$")
+    @Column(name = "username")
+    private String username;
 
     @NotBlank
     @Size(min = 2, max = 255)
@@ -54,11 +58,6 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(this.getRole().toString()));
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
     }
 
     @Override
