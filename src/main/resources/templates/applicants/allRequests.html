@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Applicants' list</title>
+</head>
+<body>
+<div class="py-4 bg-light" layout:fragment="content">
+  <div class="row h-100 justify-content-center align-items-center">
+    <div class="col-10 px-3">
+      <h1 class="py-3 text-center text-dark">List of applicants' enrollment requests</h1>
+          <a class="btn btn-outline-primary" th:href="@{/faculties/new}" role="button">Add a new request</a>
+      <div class="py-3 table-responsive">
+        <table class="table">
+          <tbody>
+          <tr>
+            <th>Request submission date</th>
+            <th>Applicant's full name</th>
+            <th>Faculty name</th>
+            <th>E-mail</th>
+            <th>Educational institution</th>
+            <th>Certificate</th>
+          </tr>
+          <tr th:each="applicant : ${applicants.content}">
+            <td th:text="${applicant.fullName}">Full name</td>
+            <td th:text="${applicant.city}">City</td>
+            <td th:text="${applicant.region}">Region</td>
+            <td th:text="${applicant.email}">E-mail</td>
+            <td th:text="${applicant.educationalInstitution}">Educational institution</td>
+            <td th:text="${applicant.certificate}">Certificate</td>
+            <td><a class="btn btn-outline-primary" th:href="@{/applicant/{id}(id = ${applicant.getUserDetails.getId})}">View</a>
+            </td>
+            <td><a class="btn btn-outline-info" th:href="@{/applicant/{id}/edit(id = ${applicant.getUserDetails.getId})}">Edit</a>
+            </td>
+            <td>
+              <form th:action="@{/applicant/delete/{id}(id = ${applicant.getUserDetails.getId})}"
+                    th:method="delete" th:object="${applicant}">
+                <button class="btn btn-outline-dark" onClick="return confirm('Are you sure you want to delete this applicant?')"
+                        type="submit">
+                  Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <nav aria-label="Page navigation for list of faculties" class="pagination  justify-content-center"
+           th:if="${totalPages > 1}">
+        <ul class="pagination justify-content-center">
+          <li class="page-item">
+            <a aria-label="Previous"
+               class="page-link"
+               th:href="@{/applicant/all(size=${applicants.size}, page=${currentPage-1 > 0 ? currentPage-1 : 1})}">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li>
+          <div th:each="i: ${#numbers.sequence(1, totalPages)}">
+            <li class="page-item"><a th:class="page-link"
+                                     th:href="@{/applicant/all(size=${applicants.size}, page=${i})}" th:text=${i}></a></li>
+          </div>
+          <li class="page-item">
+            <a aria-label="Next"
+               class="page-link"
+               th:href="@{/applicant/all(size=${applicants.size}, page=${currentPage+1 < totalPages ? currentPage+1 : totalPages})}">
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+</body>
+</html>

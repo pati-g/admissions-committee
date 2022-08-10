@@ -1,11 +1,13 @@
 package com.patrycjagalant.admissionscommittee.controller;
 
-import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
-import com.patrycjagalant.admissionscommittee.dto.UserDto;
+import com.patrycjagalant.admissionscommittee.dto.*;
+import com.patrycjagalant.admissionscommittee.entity.Score;
 import com.patrycjagalant.admissionscommittee.entity.User;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.service.ApplicantService;
+import com.patrycjagalant.admissionscommittee.service.EnrollmentRequestService;
+import com.patrycjagalant.admissionscommittee.service.ScoreService;
 import com.patrycjagalant.admissionscommittee.service.mapper.UserMapper;
 import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
 import org.springframework.data.domain.Page;
@@ -24,23 +26,36 @@ import javax.validation.Valid;
 public class ApplicantController {
     public static final String REDIRECT_APPLICANT_ALL = "redirect:/applicant/all";
     public static final String REDIRECT_APPLICANT_ID_EDIT = "redirect:/applicant/{id}/edit";
-    public static final String EDIT_PROFILE = "applicants/editProfile";
     public static final String APPLICANT_DTO = "applicantDTO";
+    public static final String USER_DTO = "userDTO";
+    public static final String APPLICANTS_EDIT_PROFILE = "applicants/editProfile";
+    public static final String SCORE_DTO = "scoreDto";
     private final ApplicantService applicantService;
-    public ApplicantController(ApplicantService applicantService) { this.applicantService = applicantService; }
+    private final ScoreService scoreService;
+
+    private final EnrollmentRequestService requestService;
+
+    public ApplicantController(ApplicantService applicantService, ScoreService scoreService, EnrollmentRequestService requestService) {
+        this.applicantService = applicantService;
+        this.scoreService = scoreService;
+        this.requestService = requestService;
+    }
 
     @GetMapping("/edit-profile")
     public String editProfileForm(Model model, @AuthenticationPrincipal User user){
         UserMapper mapper = new UserMapper();
         UserDto userDto = mapper.mapToDTO(user);
-        model.addAttribute("userDTO", userDto);
+        model.addAttribute(USER_DTO, userDto);
 
-        ApplicantDto applicantDTO = applicantService.getById(user.getId());
+        ApplicantDto applicantDTO = applicantService.getByUserId(user.getId());
         if (applicantDTO != null) {
             model.addAttribute(APPLICANT_DTO, applicantDTO);
+            model.addAttribute(USER_DTO, applicantDTO.getUserDetails());
+            model.addAttribute("scores", applicantDTO.getScores());
+            model.addAttribute("requests", applicantDTO.getApplicationRequests());
         }
 
-        return EDIT_PROFILE;
+        return APPLICANTS_EDIT_PROFILE;
     }
 
     @RequestMapping(value = "/edit-profile", method = {RequestMethod.PUT, RequestMethod.POST})
@@ -53,8 +68,63 @@ public class ApplicantController {
             return "redirect:/view-profile";
         }
         else {
-            return EDIT_PROFILE;
+            return APPLICANTS_EDIT_PROFILE;
         }
+    }
+
+    @RequestMapping(value = "/applicant/edit-score/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
+    public String editScore(@Valid @ModelAttribute ScoreDto scoreDto,
+                                    BindingResult result,
+                                    @PathVariable String id,
+                                    Model model) {
+        if (result.hasErrors() || !ParamValidator.isNumeric(id)) {
+            model.addAttribute("error", "Something went wrong, please try again");
+        }
+        else {
+            scoreService.editScore(scoreDto, Long.parseLong(id));
+        }
+            return REDIRECT_APPLICANT_ID_EDIT;
+    }
+
+    @GetMapping("/new-score")
+    public String newScoreForm(Model model) {
+            ScoreDto scoreDto = new ScoreDto();
+            model.addAttribute(SCORE_DTO, scoreDto);
+        return "applicants/addScore";
+    }
+
+    @PostMapping("/new-score")
+    public String newScoreForm(@Valid @ModelAttribute ScoreDto scoreDto,
+                               BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "redirect:/applicant/new-score";
+        }
+        scoreService.addNewScore(scoreDto);
+        return APPLICANTS_EDIT_PROFILE;
+    }
+
+    @PostMapping("/new-request")
+    public String newRequestForm(@Valid @ModelAttribute EnrollmentRequestDto requestDto,
+                                 BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "redirect:/applicant/new-score";
+        }
+        requestService.addNewRequest(requestDto);
+        return APPLICANTS_EDIT_PROFILE;
+    }
+
+    @RequestMapping(value = "/applicant/edit-request/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
+    public String editScore(@Valid @ModelAttribute EnrollmentRequestDto requestDto,
+                            BindingResult result,
+                            @PathVariable String id,
+                            Model model) {
+        if (result.hasErrors() || !ParamValidator.isNumeric(id)) {
+            model.addAttribute("error", "Something went wrong, please try again");
+        }
+        else {
+            requestService.editApplicationRequest(requestDto, Long.parseLong(id));
+        }
+        return REDIRECT_APPLICANT_ID_EDIT;
     }
 
     //Admin only
@@ -83,8 +153,11 @@ public class ApplicantController {
     public String viewApplicant(Model model, @PathVariable("id") String idString) {
         if (ParamValidator.isNumeric(idString)) {
             long id = Long.parseLong(idString);
-            ApplicantDto applicantDTO = applicantService.getById(id);
+            ApplicantDto applicantDTO = applicantService.getByUserId(id);
             model.addAttribute(APPLICANT_DTO, applicantDTO);
+            model.addAttribute(USER_DTO, applicantDTO.getUserDetails());
+            model.addAttribute("scores", applicantDTO.getScores());
+            model.addAttribute("requests", applicantDTO.getApplicationRequests());
             return "applicants/viewProfile";
         }
         return REDIRECT_APPLICANT_ALL;
@@ -95,9 +168,10 @@ public class ApplicantController {
     public String editApplicant(Model model, @PathVariable("id") String idString) {
         if (ParamValidator.isNumeric(idString)) {
             long id = Long.parseLong(idString);
-            ApplicantDto applicantDTO = applicantService.getById(id);
+            ApplicantDto applicantDTO = applicantService.getByUserId(id);
             model.addAttribute(APPLICANT_DTO, applicantDTO);
-            return EDIT_PROFILE;
+            model.addAttribute(USER_DTO, applicantDTO.getUserDetails());
+            return APPLICANTS_EDIT_PROFILE;
         }
         return REDIRECT_APPLICANT_ALL;
     }
@@ -107,7 +181,7 @@ public class ApplicantController {
                                 BindingResult result,
                                 @PathVariable String id,
                                 Model model) throws NoSuchApplicantException {
-        if (result.hasErrors() || ParamValidator.isNumeric(id)) {
+        if (result.hasErrors() || !ParamValidator.isNumeric(id)) {
             return REDIRECT_APPLICANT_ID_EDIT;
         }
         ApplicantDto applicant = applicantService.editApplicant(applicantDTO, Long.parseLong(id));

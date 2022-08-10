@@ -2,6 +2,8 @@ package com.patrycjagalant.admissionscommittee.service.mapper;
 
 import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.entity.Score;
+
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,16 +14,19 @@ public class ScoreMapper {
             return null;
         }
         ApplicantMapper mapper = new ApplicantMapper();
-        return ScoreDto.builder()
+        ScoreDto scoreDto = ScoreDto.builder()
                 .id(score.getId())
-                .applicant(mapper.mapToDto(score.getApplicant()))
-                .result(score.getResult())
+                .applicant(mapper.mapToDtoWithoutRelations(score.getApplicant()))
                 .subjectName(score.getSubjectName()).build();
+        if (score.getResult() != null) {
+            scoreDto.setResult(score.getResult());
+        }
+        return scoreDto;
     }
 
-    public Set<ScoreDto> mapToDto(Set<Score> scores) {
+    public List<ScoreDto> mapToDto(List<Score> scores) {
         ScoreMapper mapper = new ScoreMapper();
-        return scores.stream().map(mapper::mapToDto).collect(Collectors.toSet());
+        return scores.stream().map(mapper::mapToDto).collect(Collectors.toList());
     }
 
     public Score mapToEntity(ScoreDto scoreDTO) {

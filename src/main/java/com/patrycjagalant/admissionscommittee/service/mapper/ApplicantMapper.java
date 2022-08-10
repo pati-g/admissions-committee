@@ -9,9 +9,20 @@ import java.util.stream.Collectors;
 public class ApplicantMapper {
 
     public ApplicantDto mapToDto (Applicant applicant) {
-        UserMapper userMapper = new UserMapper();
         ScoreMapper scoreMapper = new ScoreMapper();
-        ApplicationRequestMapper applicationRequestMapper = new ApplicationRequestMapper();
+        EnrollmentRequestMapper enrollmentRequestMapper = new EnrollmentRequestMapper();
+        ApplicantDto dto = mapToDtoWithoutRelations(applicant);
+        if (applicant.getScores() != null) {
+            dto.setScores(scoreMapper.mapToDto(applicant.getScores()));
+        }
+        if (applicant.getEnrollmentRequests() != null) {
+            dto.setApplicationRequests(enrollmentRequestMapper.mapToDto(applicant.getEnrollmentRequests()));
+        }
+        return dto;
+    }
+
+    public ApplicantDto mapToDtoWithoutRelations(Applicant applicant) {
+        UserMapper userMapper = new UserMapper();
         return ApplicantDto.builder()
                 .id(applicant.getId())
                 .fullName(applicant.getLastName() + " " + applicant.getFirstName())
@@ -22,8 +33,6 @@ public class ApplicantMapper {
                 .educationalInstitution(applicant.getEducationalInstitution())
                 .certificate(applicant.getCertificate())
                 .userDetails(userMapper.mapToDTO(applicant.getUser()))
-                .scores(scoreMapper.mapToDto(applicant.getScores()))
-                .applicationRequests(applicationRequestMapper.mapToDto(applicant.getApplicationRequests()))
                 .build();
     }
 

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+  <title>Add a new score</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <div class="row h-100 justify-content-center align-items-center">
+    <div class="col-10 col-md-8 col-lg-6">
+      <h1 class="py-3 text-center">Add a new score</h1>
+      <form class="text-dark" method="post" th:action="@{/applicant/new-score}" th:object="${scoreDTO}">
+        <div class="form-floating mb-3 mt-3">
+          <input class="form-control" id="name" placeholder="Subject Name" required th:field="*{subjectName}"
+                 type="text"/>
+          <label for="name">Subject Name</label>
+        </div>
+        <br>
+        <div class="form-floating mb-3 mt-3">
+          <input class="form-control" id="budget" placeholder="Result" required th:field="*{result}"
+                 type="text"/>
+          <label for="budget">Result</label>
+        </div>
+        <br><br>
+        <input class="btn btn-primary" type="submit" value="Submit new score">
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

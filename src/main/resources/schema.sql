@@ -39,19 +39,13 @@ result int NOT NULL,
 FOREIGN KEY (applicant_ID) REFERENCES Applicants(ID)
 );
 
-CREATE TABLE Application_Requests (
+CREATE TABLE Enrollment_Requests (
 ID bigint PRIMARY KEY AUTO_INCREMENT,
 applicant_ID bigint NOT NULL,
 faculty_ID bigint NOT NULL,
-requested_on timestamp NOT NULL,
+requested_on timestamp,
+points int DEFAULT -1,
+status char(1) DEFAULT 'P',
 FOREIGN KEY (applicant_ID) REFERENCES Applicants(ID),
 FOREIGN KEY (faculty_ID) REFERENCES Faculties(ID)
-);
-
-CREATE TABLE Statements (
-ID bigint PRIMARY KEY AUTO_INCREMENT,
-request_ID bigint NOT NULL,
-points int NOT NULL,
-enrollment char(1) NOT NULL,
-FOREIGN KEY (request_ID) REFERENCES Application_Requests (ID)
 );

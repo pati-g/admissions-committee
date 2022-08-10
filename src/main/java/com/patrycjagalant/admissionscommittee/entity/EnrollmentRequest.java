@@ -2,7 +2,9 @@ package com.patrycjagalant.admissionscommittee.entity;
 
 import lombok.*;
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 @AllArgsConstructor
@@ -12,11 +14,11 @@ import java.time.Instant;
 @ToString
 @Builder
 @Entity
-@Table(name = "Application_Requests", indexes = {
+@Table(name = "Enrollment_Requests", indexes = {
         @Index(name = "faculty_ID", columnList = "faculty_ID"),
         @Index(name = "applicant_ID", columnList = "applicant_ID"),
 })
-public class ApplicationRequest {
+public class EnrollmentRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
@@ -37,4 +39,13 @@ public class ApplicationRequest {
     @NotBlank
     @Column(name = "requested_on")
     private Instant registrationDate;
+
+    @NotNull(message = "Please provide a valid number of points (only integers are allowed)")
+    @Min(0)
+    @Column(name = "points")
+    private Integer points = -1;
+
+    @NotBlank
+    @Column(name = "status")
+    private Character status = 'P';
 }

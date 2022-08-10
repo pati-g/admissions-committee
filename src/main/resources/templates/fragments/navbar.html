@@ -19,9 +19,9 @@
                     <li class="nav-item"><a class="nav-link active" aria-current="page" th:href="@{/}">Home</a></li>
 <!--                    <li class="nav-item"><a class="nav-link" th:href="@{/}">About</a></li>-->
                     <li class="nav-item"><a class="nav-link" th:href="@{/faculties}">Faculties</a></li>
-                    <li class="nav-item"><a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/applicant/all}">Applicants</a></li>
+                    <li class="nav-item"><a class="nav-link" sec:authorize="hasAnyRole('ROLE_ADMIN')" th:href="@{/applicant/all}">Applicants</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" sec:authorize="isAuthenticated()"  id="navbarDropdown" href="#" role="button"
+                        <a class="nav-link dropdown-toggle" sec:authorize="isAuthenticated()" id="navbarDropdown" href="#" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false" th:text="'Welcome, ' + ${#authentication.name}"></a>
                         <ul class="dropdown-menu dropdown-menu-end" sec:authorize="isAuthenticated()" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="/applicant/edit-profile">Edit your profile</a></li>

@@ -1,37 +1,99 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<!doctype html>
+<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Profile details</title>
+    <title>Edit your profile</title>
 </head>
 <body>
 <div layout:fragment="content">
-    <h1 class="py-5">View faculty details</h1>
-    <form th:object="${applicantDTO}">
-        <div class="form-group row">
-            <label for="name" class="col-sm-3 col-form-label"><b>Full Name:</b></label>
-            <div class="col-sm-9">
-                <input readonly class="form-control-plaintext" id="name" th:value="*{name}" type="text"/>
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-10 col-md-8 col-lg-6">
+            <h1 class="py-3 text-center">View profile</h1>
+            <form class="text-dark" method="get" th:object="${userDTO}">
+                <div class="form-floating mb-3">
+                    <input class="form-control" disabled id="username" readonly th:value="*{username}"
+                           type="text"/>
+                    <label for="username">Username</label>
+                </div>
+                <br>
+                <div class="form-floating mb-3">
+                    <input class="form-control" disabled id="email" readonly th:value="*{email}" type="text"/>
+                    <label for="email">E-mail</label>
+                </div>
+            </form>
+            <br><br>
+            <form class="text-dark" method="get" th:if="${applicantDTO != null}" th:object="${applicantDTO}">
+                <div class="form-floating mb-3">
+                    <input class="form-control" disabled id="fname" readonly th:value="*{firstName}" type="text"/>
+                    <label for="fname">First name</label>
+                </div>
+                <br>
+                <div class="form-floating mb-3">
+                    <input class="form-control" disabled id="lname" readonly th:value="*{lastName}" type="text"/>
+                    <label for="lname">Last name</label>
+                </div>
+                <br>
+                <div class="form-floating mb-3">
+                    <input class="form-control" disabled id="city" readonly th:value="*{city}" type="text"/>
+                    <label for="city">City</label>
+                </div>
+                <br>
+                <div class="form-floating mb-3">
+                    <input class="form-control" disabled id="region" readonly th:value="*{region}" type="text"/>
+                    <label for="region">Region</label>
+                </div>
+                <br>
+                <div class="form-floating mb-3">
+                    <input class="form-control" disabled id="inst" readonly th:value="*{educationalInstitution}"
+                           type="text"/>
+                    <label for="inst">Educational institution</label>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label" for="certificate"><span class="text-light">(Optional) Upload a scan of your certificate</span></label>
+                    <input class="form-control" disabled id="certificate" readonly type="file">
+                </div>
+            </form>
+<!--List of applicant's scores-->
+            <h3 class="py-3 text-center text-dark">Scores</h3>
+            <div class="py-3 table-responsive">
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th>Subject name</th>
+                        <th>Result</th>
+                    </tr>
+                    <tr th:each="score : ${scores}">
+                        <td th:text="${score.subjectName}">Subject name</td>
+                        <td th:text="${score.result}">Result</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-        </div>
-        <br>
-        <div class="form-group row">
-            <label for="budget" class="col-sm-3 col-form-label"><b>Budget places:</b></label>
-            <div class="col-sm-9">
-                <input readonly class="form-control-plaintext" id="budget" th:value="*{budgetPlaces}" type="text"/>
+<!--List of applicant's requests and current status -->
+            <h3 class="py-3 text-center text-dark">Faculties' application requests</h3>
+            <div class="py-3 table-responsive">
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th>Faculty name</th>
+                        <th>Requested on</th>
+                        <th>Current status</th>
+                    </tr>
+                    <tr th:each="request : ${requests}">
+                        <td th:text="${request.faculty.getName}">Faculty name</td>
+                        <td th:text="${request.registrationDate}">Date of request submission</td>
+                        <td th:text="${request.status}">Status</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
+<!--Edit profile button-->
+        <div class="text-center">
+            <a class="btn btn-primary" role="button"
+               th:href="@{/applicant/{id}/edit(id = ${applicantDTO.getUserDetails.getId})}">Edit profile</a>
         </div>
-        <br>
-        <div class="form-group row">
-            <label for="total" class="col-sm-3 col-form-label"><b>Total places: </b></label>
-            <div class="col-sm-9">
-                <input readonly class="form-control-plaintext" id="total" th:value="*{totalPlaces}" type="text"/>
-            </div>
         </div>
-        <br><br>
-        <td>
-            <a th:href="@{/faculties/{id}/edit(id = ${facultyDTO.getId})}" class="btn btn-primary" role="button">Edit</a>
-        </td>
-    </form>
+    </div>
 </div>
 </body>
 </html>

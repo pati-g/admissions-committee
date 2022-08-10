@@ -5,6 +5,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -60,10 +61,10 @@ public class Applicant {
 
     @OneToMany(mappedBy = "applicant")
     @ToString.Exclude
-    private Set<Score> scores = new LinkedHashSet<>();
+    private List<Score> scores;
 
     @OneToMany(mappedBy = "applicant")
     @ToString.Exclude
-    private Set<ApplicationRequest> applicationRequests = new LinkedHashSet<>();
+    private List<EnrollmentRequest> enrollmentRequests;
 
 }

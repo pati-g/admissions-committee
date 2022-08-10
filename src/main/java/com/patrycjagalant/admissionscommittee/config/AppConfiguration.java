@@ -1,6 +1,8 @@
 package com.patrycjagalant.admissionscommittee.config;
 
+import com.patrycjagalant.admissionscommittee.service.mapper.EnrollmentRequestMapper;
 import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
+import com.patrycjagalant.admissionscommittee.service.mapper.ScoreMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -32,6 +34,16 @@ public class AppConfiguration {
     @Bean
     public FacultyMapper getFacultyMapper() {
         return new FacultyMapper();
+    }
+
+    @Bean
+    public ScoreMapper getScoreMapper() {
+        return new ScoreMapper();
+    }
+
+    @Bean
+    public EnrollmentRequestMapper getEnrollmentMapper(){
+        return new EnrollmentRequestMapper();
     }
 
     @Bean

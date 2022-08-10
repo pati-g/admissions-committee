@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
   <title>Faculty details</title>
 </head>
@@ -25,7 +26,7 @@
       </div>
       <br><br>
       <div class="text-center">
-        <a th:href="@{/faculties/{id}/edit(id = ${facultyDTO.getId})}" class="btn btn-primary" role="button">Edit</a>
+        <a th:href="@{/faculties/{id}/edit(id = ${facultyDTO.getId})}" sec:authorize="hasAnyRole('ROLE_ADMIN')" class="btn btn-primary" role="button">Edit</a>
       </div>
     </form>
 </div>

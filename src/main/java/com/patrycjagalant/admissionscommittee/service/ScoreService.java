@@ -4,15 +4,19 @@ import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.entity.Score;
 import com.patrycjagalant.admissionscommittee.service.mapper.ScoreMapper;
 import com.patrycjagalant.admissionscommittee.repository.ScoreRepository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Service
 public class ScoreService {
 
     private final ScoreRepository scoreRepository;
     private final ScoreMapper mapper;
+
     public ScoreService(ScoreRepository scoreRepository, ScoreMapper mapper) {
         this.scoreRepository = scoreRepository;
         this.mapper = mapper;
@@ -42,18 +46,14 @@ public class ScoreService {
     // Read all scores for specific applicant
     public List<ScoreDto> getScoresForApplicant(Long applicantID) {
         List<Score> scores = scoreRepository.findByApplicantId(applicantID);
-        List<ScoreDto> scoreDtos = new ArrayList<>();
-        for (Score score: scores) {
-            scoreDtos.add(mapper.mapToDto(score));
-        }
-        return scoreDtos;
+        return scores.stream().map(mapper::mapToDto).collect(Collectors.toList());
     }
 
     // Read all scores?
 
     // Edit(update) score
     @Transactional
-    public void updateScore(ScoreDto scoreDTO, Long id) {
+    public void editScore(ScoreDto scoreDTO, Long id) {
         Score score = scoreRepository.getReferenceById(id);
         mapper.mapToEntity(score, scoreDTO);
         scoreRepository.save(score);

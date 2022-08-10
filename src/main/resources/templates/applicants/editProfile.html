@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Edit your profile</title>
 </head>
@@ -7,10 +8,10 @@
 <div layout:fragment="content">
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
-            <h1 class="py-5 text-center">Edit your profile</h1>
-            <form th:method="put" th:action="@{/applicant/edit}" th:object="${userDTO}" class="text-dark">
+            <h1 class="py-3 text-center">Edit your profile</h1>
+            <form class="text-dark" th:action="@{/applicant/edit-profile}" th:method="put" th:object="${userDTO}">
                 <div class="form-floating mb-3">
-                    <input readonly disabled class="form-control" id="username" placeholder="*{username}" required th:field="*{username}"
+                    <input class="form-control" disabled id="username" readonly th:value="*{username}"
                            type="text"/>
                     <label for="username">Username</label>
                 </div>
@@ -25,10 +26,11 @@
                     <input class="form-control" id="password" required th:field="*{password}"
                            type="password"/>
                     <label for="password">Change password</label>
-                    <div class="py-2"><input type="checkbox" onclick="show1()"><span class="text-light px-2">Show Password</span></div>
+                    <div class="py-2"><input onclick="show1()" type="checkbox"><span class="text-light px-2">Show Password</span>
+                    </div>
 
                     <span class="help-block" th:if="${#fields.hasErrors('password')}">
-                <p th:errors="*{password}" class="text-danger py-0">Password error</p>
+                <p class="text-danger py-0" th:errors="*{password}">Password error</p>
                    </span>
                 </div>
                 <script>
@@ -40,14 +42,17 @@
     x.type = "password";
   }
 }
+
                 </script>
                 <br>
                 <div class="form-floating mb-3">
-                    <input class="form-control" id="matchingPassword" required th:field="*{matchingPassword}" type="password"/>
+                    <input class="form-control" id="matchingPassword" required th:field="*{matchingPassword}"
+                           type="password"/>
                     <label for="matchingPassword">Confirm new password</label>
-                    <div class="py-2"><input type="checkbox" onclick="show2()"><span class="text-light px-2">Show Password</span></div>
+                    <div class="py-2"><input onclick="show2()" type="checkbox"><span class="text-light px-2">Show Password</span>
+                    </div>
                     <span class="help-block" th:if="${#fields.hasErrors('matchingPassword')}">
-                <p th:errors="*{matchingPassword}" class="text-danger py-0">Password error</p>
+                <p class="text-danger py-0" th:errors="*{matchingPassword}">Password error</p>
                    </span>
                 </div>
                 <script>
@@ -59,11 +64,15 @@
     x.type = "password";
   }
 }
+
                 </script>
                 <div class="text-center">
                     <input class="btn btn-primary" type="submit" value="Submit changes"></div>
-            </form>                <br><br>
-            <form class="text-dark" th:method="put" th:if="${applicantDTO != null}" th:action="@{/applicant/edit}" th:object="${applicantDTO}">
+            </form>
+            <br><br>
+
+            <form class="text-dark" th:action="@{/applicant/edit-profile}" th:if="${applicantDTO != null}"
+                  th:method="put" th:object="${applicantDTO}">
                 <div class="form-floating mb-3">
                     <input class="form-control" id="fname" placeholder="*{firstName}" required th:field="*{firstName}"
                            type="text"/>
@@ -89,20 +98,78 @@
                 </div>
                 <br>
                 <div class="form-floating mb-3">
-                    <input class="form-control" id="inst" placeholder="*{educationalInstitution}" required th:field="*{educationalInstitution}"
+                    <input class="form-control" id="inst" placeholder="*{educationalInstitution}" required
+                           th:field="*{educationalInstitution}"
                            type="text"/>
                     <label for="inst">Educational institution</label>
                 </div>
                 <div class="form-group mb-3">
-                        <label for="certificate" class="form-label"><span class="text-light">(Optional) Upload a scan of your certificate</span></label>
-                        <input class="form-control" type="file" id="certificate">
+                    <label class="form-label" for="certificate"><span class="text-light">(Optional) Upload a scan of your certificate</span></label>
+                    <input class="form-control" id="certificate" type="file">
                 </div>
-                <div class="text-center">
-                <input class="btn btn-primary" type="submit" value="Submit changes"></div>
+                <div class="text-center"><input class="btn btn-primary" type="submit" value="Submit changes"></div>
             </form>
-
+            <!--List of applicant's scores-->
+            <h2 class="py-3 text-center">Scores</h2>
+            <a class="btn btn-primary" role="button" th:href="@{/applicant/new-score}">Add a new score</a>
+            <table class="py-3 table-responsive">
+                <thead>
+                <td class="text-center">Subject Name</td>
+                <td class="text-center">Result</td>
+                </thead><br>
+                <tbody>
+                <div th:if="${scores != null}">
+                    <th:block th:each="score:${scores}">
+                        <tr>
+                            <form class="text-dark" th:action="@{/applicant/edit-score/{id}(id = ${score.getId}}" th:if="${score != null}"
+                                  th:method="put">
+                                <td><input class="form-control" id="name" placeholder="*{result}" required
+                                           th:value="${score.subjectName}"
+                                           type="text"/></td>
+                                <td><input class="form-control" id="result" placeholder="*{result}" required
+                                           th:value="${score.result}"
+                                           type="text"/></td>
+                                <td class=" px-3"> <div class="text-center"><input class="btn btn-primary" type="submit"
+                                                                    value="Submit"></div> </td>
+                            </form>
+                        </tr>
+                    </th:block>
+                </div>
+                </tbody>
+            </table>
+            <!--List of applicant's requests and current status -->
+            <h2 class="py-3 text-center">Faculties' application requests</h2>
+            <table class="py-3 table-responsive text-center">
+                <thead class="text-center">
+                <td>Faculty Name</td>
+                <td>Registration date</td>
+                <td>Enrollment status</td>
+                </thead><br>
+                <tbody>
+                <div th:if="${requests != null}">
+                    <th:block th:each="request : ${requests}">
+                        <tr>
+                            <form class="text-dark" th:action="@{/applicant/edit-request/{id}(id = ${score.getId}}}" th:if="${request != null}"
+                                  th:method="put">
+                                <td><input class="form-control" id="facultyname" placeholder="*{faculty.getName}"
+                                           required th:value="${request.faculty.getName}"
+                                           type="text"/></td>
+                                <td><input class="form-control" disabled id="date" placeholder="*{registrationDate}"
+                                       readonly required th:value="${request.registrationDate}"
+                                       type="text"/></td>
+                                <td><input class="form-control" disabled id="status" readonly required
+                                           th:value="${request.status}" type="text"/></td>
+                                <td class=" px-3"> <div class="text-center"><input class="btn btn-primary" type="submit"
+                                                                    value="Submit"></div> </td>
+                            </form>
+                        </tr>
+                    </th:block>
+                </div>
+                </tbody>
+            </table>
+        </div>
     </div>
-    </div>
+</div>
 </div>
 </body>
 </html>

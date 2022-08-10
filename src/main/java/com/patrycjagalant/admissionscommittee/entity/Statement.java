@@ -26,7 +26,7 @@ public class Statement {
     @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "request_ID")
     @ToString.Exclude
-    private ApplicationRequest applicationRequest;
+    private EnrollmentRequest enrollmentRequest;
 
     @NotNull(message = "Please provide a valid number of points (only integers are allowed)")
     @Size(min = 1)

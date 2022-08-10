@@ -1,6 +1,8 @@
 package com.patrycjagalant.admissionscommittee.service;
 
 import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
+import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
+import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.entity.Applicant;
 import com.patrycjagalant.admissionscommittee.entity.User;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
@@ -16,15 +18,21 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ApplicantService {
     private final ApplicantRepository applicantRepository;
     private final UserRepository userRepository;
+    private final ScoreService scoreService;
+    private final EnrollmentRequestService enrollmentRequestService;
 
-    public ApplicantService(ApplicantRepository applicantRepository, UserRepository userRepository) {
+    public ApplicantService(ApplicantRepository applicantRepository, UserRepository userRepository,
+                            ScoreService scoreService, EnrollmentRequestService enrollmentRequestService) {
         this.userRepository = userRepository;
         this.applicantRepository = applicantRepository;
+        this.scoreService = scoreService;
+        this.enrollmentRequestService = enrollmentRequestService;
     }
 
     @Transactional
@@ -42,11 +50,21 @@ public class ApplicantService {
         return applicantRepository.save(newApplicant);
     }
 
-    public ApplicantDto getById(Long id) {
+    public ApplicantDto getByUserId(Long id) {
         Applicant applicant = applicantRepository.findByUserId(id).orElse(null);
-        ApplicantMapper applicantMapper = new ApplicantMapper();
         if (applicant != null) {
-            return applicantMapper.mapToDto(applicant);
+            ApplicantMapper applicantMapper = new ApplicantMapper();
+            ApplicantDto applicantDto = applicantMapper.mapToDto(applicant);
+            Long applicantID = applicantDto.getId();
+            List<ScoreDto> scores = scoreService.getScoresForApplicant(applicantID);
+            if(scores != null && !scores.isEmpty()) {
+                applicantDto.setScores(scores);
+            }
+            List<EnrollmentRequestDto> requests = enrollmentRequestService.getAllForApplicantId(applicantID);
+            if(requests != null && !requests.isEmpty()) {
+                applicantDto.setApplicationRequests(requests);
+            }
+            return applicantDto;
         }
         else {
             return null;
