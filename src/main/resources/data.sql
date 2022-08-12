@@ -42,7 +42,7 @@ INSERT INTO Users (id, username, email, password) VALUES (900, 'nine', 'nr_nine@
 INSERT INTO Users (id, username, email, password) VALUES (1000, 'ten', 'nr_ten@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
 INSERT INTO Users (id, username, email, password, role) VALUES (1100, 'admin', 'admin@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg', 'ADMIN');
 --APPLICANTS
-INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (11, 'Adam', 'Smith', 'Gdansk', 'Pomorskie', 'UG', 100);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID, certificate) VALUES (11, 'Adam', 'Smith', 'Gdansk', 'Pomorskie', 'UG', 100, 'LDk8hYMV');
 INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (12, 'Pola', 'Jones', 'Warsaw', 'Mazowiecki', 'UW', 200);
 INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (13, 'Joe', 'Poe', 'Gdansk', 'Pomorskie', 'PG', 300);
 INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (14, 'Donna', 'Noble', 'London', 'UK', 'UG', 400);
@@ -51,7 +51,7 @@ INSERT INTO Applicants (id, first_name, last_name, city, region, educational_ins
 INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (17, 'John', 'Moriarty', 'Krakow', 'Małopolskie', 'UAM', 700);
 INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (18, 'Iga', 'Swiatek', 'Warsaw', 'Mazowieckie', 'PG', 800);
 INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (19, 'Feliks', 'Goodboy', 'Gdansk', 'Pomorskie', 'PG', 900);
-INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (20, 'Doctor', 'Ten', 'Gallifrey', 'Universe', 'UG', 1000);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (20, 'Doctor', 'Tenth', 'Gallifrey', 'Universe', 'UG', 1000);
 --SCORES
 INSERT INTO Scores (applicant_id, subject_name, result) VALUES (11, 'Maths', 89);
 INSERT INTO Scores (applicant_id, subject_name, result) VALUES (11, 'English', 67);

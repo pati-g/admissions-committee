@@ -16,7 +16,7 @@ public class ApplicantMapper {
             dto.setScores(scoreMapper.mapToDto(applicant.getScores()));
         }
         if (applicant.getEnrollmentRequests() != null) {
-            dto.setApplicationRequests(enrollmentRequestMapper.mapToDto(applicant.getEnrollmentRequests()));
+            dto.setRequests(enrollmentRequestMapper.mapToDto(applicant.getEnrollmentRequests()));
         }
         return dto;
     }
@@ -25,13 +25,13 @@ public class ApplicantMapper {
         UserMapper userMapper = new UserMapper();
         return ApplicantDto.builder()
                 .id(applicant.getId())
-                .fullName(applicant.getLastName() + " " + applicant.getFirstName())
+                .fullName(applicant.getFirstName() + " " + applicant.getLastName())
                 .firstName(applicant.getFirstName())
                 .lastName(applicant.getLastName())
                 .city(applicant.getCity())
                 .region(applicant.getRegion())
                 .educationalInstitution(applicant.getEducationalInstitution())
-                .certificate(applicant.getCertificate())
+                .certificateUrl(applicant.getCertificateUrl())
                 .userDetails(userMapper.mapToDTO(applicant.getUser()))
                 .build();
     }
@@ -43,7 +43,7 @@ public class ApplicantMapper {
 
     public Applicant mapToEntity(ApplicantDto applicantDto) {
         return Applicant.builder()
-                .certificate(applicantDto.getCertificate())
+                .certificateUrl(applicantDto.getCertificateUrl())
                 .city(applicantDto.getCity())
                 .educationalInstitution(applicantDto.getEducationalInstitution())
                 .firstName(applicantDto.getFirstName())
@@ -52,7 +52,7 @@ public class ApplicantMapper {
     }
 
     public void mapToEntity(ApplicantDto applicantDto, Applicant applicant) {
-        String certificate = applicantDto.getCertificate();
+        String certificate = applicantDto.getCertificateUrl();
         String city = applicantDto.getCity();
         String institution = applicantDto.getEducationalInstitution();
         String firstname = applicantDto.getFirstName();
@@ -60,7 +60,7 @@ public class ApplicantMapper {
         String region = applicantDto.getRegion();
 
         if (certificate != null && !certificate.isEmpty())
-            applicant.setCertificate(certificate);
+            applicant.setCertificateUrl(certificate);
         if (city != null && !city.isEmpty())
             applicant.setCity(city);
         if (institution != null && !institution.isEmpty())

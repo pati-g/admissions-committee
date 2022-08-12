@@ -5,7 +5,6 @@ import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 

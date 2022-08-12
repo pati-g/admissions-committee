@@ -2,6 +2,7 @@ package com.patrycjagalant.admissionscommittee.service;
 
 import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
 import com.patrycjagalant.admissionscommittee.entity.Faculty;
+import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.repository.FacultyRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +43,7 @@ class FacultyServiceTest {
     }
 
     @Test
-    void testEditFacultyHappyPath(){
+    void testEditFacultyHappyPath() throws NoSuchFacultyException {
         FacultyDto facultyDtoMock = new FacultyDto(null, "ChangedName", null, 25);
         Faculty facultyMock = new Faculty(1L, "TestName", 10, 20);
 

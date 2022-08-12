@@ -9,6 +9,12 @@
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
             <h1 class="py-3 text-center">Edit your profile</h1>
+            <div class="alert alert-success text-center p-1" role="alert" th:if="${message}">
+                <h5 th:text="${message}"></h5>
+            </div>
+            <div class="alert alert-danger" role="alert" th:if="${error}">
+                <h5 th:text="${error}"></h5>
+            </div>
             <form class="text-dark" th:action="@{/applicant/edit-profile}" th:method="put" th:object="${userDTO}">
                 <div class="form-floating mb-3">
                     <input class="form-control" disabled id="username" readonly th:value="*{username}"
@@ -43,6 +49,8 @@
   }
 }
 
+
+
                 </script>
                 <br>
                 <div class="form-floating mb-3">
@@ -65,111 +73,129 @@
   }
 }
 
+
+
                 </script>
                 <div class="text-center">
                     <input class="btn btn-primary" type="submit" value="Submit changes"></div>
             </form>
             <br><br>
-
-            <form class="text-dark" th:action="@{/applicant/edit-profile}" th:if="${applicantDTO != null}"
-                  th:method="put" th:object="${applicantDTO}">
-                <div class="form-floating mb-3">
-                    <input class="form-control" id="fname" placeholder="*{firstName}" required th:field="*{firstName}"
-                           type="text"/>
-                    <label for="fname">First name</label>
+            <div th:if="${applicantDTO != null}">
+                <form class="text-dark" enctype="multipart/form-data"
+                      th:action="@{/applicant/edit-profile}" th:method="put" th:object="${applicantDTO}">
+                    <div class="form-floating mb-3">
+                        <input class="form-control" id="fname" placeholder="*{firstName}" required
+                               th:field="*{firstName}"
+                               type="text"/>
+                        <label for="fname">First name</label>
+                    </div>
+                    <br>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" id="lname" placeholder="*{lastName}" required th:field="*{lastName}"
+                               type="text"/>
+                        <label for="lname">Last name</label>
+                    </div>
+                    <br>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" id="city" placeholder="*{city}" required th:field="*{city}"
+                               type="text"/>
+                        <label for="city">City</label>
+                    </div>
+                    <br>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" id="region" placeholder="*{region}" required th:field="*{region}"
+                               type="text"/>
+                        <label for="region">Region</label>
+                    </div>
+                    <br>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" id="inst" placeholder="*{educationalInstitution}" required
+                               th:field="*{educationalInstitution}"
+                               type="text"/>
+                        <label for="inst">Educational institution</label>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="certificate"><span class="text-light">(Optional) Upload a scan of your certificate</span></label>
+                        <input accept=".pdf, image/*" class="form-control" id="certificate" name="file" type="file">
+                    </div>
+                    <div class="text-center"><input class="btn btn-primary" type="submit" value="Submit changes"></div>
+                </form>
+                <!--List of applicant's scores-->
+                <div th:if="${!applicantDTO.scores.isEmpty}">
+                    <h2 class="py-3 text-center">Scores</h2>
+                    <div class="text-center"><a class="btn btn-primary" role="button" th:href="@{/applicant/new-score}">Add
+                        a new score</a></div>
+                    <table class="py-3 table-responsive">
+                        <thead>
+                        <td class="text-center">Subject Name</td>
+                        <td class="text-center">Result</td>
+                        </thead>
+                        <br>
+                        <tbody>
+                        <div th:if="${scores != null}">
+                            <th:block th:each="score:${scores}">
+                                <tr>
+                                    <form class="text-dark"
+                                          th:action="@{/applicant/edit-score/{id}(id = ${score.getId})}"
+                                          th:if="${score != null}"
+                                          th:method="put">
+                                        <td><input class="form-control" id="name" placeholder="${score.subjectName}"
+                                                   required
+                                                   th:value="${score.subjectName}"
+                                                   type="text"/></td>
+                                        <td><input class="form-control" id="result" placeholder="${score.result}"
+                                                   required
+                                                   th:value="${score.result}"
+                                                   type="text"/></td>
+                                        <td class=" px-3">
+                                            <div class="text-center"><input class="btn btn-primary" type="submit"
+                                                                            value="Submit"></div>
+                                        </td>
+                                    </form>
+                                </tr>
+                            </th:block>
+                        </div>
+                        </tbody>
+                    </table>
                 </div>
-                <br>
-                <div class="form-floating mb-3">
-                    <input class="form-control" id="lname" placeholder="*{lastName}" required th:field="*{lastName}"
-                           type="text"/>
-                    <label for="lname">Last name</label>
+                <!--List of applicant's requests and current status -->
+                <div th:if="${!applicantDTO.requests.isEmpty}">
+                    <h2 class="py-3 text-center">Faculties' application requests</h2>
+                    <table class="py-3 table-responsive text-center">
+                        <thead class="text-center">
+                        <td>Faculty Name</td>
+                        <td>Registration date</td>
+                        <td>Enrollment status</td>
+                        </thead>
+                        <br>
+                        <tbody>
+                        <th:block th:each="request : ${requests}">
+                            <tr>
+                                <form class="text-dark"
+                                      th:action="@{/applicant/edit-request/{id}(id = ${request.getId})}"
+                                      th:if="${request != null}"
+                                      th:method="put">
+                                    <td><input class="form-control" id="facultyname" placeholder="*{faculty.getName}"
+                                               required th:value="${request.faculty.getName}"
+                                               type="text"/></td>
+                                    <td><input class="form-control" disabled id="date" placeholder="*{registrationDate}"
+                                               readonly required th:value="${request.registrationDate}"
+                                               type="text"/></td>
+                                    <td><input class="form-control" disabled id="status" readonly required
+                                               th:value="${request.status}" type="text"/></td>
+                                    <td class=" px-3">
+                                        <div class="text-center"><input class="btn btn-primary" type="submit"
+                                                                        value="Submit"></div>
+                                    </td>
+                                </form>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
                 </div>
-                <br>
-                <div class="form-floating mb-3">
-                    <input class="form-control" id="city" placeholder="*{city}" required th:field="*{city}"
-                           type="text"/>
-                    <label for="city">City</label>
-                </div>
-                <br>
-                <div class="form-floating mb-3">
-                    <input class="form-control" id="region" placeholder="*{region}" required th:field="*{region}"
-                           type="text"/>
-                    <label for="region">Region</label>
-                </div>
-                <br>
-                <div class="form-floating mb-3">
-                    <input class="form-control" id="inst" placeholder="*{educationalInstitution}" required
-                           th:field="*{educationalInstitution}"
-                           type="text"/>
-                    <label for="inst">Educational institution</label>
-                </div>
-                <div class="form-group mb-3">
-                    <label class="form-label" for="certificate"><span class="text-light">(Optional) Upload a scan of your certificate</span></label>
-                    <input class="form-control" id="certificate" type="file">
-                </div>
-                <div class="text-center"><input class="btn btn-primary" type="submit" value="Submit changes"></div>
-            </form>
-            <!--List of applicant's scores-->
-            <h2 class="py-3 text-center">Scores</h2>
-            <a class="btn btn-primary" role="button" th:href="@{/applicant/new-score}">Add a new score</a>
-            <table class="py-3 table-responsive">
-                <thead>
-                <td class="text-center">Subject Name</td>
-                <td class="text-center">Result</td>
-                </thead><br>
-                <tbody>
-                <div th:if="${scores != null}">
-                    <th:block th:each="score:${scores}">
-                        <tr>
-                            <form class="text-dark" th:action="@{/applicant/edit-score/{id}(id = ${score.getId}}" th:if="${score != null}"
-                                  th:method="put">
-                                <td><input class="form-control" id="name" placeholder="*{result}" required
-                                           th:value="${score.subjectName}"
-                                           type="text"/></td>
-                                <td><input class="form-control" id="result" placeholder="*{result}" required
-                                           th:value="${score.result}"
-                                           type="text"/></td>
-                                <td class=" px-3"> <div class="text-center"><input class="btn btn-primary" type="submit"
-                                                                    value="Submit"></div> </td>
-                            </form>
-                        </tr>
-                    </th:block>
-                </div>
-                </tbody>
-            </table>
-            <!--List of applicant's requests and current status -->
-            <h2 class="py-3 text-center">Faculties' application requests</h2>
-            <table class="py-3 table-responsive text-center">
-                <thead class="text-center">
-                <td>Faculty Name</td>
-                <td>Registration date</td>
-                <td>Enrollment status</td>
-                </thead><br>
-                <tbody>
-                <div th:if="${requests != null}">
-                    <th:block th:each="request : ${requests}">
-                        <tr>
-                            <form class="text-dark" th:action="@{/applicant/edit-request/{id}(id = ${score.getId}}}" th:if="${request != null}"
-                                  th:method="put">
-                                <td><input class="form-control" id="facultyname" placeholder="*{faculty.getName}"
-                                           required th:value="${request.faculty.getName}"
-                                           type="text"/></td>
-                                <td><input class="form-control" disabled id="date" placeholder="*{registrationDate}"
-                                       readonly required th:value="${request.registrationDate}"
-                                       type="text"/></td>
-                                <td><input class="form-control" disabled id="status" readonly required
-                                           th:value="${request.status}" type="text"/></td>
-                                <td class=" px-3"> <div class="text-center"><input class="btn btn-primary" type="submit"
-                                                                    value="Submit"></div> </td>
-                            </form>
-                        </tr>
-                    </th:block>
-                </div>
-                </tbody>
-            </table>
+            </div>
         </div>
     </div>
-</div>
 </div>
 </body>
 </html>

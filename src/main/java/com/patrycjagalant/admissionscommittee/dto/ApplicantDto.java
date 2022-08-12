@@ -1,10 +1,10 @@
 package com.patrycjagalant.admissionscommittee.dto;
 
 import lombok.*;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
-import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,12 +39,11 @@ public class ApplicantDto {
 
     private String email;
 
-    @NotBlank
     private UserDto userDetails;
 
     private List<ScoreDto> scores;
 
-    private List<EnrollmentRequestDto> applicationRequests;
+    private List<EnrollmentRequestDto> requests;
 
-    private String certificate;
+    private String certificateUrl;
 }
