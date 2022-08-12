@@ -4,6 +4,7 @@ import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.entity.Applicant;
+import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
 import com.patrycjagalant.admissionscommittee.entity.User;
 import com.patrycjagalant.admissionscommittee.exceptions.FileStorageException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
@@ -23,7 +24,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
@@ -153,5 +153,10 @@ public class ApplicantService {
         } else {
             throw new NoSuchFacultyException();
         }
+    }
+@Transactional
+    public void addRequest(ApplicantDto applicantDto, EnrollmentRequest request) throws NoSuchApplicantException {
+        Applicant applicant = applicantRepository.findById(applicantDto.getId()).orElseThrow(NoSuchApplicantException::new);
+        applicant.getRequests().add(request);
     }
 }

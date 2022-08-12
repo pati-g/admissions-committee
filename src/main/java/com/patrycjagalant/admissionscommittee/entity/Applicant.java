@@ -57,6 +57,6 @@ public class Applicant {
 
     @OneToMany(mappedBy = "applicant")
     @ToString.Exclude
-    private List<EnrollmentRequest> enrollmentRequests;
+    private List<EnrollmentRequest> requests;
 
 }

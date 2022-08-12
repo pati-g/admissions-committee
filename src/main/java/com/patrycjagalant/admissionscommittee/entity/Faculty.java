@@ -3,6 +3,7 @@ package com.patrycjagalant.admissionscommittee.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,5 +29,9 @@ public class Faculty {
 
     @Column(name = "total_places")
     private Integer totalPlaces;
+
+    @OneToMany(mappedBy = "faculty")
+    @ToString.Exclude
+    List<EnrollmentRequest> requests;
 
 }

@@ -15,8 +15,8 @@ public class ApplicantMapper {
         if (applicant.getScores() != null) {
             dto.setScores(scoreMapper.mapToDto(applicant.getScores()));
         }
-        if (applicant.getEnrollmentRequests() != null) {
-            dto.setRequests(enrollmentRequestMapper.mapToDto(applicant.getEnrollmentRequests()));
+        if (applicant.getRequests() != null) {
+            dto.setRequests(enrollmentRequestMapper.mapToDto(applicant.getRequests()));
         }
         return dto;
     }
@@ -71,5 +71,11 @@ public class ApplicantMapper {
             applicant.setLastName(lastname);
         if (region != null && !region.isEmpty())
             applicant.setRegion(region);
+    }
+
+    public Applicant mapToEntityWithId(ApplicantDto applicantDto) {
+        Applicant applicant = this.mapToEntity(applicantDto);
+        applicant.setId(applicantDto.getId());
+        return applicant;
     }
 }

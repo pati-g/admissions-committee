@@ -24,9 +24,8 @@ public class EnrollmentRequestService {
         this.mapper = mapper;
     }
 
-    // Create
-    public void addNewRequest(EnrollmentRequestDto enrollmentRequestDTO) {
-        EnrollmentRequest enrollmentRequest = mapper.mapToEntity(enrollmentRequestDTO);
+    public void saveRequest(EnrollmentRequestDto requestDto) {
+        EnrollmentRequest enrollmentRequest = mapper.mapToEntity(requestDto);
         enrollmentRequestRepository.save(enrollmentRequest);
     }
 

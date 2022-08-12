@@ -3,6 +3,7 @@ package com.patrycjagalant.admissionscommittee.dto;
 import lombok.*;
 
 import javax.validation.constraints.*;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,4 +28,5 @@ public class FacultyDto {
     @Max(value = 1000, message = "Value can't be more than 1 000")
     private Integer totalPlaces;
 
+    private List<EnrollmentRequestDto> requests;
 }

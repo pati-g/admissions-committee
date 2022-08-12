@@ -4,6 +4,7 @@ import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
 import com.patrycjagalant.admissionscommittee.entity.Faculty;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.repository.FacultyRepository;
+import com.patrycjagalant.admissionscommittee.service.mapper.EnrollmentRequestMapper;
 import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,16 +25,21 @@ class FacultyServiceTest {
     private FacultyRepository facultyRepository;
     private FacultyService facultyService;
     private final FacultyMapper facultyMapper = new FacultyMapper();
+    @Mock
+    private ApplicantService applicantService;
+    private final EnrollmentRequestMapper requestMapper = new EnrollmentRequestMapper();
+    @Mock
+    private EnrollmentRequestService requestService;
 
     @BeforeEach
     void setUp() {
-        facultyService = new FacultyService(facultyRepository, facultyMapper);
+        facultyService = new FacultyService(facultyRepository, facultyMapper, applicantService, requestMapper, requestService);
     }
 
     @Test
     void testAddFacultyHappyPath(){
-        FacultyDto facultyDtoMock = new FacultyDto( null, "TestName", 10, 20);
-        Faculty mockFaculty = new Faculty(1L, "TestName", 10, 20);
+        FacultyDto facultyDtoMock = new FacultyDto( null, "TestName", 10, 20, null);
+        Faculty mockFaculty = new Faculty(1L, "TestName", 10, 20, null);
 
         when(facultyRepository.save(any(Faculty.class))).thenReturn(mockFaculty);
 
@@ -44,8 +50,8 @@ class FacultyServiceTest {
 
     @Test
     void testEditFacultyHappyPath() throws NoSuchFacultyException {
-        FacultyDto facultyDtoMock = new FacultyDto(null, "ChangedName", null, 25);
-        Faculty facultyMock = new Faculty(1L, "TestName", 10, 20);
+        FacultyDto facultyDtoMock = new FacultyDto(null, "ChangedName", null, 25, null);
+        Faculty facultyMock = new Faculty(1L, "TestName", 10, 20, null);
 
         when(facultyRepository.save(any(Faculty.class))).thenReturn(facultyMock);
         when(facultyRepository.getReferenceById(1L)).thenReturn(facultyMock);

@@ -30,9 +30,9 @@
                                onClick="return confirm('Are you sure you want to apply for this faculty?')"
                                role="button"
                                sec:authorize="hasRole('ROLE_USER')"
-                               th:href="@{/applicant/new-request}" th:method="post">Apply</a></td>
+                               th:href="@{/faculties/{id}/new-request (id = ${faculty.getId})}">Apply</a></td>
                         <td><a class="btn btn-outline-info" sec:authorize="hasRole('ROLE_ADMIN')"
-                               th:href="@{/faculties/{id}/edit(id = ${faculty.getId})}">Edit</a>
+                               th:href="@{/faculties/{id}/edit (id = ${faculty.getId})}">Edit</a>
                         </td>
                         <td>
                             <form sec:authorize="hasRole('ROLE_ADMIN')"

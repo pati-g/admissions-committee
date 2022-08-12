@@ -30,8 +30,17 @@
                     <a class="btn btn-primary"
                        role="button" sec:authorize="hasAnyRole('ROLE_ADMIN')" th:href="@{/faculties/{id}/edit(id = ${facultyDTO.getId})}">Edit</a>
                 </div>
+                <div class="text-center">
+                    <a class="btn btn-success"
+                           onClick="return confirm('Are you sure you want to apply for this faculty?')"
+                           role="button"
+                           sec:authorize="hasRole('ROLE_USER')"
+                           th:href="@{/applicant/new-request}" th:method="post">Apply</a>
+                </div>
+
             </form>
         </div>
     </div>
+</div>
 </body>
 </html>

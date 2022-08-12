@@ -101,7 +101,7 @@ public class ApplicantController {
         } else {
             scoreService.editScore(scoreDto, Long.parseLong(id));
         }
-        return "redirect:/applicant";
+        return REDIRECT_APPLICANT;
     }
 
     @GetMapping("/new-score")
@@ -118,18 +118,9 @@ public class ApplicantController {
             return "redirect:/applicant/new-score";
         }
         scoreService.addNewScore(scoreDto);
-        return "redirect:/applicant";
+        return REDIRECT_APPLICANT;
     }
 
-    @PostMapping("/new-request")
-    public String newRequestForm(@Valid @ModelAttribute("request") EnrollmentRequestDto requestDto,
-                                 BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "redirect:/faculties";
-        }
-        requestService.addNewRequest(requestDto);
-        return "redirect:/applicant";
-    }
 
     @RequestMapping(value = "/applicant/edit-request/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
     public String editRequest(@Valid @ModelAttribute EnrollmentRequestDto requestDto,

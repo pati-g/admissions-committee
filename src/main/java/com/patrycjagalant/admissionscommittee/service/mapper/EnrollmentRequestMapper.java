@@ -33,8 +33,8 @@ public class EnrollmentRequestMapper {
         return EnrollmentRequest.builder()
                 .registrationDate(enrollmentRequestDTO.getRegistrationDate())
                 .status(enrollmentRequestDTO.getStatus())
-                .applicant(applicantMapper.mapToEntity(enrollmentRequestDTO.getApplicant()))
-                .faculty(facultyMapper.mapToEntity(enrollmentRequestDTO.getFaculty())).build();
+                .applicant(applicantMapper.mapToEntityWithId(enrollmentRequestDTO.getApplicant()))
+                .faculty(facultyMapper.mapToEntityWithId(enrollmentRequestDTO.getFaculty())).build();
     }
 
     public void mapToEntity(EnrollmentRequest enrollmentRequest, EnrollmentRequestDto enrollmentRequestDTO) {

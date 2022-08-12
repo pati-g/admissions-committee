@@ -1,30 +1,35 @@
 package com.patrycjagalant.admissionscommittee.controller;
 
+import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
+import com.patrycjagalant.admissionscommittee.entity.User;
+import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
+import com.patrycjagalant.admissionscommittee.service.ApplicantService;
 import com.patrycjagalant.admissionscommittee.service.FacultyService;
 import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
+import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("/faculties")
 public class FacultyController {
-    public static final String FACULTIES_NEW = "redirect:/faculties/new";
-    public static final String FACULTY_DTO = "facultyDTO";
-    public static final String REDIRECT_FACULTIES = "redirect:/faculties";
-    private static final String FACULTIES = "/faculties/faculties";
     private final FacultyService facultyService;
+    private final ApplicantService applicantService;
 
-    public FacultyController(FacultyService facultyService) {
+
+    public FacultyController(FacultyService facultyService, ApplicantService applicantService) {
         this.facultyService = facultyService;
+        this.applicantService = applicantService;
     }
 
     @GetMapping
@@ -53,6 +58,20 @@ public class FacultyController {
             FacultyDto facultyDTO = facultyService.getById(id);
             model.addAttribute(FACULTY_DTO, facultyDTO);
             return "faculties/facultyView";
+        }
+        return REDIRECT_FACULTIES;
+    }
+
+    @RequestMapping(value="/{id}/new-request", method = {RequestMethod.POST, RequestMethod.GET})
+    public String newRequest(@PathVariable("id") String idString, @AuthenticationPrincipal User user, Model model) throws NoSuchFacultyException, NoSuchApplicantException {
+        if (ParamValidator.isNumeric(idString)) {
+            long id = Long.parseLong(idString);
+            EnrollmentRequestDto requestDto = new EnrollmentRequestDto();
+            requestDto.setApplicant(applicantService.getByUserId(user.getId()));
+            requestDto.setFaculty(facultyService.getById(id));
+            requestDto.setRegistrationDate(LocalDateTime.now());
+            facultyService.addNewRequest(requestDto);
+            return REDIRECT_APPLICANT;
         }
         return REDIRECT_FACULTIES;
     }

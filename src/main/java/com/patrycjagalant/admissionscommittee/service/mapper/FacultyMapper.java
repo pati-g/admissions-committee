@@ -38,4 +38,10 @@ public class FacultyMapper {
         faculty.setBudgetPlaces(budget);
         faculty.setTotalPlaces(total);
     }
+
+    public Faculty mapToEntityWithId(FacultyDto facultyDto) {
+        Faculty faculty = this.mapToEntity(facultyDto);
+        faculty.setId(facultyDto.getId());
+        return faculty;
+    }
 }
