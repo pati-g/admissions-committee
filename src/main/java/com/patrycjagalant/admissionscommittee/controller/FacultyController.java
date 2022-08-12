@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 
 @Controller
@@ -19,8 +20,8 @@ public class FacultyController {
     public static final String FACULTIES_NEW = "redirect:/faculties/new";
     public static final String FACULTY_DTO = "facultyDTO";
     public static final String REDIRECT_FACULTIES = "redirect:/faculties";
-    private final FacultyService facultyService;
     private static final String FACULTIES = "/faculties/faculties";
+    private final FacultyService facultyService;
 
     public FacultyController(FacultyService facultyService) {
         this.facultyService = facultyService;
@@ -85,8 +86,7 @@ public class FacultyController {
         FacultyDto faculty = facultyService.addFaculty(facultyDTO);
         if (facultyDTO.equals(faculty)) {
             return REDIRECT_FACULTIES;
-        }
-        else {
+        } else {
             //do something
             return FACULTIES_NEW;
         }

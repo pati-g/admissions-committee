@@ -46,17 +46,23 @@ public class UserService implements UserDetailsService {
                     + userDto.getEmail() + " is taken");
         }
 
-            String password = userDto.getPassword();
-            String passwordEncoded = passwordEncoder.encode(password);
-            User user = User.builder()
-                    .username(userDto.getUsername())
-                    .email(userDto.getEmail())
-                    .password(passwordEncoded)
-                    .role(userDto.getRole()).build();
-            return userRepository.save(user).getId();
+        String password = userDto.getPassword();
+        String passwordEncoded = passwordEncoder.encode(password);
+        User user = User.builder()
+                .username(userDto.getUsername())
+                .email(userDto.getEmail())
+                .password(passwordEncoded)
+                .role(userDto.getRole()).build();
+        return userRepository.save(user).getId();
     }
-    private boolean emailExists(String email) { return userRepository.findByEmail(email) != null; }
-    private boolean usernameExists(String username) { return userRepository.findByUsername(username) != null; }
+
+    private boolean emailExists(String email) {
+        return userRepository.findByEmail(email) != null;
+    }
+
+    private boolean usernameExists(String username) {
+        return userRepository.findByUsername(username) != null;
+    }
 
     public UserDto findByEmail(String email) {
         User user = userRepository.findByEmail(email);

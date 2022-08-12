@@ -1,34 +1,37 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Faculty details</title>
+    <title>Faculty details</title>
 </head>
 <body>
 <div layout:fragment="content">
-  <div class="row h-100 justify-content-center align-items-center">
-    <div class="col-10 col-md-8 col-lg-6">
-    <h1 class="py-3 text-center">View faculty details</h1>
-    <form class="text-dark" th:object="${facultyDTO}">
-      <div class="form-floating mb-3">
-        <input readonly disabled class="form-control" id="name" th:value="*{name}" type="text"/>
-        <label for="name"><b>Faculty Name</b></label>
-      </div>
-      <br>
-      <div class="form-floating mb-3">
-        <input readonly disabled class="form-control" id="budget" th:value="*{budgetPlaces}" type="text"/>
-        <label for="budget"><b>Budget places</b></label>
-      </div>
-      <br>
-      <div class="form-floating mb-3">
-        <input readonly disabled class="form-control" id="total" th:value="*{totalPlaces}" type="text"/>
-        <label for="total"><b>Total places</b></label>
-      </div>
-      <br><br>
-      <div class="text-center">
-        <a th:href="@{/faculties/{id}/edit(id = ${facultyDTO.getId})}" sec:authorize="hasAnyRole('ROLE_ADMIN')" class="btn btn-primary" role="button">Edit</a>
-      </div>
-    </form>
-</div>
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-10 col-md-8 col-lg-6">
+            <h1 class="py-3 text-center">View faculty details</h1>
+            <form class="text-dark" th:object="${facultyDTO}">
+                <div class="form-floating mb-3">
+                    <input class="form-control" disabled id="name" readonly th:value="*{name}" type="text"/>
+                    <label for="name"><b>Faculty Name</b></label>
+                </div>
+                <br>
+                <div class="form-floating mb-3">
+                    <input class="form-control" disabled id="budget" readonly th:value="*{budgetPlaces}" type="text"/>
+                    <label for="budget"><b>Budget places</b></label>
+                </div>
+                <br>
+                <div class="form-floating mb-3">
+                    <input class="form-control" disabled id="total" readonly th:value="*{totalPlaces}" type="text"/>
+                    <label for="total"><b>Total places</b></label>
+                </div>
+                <br><br>
+                <div class="text-center">
+                    <a class="btn btn-primary"
+                       role="button" sec:authorize="hasAnyRole('ROLE_ADMIN')" th:href="@{/faculties/{id}/edit(id = ${facultyDTO.getId})}">Edit</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

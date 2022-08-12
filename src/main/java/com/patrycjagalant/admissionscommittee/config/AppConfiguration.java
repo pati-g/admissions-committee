@@ -10,6 +10,7 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
+
 import java.util.Collections;
 
 @Configuration
@@ -42,7 +43,7 @@ public class AppConfiguration {
     }
 
     @Bean
-    public EnrollmentRequestMapper getEnrollmentMapper(){
+    public EnrollmentRequestMapper getEnrollmentMapper() {
         return new EnrollmentRequestMapper();
     }
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Faculties</title>
@@ -9,7 +10,8 @@
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 px-3">
             <h1 class="py-3 text-center text-dark">List of faculties</h1>
-            <a class="btn btn-outline-primary" role="button" sec:authorize="hasAnyRole('ROLE_ADMIN')" th:href="@{/faculties/new}">Add new</a>
+            <a class="btn btn-outline-primary" role="button" sec:authorize="hasAnyRole('ROLE_ADMIN')"
+               th:href="@{/faculties/new}">Add new</a>
             <div class="py-3 table-responsive">
                 <table class="table">
                     <tbody>
@@ -24,14 +26,20 @@
                         <td th:text="${faculty.totalPlaces}">Total places</td>
                         <td><a class="btn btn-outline-primary"
                                th:href="@{/faculties/{id}(id = ${faculty.getId})}">View</a></td>
-                        <td><a class="btn btn-success" sec:authorize="isAuthenticated()" role="button" onClick="return confirm('Are you sure you want to apply for this faculty?')" th:href="@{/applicant/new-request}">Apply</a></td>
-                        <td><a class="btn btn-outline-info" sec:authorize="hasAnyRole('ROLE_ADMIN')"
+                        <td><a class="btn btn-success"
+                               onClick="return confirm('Are you sure you want to apply for this faculty?')"
+                               role="button"
+                               sec:authorize="hasRole('ROLE_USER')"
+                               th:href="@{/applicant/new-request}" th:method="post">Apply</a></td>
+                        <td><a class="btn btn-outline-info" sec:authorize="hasRole('ROLE_ADMIN')"
                                th:href="@{/faculties/{id}/edit(id = ${faculty.getId})}">Edit</a>
                         </td>
                         <td>
-                            <form th:action="@{/faculties/delete/{id}(id = ${faculty.getId})}" sec:authorize="hasAnyRole('ROLE_ADMIN')"
+                            <form sec:authorize="hasRole('ROLE_ADMIN')"
+                                  th:action="@{/faculties/delete/{id}(id = ${faculty.getId})}"
                                   th:method="delete" th:object="${faculty}">
-                                <button class="btn btn-outline-dark" onClick="return confirm('Are you sure you want to delete this faculty?')"
+                                <button class="btn btn-outline-dark"
+                                        onClick="return confirm('Are you sure you want to delete this faculty?')"
                                         type="submit">Delete
                                 </button>
                             </form>
@@ -53,7 +61,8 @@
                     </li>
                     <div th:each="i: ${#numbers.sequence(1, totalPages)}">
                         <li class="page-item"><a th:class="page-link"
-                                                 th:href="@{/faculties(size=${faculties.size}, page=${i})}" th:text=${i}></a></li>
+                                                 th:href="@{/faculties(size=${faculties.size}, page=${i})}"
+                                                 th:text=${i}></a></li>
                     </div>
                     <li class="page-item">
                         <a aria-label="Next"

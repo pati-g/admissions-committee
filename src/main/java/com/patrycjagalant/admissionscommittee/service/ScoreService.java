@@ -2,8 +2,8 @@ package com.patrycjagalant.admissionscommittee.service;
 
 import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.entity.Score;
-import com.patrycjagalant.admissionscommittee.service.mapper.ScoreMapper;
 import com.patrycjagalant.admissionscommittee.repository.ScoreRepository;
+import com.patrycjagalant.admissionscommittee.service.mapper.ScoreMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +31,7 @@ public class ScoreService {
     // Add many scores at once
     public void addListOfScores(List<ScoreDto> scoreDtos) {
         List<Score> scores = new ArrayList<>();
-        for (ScoreDto scoreDTO: scoreDtos) {
+        for (ScoreDto scoreDTO : scoreDtos) {
             scores.add(mapper.mapToEntity(scoreDTO));
         }
         scoreRepository.saveAll(scores);
@@ -58,6 +58,7 @@ public class ScoreService {
         mapper.mapToEntity(score, scoreDTO);
         scoreRepository.save(score);
     }
+
     // Delete a score
     public void deleteScore(Long id) {
         scoreRepository.deleteById(id);

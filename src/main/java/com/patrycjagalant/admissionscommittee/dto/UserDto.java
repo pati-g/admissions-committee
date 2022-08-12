@@ -4,6 +4,7 @@ import com.patrycjagalant.admissionscommittee.annotations.PasswordMatcher;
 import com.patrycjagalant.admissionscommittee.annotations.ValidEmail;
 import com.patrycjagalant.admissionscommittee.entity.Role;
 import lombok.*;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;

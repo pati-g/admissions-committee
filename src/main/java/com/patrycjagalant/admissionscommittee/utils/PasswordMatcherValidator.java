@@ -6,15 +6,17 @@ import com.patrycjagalant.admissionscommittee.dto.UserDto;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class PasswordMatcherValidator implements ConstraintValidator <PasswordMatcher, Object>{
+public class PasswordMatcherValidator implements ConstraintValidator<PasswordMatcher, Object> {
 
     String message;
+
     @Override
     public void initialize(PasswordMatcher constraintAnnotation) {
         this.message = constraintAnnotation.message();
     }
+
     @Override
-    public boolean isValid(Object obj, ConstraintValidatorContext context){
+    public boolean isValid(Object obj, ConstraintValidatorContext context) {
         UserDto user = (UserDto) obj;
         boolean isValid = user.getPassword().equals(user.getMatchingPassword());
 

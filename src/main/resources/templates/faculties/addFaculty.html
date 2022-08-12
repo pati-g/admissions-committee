@@ -1,36 +1,39 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Add a new faculty</title>
 </head>
 <body>
 <div layout:fragment="content">
-<div class="row h-100 justify-content-center align-items-center">
-    <div class="col-10 col-md-8 col-lg-6">
-        <h1 class="py-3 text-center">Add a new faculty</h1>
-        <form class="text-dark" method="post" th:action="@{/faculties/add}" th:object="${facultyDTO}">
-            <div class="form-floating mb-3 mt-3">
-                <input class="form-control" id="name" placeholder="Enter Faculty Name" required th:field="*{name}"
-                       type="text"/>
-                <label for="name">Faculty Name</label>
-            </div>
-            <br>
-            <div class="form-floating mb-3 mt-3">
-                <input class="form-control" id="budget" placeholder="Number of budget places" required th:field="*{budgetPlaces}"
-                       type="text"/>
-                <label for="budget">Budget places</label>
-            </div>
-            <br>
-            <div class="form-floating mb-3 mt-3">
-                <input class="form-control" id="total" placeholder="Total number of places" required th:field="*{totalPlaces}"
-                       type="text"/>
-                <label for="total">Total places</label>
-            </div>
-            <br><br>
-            <input class="btn btn-primary" type="submit" value="Create New Faculty">
-        </form>
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-10 col-md-8 col-lg-6">
+            <h1 class="py-3 text-center">Add a new faculty</h1>
+            <form class="text-dark" method="post" th:action="@{/faculties/add}" th:object="${facultyDTO}">
+                <div class="form-floating mb-3 mt-3">
+                    <input class="form-control" id="name" placeholder="Enter Faculty Name" required th:field="*{name}"
+                           type="text"/>
+                    <label for="name">Faculty Name</label>
+                </div>
+                <br>
+                <div class="form-floating mb-3 mt-3">
+                    <input class="form-control" id="budget" placeholder="Number of budget places" required
+                           th:field="*{budgetPlaces}"
+                           type="text"/>
+                    <label for="budget">Budget places</label>
+                </div>
+                <br>
+                <div class="form-floating mb-3 mt-3">
+                    <input class="form-control" id="total" placeholder="Total number of places" required
+                           th:field="*{totalPlaces}"
+                           type="text"/>
+                    <label for="total">Total places</label>
+                </div>
+                <br><br>
+                <input class="btn btn-primary" type="submit" value="Create New Faculty">
+            </form>
+        </div>
     </div>
-</div>
 </div>
 </body>
 </html>

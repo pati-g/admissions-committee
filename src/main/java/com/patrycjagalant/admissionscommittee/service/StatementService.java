@@ -2,8 +2,8 @@ package com.patrycjagalant.admissionscommittee.service;
 
 import com.patrycjagalant.admissionscommittee.dto.StatementDto;
 import com.patrycjagalant.admissionscommittee.entity.Statement;
-import com.patrycjagalant.admissionscommittee.service.mapper.StatementMapper;
 import com.patrycjagalant.admissionscommittee.repository.StatementRepository;
+import com.patrycjagalant.admissionscommittee.service.mapper.StatementMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -14,6 +14,7 @@ public class StatementService {
 
     private final StatementRepository statementRepository;
     private final StatementMapper mapper;
+
     public StatementService(StatementRepository statementRepository, StatementMapper mapper) {
         this.statementRepository = statementRepository;
         this.mapper = mapper;

@@ -1,18 +1,19 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Something went wrong...</title>
 </head>
 <body>
 <div layout:fragment="content">
-<div class="container main-content">
-    <ul class="list-group">
-        <li class="list-group-item list-group-item-danger"><h3 th:text="${error}">Status</h3></li>
-        <li class="list-group-item" th:text="'Status code: '+ ${status}"></li>
-    </ul>
-    <br><br>
-    <p><a href="/" th:href="@{/}">Back to home page</a></p>
-</div>
+    <div class="container main-content">
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-danger"><h3 th:text="${error}">Status</h3></li>
+            <li class="list-group-item" th:text="'Status code: '+ ${status}"></li>
+        </ul>
+        <br><br>
+        <p><a href="/" th:href="@{/}">Back to home page</a></p>
+    </div>
 </div>
 </body>
 </html>

@@ -5,7 +5,7 @@ import com.patrycjagalant.admissionscommittee.entity.User;
 
 public class UserMapper {
 
-    public UserDto mapToDTO (User user) {
+    public UserDto mapToDTO(User user) {
         if (user == null) {
             return null;
         }

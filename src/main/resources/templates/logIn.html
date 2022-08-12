@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Log in</title>
 </head>
@@ -8,20 +9,24 @@
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
             <h1 class="py-5 text-center">Please log in to continue</h1>
-        <form th:action="@{/login}" method="post" class="text-dark mb-6">
-            <div th:if="${param.error}">
-                <div class="alert alert-danger">
-                    Invalid username or password.
+            <form class="text-dark mb-6" method="post" th:action="@{/login}">
+                <div th:if="${param.error}">
+                    <div class="alert alert-danger">
+                        Invalid username or password.
+                    </div>
                 </div>
-            </div>
-            <div class="form-floating mb-3 mt-3">
-                    <input type="text" id="username" name="username" class="form-control" placeholder="user_123 or user@domain.com" autofocus="autofocus">
+                <div class="form-floating mb-3 mt-3">
+                    <input autofocus="autofocus" class="form-control" id="username" name="username"
+                           placeholder="user_123 or user@domain.com" type="text">
                     <label for="username">Username/e-mail address</label>
-            </div>
-            <div class="form-floating mb-3 mt-3 has-feedback">
-                    <input type="password" id="password" name="password" class="form-control" placeholder="password" autofocus="autofocus"/>
+                </div>
+                <div class="form-floating mb-3 mt-3 has-feedback">
+                    <input autofocus="autofocus" class="form-control" id="password" name="password"
+                           placeholder="password"
+                           type="password"/>
                     <label for="password">Password</label>
-                    <div class="py-2"><input type="checkbox" onclick="show()"><span class="text-light px-2">Show Password</span></div>
+                    <div class="py-2"><input onclick="show()" type="checkbox"><span class="text-light px-2">Show Password</span>
+                    </div>
                     <script>
                     function show() {
   var x = document.getElementById("password");
@@ -31,13 +36,16 @@
     x.type = "password";
   }
 }
-</script>
-            </div>
-                    <div class="text-center"><button type="submit" class="btn btn-primary">Log in</button>
+
+
+                    </script>
                 </div>
-        </form>
+                <div class="text-center">
+                    <button class="btn btn-primary" type="submit">Log in</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 </div>
 </body>
 </html>

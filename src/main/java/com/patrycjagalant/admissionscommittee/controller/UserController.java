@@ -22,7 +22,7 @@ public class UserController {
 
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("user") UserDto userDTO, BindingResult result, Model model) {
-        if (result.hasErrors()){
+        if (result.hasErrors()) {
             return REGISTER_USER;
         }
         UserDto existingUser = userService.findByEmail(userDTO.getEmail());

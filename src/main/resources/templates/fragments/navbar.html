@@ -1,41 +1,51 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Navigation bar</title>
 </head>
 <body>
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container px-5">
-            <a class="navbar-brand" th:href="@{/}">Admissions Committee</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" th:href="@{/}">Home</a></li>
-<!--                    <li class="nav-item"><a class="nav-link" th:href="@{/}">About</a></li>-->
-                    <li class="nav-item"><a class="nav-link" th:href="@{/faculties}">Faculties</a></li>
-                    <li class="nav-item"><a class="nav-link" sec:authorize="hasAnyRole('ROLE_ADMIN')" th:href="@{/applicant/all}">Applicants</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" sec:authorize="isAuthenticated()" id="navbarDropdown" href="#" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false" th:text="'Welcome, ' + ${#authentication.name}"></a>
-                        <ul class="dropdown-menu dropdown-menu-end" sec:authorize="isAuthenticated()" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/applicant/edit-profile">Edit your profile</a></li>
-<!--                            <li><a class="dropdown-item" href="#">??</a></li>-->
-                            <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item" th:href="@{/logout}">Log out</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}">Log in</a></li>
-                    <li class="nav-item"><a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/register}">Register</a></li>
-                    <li class="nav-item"><a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/logout}">Log out</a></li>
-                </ul>
-            </div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" th:fragment="navbar">
+    <div class="container px-5">
+        <a class="navbar-brand" th:href="@{/}">Admissions Committee</a>
+        <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                class="navbar-toggler"
+                data-bs-target="#navbarSupportedContent"
+                data-bs-toggle="collapse"
+                type="button">
+            <span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a aria-current="page" class="nav-link active" th:href="@{/}">Home</a></li>
+                <!--                    <li class="nav-item"><a class="nav-link" th:href="@{/}">About</a></li>-->
+                <li class="nav-item"><a class="nav-link" th:href="@{/faculties}">Faculties</a></li>
+                <li class="nav-item"><a class="nav-link" sec:authorize="hasAnyRole('ROLE_ADMIN')"
+                                        th:href="@{/applicant/all}">Applicants</a></li>
+                <li class="nav-item dropdown">
+                    <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
+                       id="navbarDropdown"
+                       role="button" sec:authorize="isAuthenticated()"
+                       th:text="'Welcome, ' + ${#authentication.name}"></a>
+                    <ul aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-end"
+                        sec:authorize="isAuthenticated()">
+                        <li><a class="dropdown-item" href="/applicant/edit-profile">Edit your profile</a></li>
+                        <!--                            <li><a class="dropdown-item" href="#">??</a></li>-->
+                        <li>
+                            <hr class="dropdown-divider"/>
+                        </li>
+                        <li><a class="dropdown-item" th:href="@{/logout}">Log out</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}">Log in</a>
+                </li>
+                <li class="nav-item"><a class="nav-link" sec:authorize="isAnonymous()"
+                                        th:href="@{/register}">Register</a></li>
+                <li class="nav-item"><a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/logout}">Log
+                    out</a></li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 </body>
 </html>
