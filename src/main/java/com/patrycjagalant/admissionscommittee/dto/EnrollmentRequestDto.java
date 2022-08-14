@@ -3,9 +3,7 @@ package com.patrycjagalant.admissionscommittee.dto;
 import lombok.*;
 
 import javax.persistence.Column;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -28,7 +26,8 @@ public class EnrollmentRequestDto {
     private LocalDateTime registrationDate;
 
     @NotNull(message = "Please provide a valid number of points (only integers are allowed)")
-    @Size(min = 1)
+    @Min(value = 0, message = "Minimum points value is 0")
+    @Max(value = 100, message = "Maximum points value is 100")
     @Column(name = "points")
     private Integer points = -1;
 

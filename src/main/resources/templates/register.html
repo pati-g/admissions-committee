@@ -1,22 +1,22 @@
 <!doctype html>
-<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html th:lang="${#locale.language}" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Register</title>
+    <title th:text="#{register}">Register</title>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
-            <h1 class="py-3 text-center">Registration form</h1>
+            <h1 class="py-3 text-center" th:text="#{register.form}">Registration form</h1>
             <form class="text-dark" method="post" th:action="@{/register}" th:object="${user}">
                 <div class="alert alert-danger py-0" th:if="${#fields.hasErrors('*')}">
-                    <p>Please correct errors listed below</p>
+                    <p th:text="#{error.message}">Please correct errors listed below</p>
                 </div>
                 <div class="form-floating mb-3 mt-3 has-feedback">
                     <input class="form-control" id="username" placeholder="user_123" required th:field="*{username}"
                            type="text"/>
-                    <label for="username">Username</label>
+                    <label for="username" th:text="#{username}">Username</label>
                     <span class="help-block" th:if="${#fields.hasErrors('username')}">
                 <p class="text-danger py-0" th:errors="*{username}">Username error</p>
                    </span>
@@ -24,7 +24,7 @@
                 <div class="form-floating mb-3 mt-3 has-feedback">
                     <input class="form-control" id="email" placeholder="user@example.com" required th:field="*{email}"
                            type="text"/>
-                    <label for="email">E-mail</label>
+                    <label for="email" th:text="#{email}">E-mail</label>
                     <span class="help-block" th:if="${#fields.hasErrors('email')}">
                 <p class="text-danger py-0" th:errors="*{email}">E-mail error</p>
                    </span>
@@ -33,7 +33,7 @@
                 <div class="form-floating mb-3 mt-3 has-feedback">
                     <input class="form-control" id="password" required th:field="*{password}"
                            type="password"/>
-                    <label for="password">Password</label>
+                    <label for="password" th:text="#{password}">Password</label>
                     <div class="py-2"><input onclick="show1()" type="checkbox"><span class="text-light px-2">Show Password</span>
                     </div>
 
@@ -56,12 +56,12 @@
                 <div class="form-floating mb-3 mt-3 has-feedback">
                     <input class="form-control" id="matchingPassword" required th:field="*{matchingPassword}"
                            type="password"/>
-                    <label for="matchingPassword">Confirm password</label>
+                    <label for="matchingPassword" th:text="#{password2}">Confirm password</label>
+                    <div class="py-2"><input onclick="show2()" type="checkbox"><span class="text-light px-2">Show Password</span>
+                    </div>
                     <span class="help-block" th:if="${#fields.hasErrors('matchingPassword')}">
                 <p class="text-danger py-0" th:errors="*{matchingPassword}">Password error</p>
                    </span>
-                    <div class="py-2"><input onclick="show2()" type="checkbox"><span class="text-light px-2">Show Password</span>
-                    </div>
                 </div>
                 <script>
                     function show2() {
@@ -75,8 +75,7 @@
 
                 </script>
                 <!--                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
-                <br><br>
-                <div class="text-center"><input class="btn btn-primary" type="submit" value="Register"></div>
+                <div class="text-center"><input class="btn btn-primary" type="submit" th:value="#{register}"></div>
             </form>
         </div>
     </div>

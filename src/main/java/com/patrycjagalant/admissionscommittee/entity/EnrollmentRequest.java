@@ -1,10 +1,10 @@
 package com.patrycjagalant.admissionscommittee.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,13 +33,14 @@ public class EnrollmentRequest {
     @ToString.Exclude
     private Faculty faculty;
 
+    @CreationTimestamp
     @Column(name = "requested_on")
-    private Instant registrationDate;
+    private LocalDateTime registrationDate;
 
-    @Min(0)
-    @Column(name = "points")
+    @Column(name = "points", columnDefinition = "integer default -1")
     private Integer points = -1;
 
-    @Column(name = "status")
+//    @Enumerated(EnumType.STRING)
+    @Column(name = "status", columnDefinition="character default 'P'")
     private Character status = 'P';
 }

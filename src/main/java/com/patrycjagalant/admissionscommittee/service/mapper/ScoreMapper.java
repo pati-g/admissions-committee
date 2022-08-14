@@ -2,33 +2,37 @@ package com.patrycjagalant.admissionscommittee.service.mapper;
 
 import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.entity.Score;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
+@Component
 public class ScoreMapper {
 
     public ScoreDto mapToDto(Score score) {
+        log.debug("Score entity before mapping: {}", score);
         if (score == null) {
+            log.warn("Score is null!");
             return null;
         }
         ApplicantMapper mapper = new ApplicantMapper();
-        ScoreDto scoreDto = ScoreDto.builder()
+        return ScoreDto.builder()
                 .id(score.getId())
                 .applicant(mapper.mapToDtoWithoutRelations(score.getApplicant()))
+                .result(score.getResult())
                 .subjectName(score.getSubjectName()).build();
-        if (score.getResult() != null) {
-            scoreDto.setResult(score.getResult());
-        }
-        return scoreDto;
     }
 
     public List<ScoreDto> mapToDto(List<Score> scores) {
-        ScoreMapper mapper = new ScoreMapper();
-        return scores.stream().map(mapper::mapToDto).collect(Collectors.toList());
+        log.debug("Mapping List<Score>");
+        return scores.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     public Score mapToEntity(ScoreDto scoreDTO) {
+        log.debug("Score DTO before mapping: {}", scoreDTO);
         ApplicantMapper mapper = new ApplicantMapper();
         return Score.builder()
                 .applicant(mapper.mapToEntity(scoreDTO.getApplicant()))
@@ -37,6 +41,7 @@ public class ScoreMapper {
     }
 
     public void mapToEntity(Score score, ScoreDto scoreDTO) {
+        log.debug("Score entity: {} and DTO: {} before mapping", score, scoreDTO);
         Integer result = scoreDTO.getResult();
         String subject = scoreDTO.getSubjectName();
         ApplicantMapper mapper = new ApplicantMapper();

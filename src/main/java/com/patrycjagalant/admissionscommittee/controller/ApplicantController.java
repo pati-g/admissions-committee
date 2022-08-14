@@ -11,7 +11,7 @@ import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.service.ApplicantService;
 import com.patrycjagalant.admissionscommittee.service.EnrollmentRequestService;
 import com.patrycjagalant.admissionscommittee.service.ScoreService;
-import com.patrycjagalant.admissionscommittee.service.mapper.UserMapper;
+import com.patrycjagalant.admissionscommittee.service.UserService;
 import com.patrycjagalant.admissionscommittee.utils.FileValidator;
 import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
 import org.springframework.core.io.Resource;
@@ -32,33 +32,22 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/applicant")
 public class ApplicantController {
+    public static final String REDIRECT_HOME = "redirect:/";
     private final ApplicantService applicantService;
     private final ScoreService scoreService;
     private final FileValidator fileValidator;
     private final EnrollmentRequestService requestService;
+    private final UserService userService;
 
-    public ApplicantController(ApplicantService applicantService, ScoreService scoreService, FileValidator fileValidator, EnrollmentRequestService requestService) {
+    public ApplicantController(ApplicantService applicantService,
+                               ScoreService scoreService,
+                               FileValidator fileValidator,
+                               EnrollmentRequestService requestService, UserService userService) {
         this.applicantService = applicantService;
         this.scoreService = scoreService;
         this.fileValidator = fileValidator;
         this.requestService = requestService;
-    }
-
-    @GetMapping("/edit-profile")
-    public String editProfileForm(Model model, @AuthenticationPrincipal User user) {
-        UserMapper mapper = new UserMapper();
-        UserDto userDto = mapper.mapToDTO(user);
-        model.addAttribute(USER_DTO, userDto);
-
-        ApplicantDto applicantDTO = applicantService.getByUserId(user.getId());
-        if (applicantDTO != null) {
-            model.addAttribute(APPLICANT_DTO, applicantDTO);
-            model.addAttribute(USER_DTO, applicantDTO.getUserDetails());
-            model.addAttribute("scores", applicantDTO.getScores());
-            model.addAttribute("requests", applicantDTO.getRequests());
-        }
-
-        return APPLICANTS_EDIT_PROFILE;
+        this.userService = userService;
     }
 
     @RequestMapping(value = "/edit-profile", method = {RequestMethod.PUT, RequestMethod.POST})
@@ -72,23 +61,13 @@ public class ApplicantController {
             fileValidator.validate(file, result2);
         }
         if (result.hasErrors() || result2.hasErrors() || file == null) {
-            model.addAttribute("error", "An error occurred during profile submission. Please try again");
+            model.addAttribute(ERROR, "An error occurred during profile submission. Please try again");
             return "redirect:/applicant/edit-profile";
         }
         applicantService.editApplicant(applicantDTO, user.getId(), file);
-        redirectAttributes.addFlashAttribute("message",
+        redirectAttributes.addFlashAttribute(MESSAGE,
                 "Changes in your profile have been submitted.");
         return "redirect:/applicant/edit-profile";
-    }
-
-    @GetMapping()
-    public String viewProfile(Model model, @AuthenticationPrincipal User user) {
-            ApplicantDto applicantDTO = applicantService.getByUserId(user.getId());
-            model.addAttribute(APPLICANT_DTO, applicantDTO);
-            model.addAttribute(USER_DTO, applicantDTO.getUserDetails());
-            model.addAttribute("scores", applicantDTO.getScores());
-            model.addAttribute("requests", applicantDTO.getRequests());
-            return "applicants/viewProfile";
     }
 
     @RequestMapping(value = "/applicant/edit-score/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
@@ -97,7 +76,7 @@ public class ApplicantController {
                             @PathVariable String id,
                             Model model) {
         if (result.hasErrors() || !ParamValidator.isNumeric(id)) {
-            model.addAttribute("error", "Something went wrong, please try again");
+            model.addAttribute(ERROR, "Something went wrong, please try again");
         } else {
             scoreService.editScore(scoreDto, Long.parseLong(id));
         }
@@ -115,7 +94,7 @@ public class ApplicantController {
     public String newScoreForm(@Valid @ModelAttribute ScoreDto scoreDto,
                                BindingResult result, Model model) {
         if (result.hasErrors()) {
-            return "redirect:/applicant/new-score";
+            return "applicants/addScore";
         }
         scoreService.addNewScore(scoreDto);
         return REDIRECT_APPLICANT;
@@ -128,11 +107,12 @@ public class ApplicantController {
                               @PathVariable String id,
                               Model model) {
         if (result.hasErrors() || !ParamValidator.isNumeric(id)) {
-            model.addAttribute("error", "Something went wrong, please try again");
+            model.addAttribute(ERROR, "Something went wrong, please try again");
+            return APPLICANTS_EDIT_PROFILE;
         } else {
             requestService.editApplicationRequest(requestDto, Long.parseLong(id));
+            return REDIRECT_APPLICANT_ID_EDIT;
         }
-        return REDIRECT_APPLICANT_ID_EDIT;
     }
 
     @GetMapping(value = "/download-certificate/{id}")
@@ -153,58 +133,61 @@ public class ApplicantController {
         return addPaginationModel(pageNumber, applicantDTOPage, model);
     }
 
-    private String addPaginationModel(int page, Page<ApplicantDto> paginated, Model model) {
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", paginated.getTotalPages());
-        model.addAttribute("totalItems", paginated.getTotalElements());
-        model.addAttribute("applicants", paginated);
-        return "applicants/applicants";
-    }
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String viewApplicant(Model model, @PathVariable("id") String idString) {
-        if (ParamValidator.isNumeric(idString)) {
-            long id = Long.parseLong(idString);
-            ApplicantDto applicantDTO = applicantService.getByUserId(id);
-            model.addAttribute(APPLICANT_DTO, applicantDTO);
-            model.addAttribute(USER_DTO, applicantDTO.getUserDetails());
-            model.addAttribute("scores", applicantDTO.getScores());
-            model.addAttribute("requests", applicantDTO.getRequests());
-            return "applicants/viewProfile";
+    @GetMapping("/{username}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
+    public String viewAccount(Model model, @PathVariable("username") String username) {
+        UserDto userDto = userService.findByUsername(username);
+        if(userDto != null) {
+        model.addAttribute(USER_DTO, userDto);
+        ApplicantDto applicantDto = applicantService.getByUserId(userDto.getId());
+        if (applicantDto != null) {
+            addApplicantModel(model, applicantDto);
         }
-        return REDIRECT_APPLICANT_ALL;
+            return VIEW_PROFILE;
+        }
+        return REDIRECT_HOME;
     }
 
-    @GetMapping("/{id}/edit")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String editApplicant(Model model, @PathVariable("id") String idString) {
-        if (ParamValidator.isNumeric(idString)) {
-            long id = Long.parseLong(idString);
-            ApplicantDto applicantDTO = applicantService.getByUserId(id);
-            model.addAttribute(APPLICANT_DTO, applicantDTO);
-            model.addAttribute(USER_DTO, applicantDTO.getUserDetails());
+    @GetMapping("/{username}/edit")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
+    public String editAccountForm(Model model, @PathVariable("username") String username) {
+        UserDto userDto = userService.findByUsername(username);
+        if(userDto != null) {
+            if(!model.containsAttribute(USER_DTO)) {
+                model.addAttribute(USER_DTO, userDto);
+                ApplicantDto applicantDto = applicantService.getByUserId(userDto.getId());
+                if (applicantDto != null) {
+                    addApplicantModel(model, applicantDto);
+                }
+            }
             return APPLICANTS_EDIT_PROFILE;
         }
-        return REDIRECT_APPLICANT_ALL;
+        return REDIRECT_HOME;
     }
 
-    @RequestMapping(value = "/{id}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
-    public String editApplicantForm(@Valid @ModelAttribute ApplicantDto applicantDTO,
+    @RequestMapping(value = "/{username}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
+    public String editAccount(@Valid @ModelAttribute() ApplicantDto applicantDTO,
                                     BindingResult result,
-                                    @PathVariable String id,
-                                    @RequestParam("file") MultipartFile file,
-                                    RedirectAttributes redirectAttributes,
-                                    Model model) throws NoSuchApplicantException, FileStorageException {
-        if (result.hasErrors() || !ParamValidator.isNumeric(id)) {
-            return REDIRECT_APPLICANT_ID_EDIT;
+                                     @PathVariable("username") String username,
+                                    RedirectAttributes redirectAttributes) throws NoSuchApplicantException, FileStorageException {
+        UserDto userDto = userService.findByUsername(username);
+        if (userDto == null) {
+            redirectAttributes.addFlashAttribute(ERROR, "Couldn't find user with given username. Please try again.");
+            return APPLICANTS_EDIT_PROFILE;
         }
-        applicantService.editApplicant(applicantDTO, Long.parseLong(id), file);
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.register", result);
+            redirectAttributes.addFlashAttribute(USER_DTO, userDto);
+            return APPLICANTS_EDIT_PROFILE;
+        }
+//        @RequestParam(value="file", required = false) MultipartFile file,
+        applicantService.editApplicant(applicantDTO, userDto.getId());
+        redirectAttributes.addFlashAttribute(MESSAGE, "Your changes have been submitted");
         return REDIRECT_APPLICANT_ID_EDIT;
-
     }
 
-    // Block applicant
     @PutMapping("/{id}/block")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String changeApplicantBlockedStatus(@PathVariable String id, Model model) {
@@ -217,7 +200,7 @@ public class ApplicantController {
                 msg = "Applicant has been unblocked";
             }
         }
-        model.addAttribute("msg", msg);
+        model.addAttribute(MESSAGE, msg);
         return REDIRECT_APPLICANT_ALL;
     }
 
@@ -226,10 +209,31 @@ public class ApplicantController {
         if (id.matches("(\\d)+")) {
             long idNumber = Long.parseLong(id);
             applicantService.deleteApplicant(idNumber);
-            model.addAttribute("msg", "Applicant " + idNumber + " has been deleted");
+            model.addAttribute(MESSAGE, "Applicant " + idNumber + " has been deleted");
         } else {
-            model.addAttribute("msg", "Incorrect ID: " + id);
+            model.addAttribute("error", "Incorrect ID: " + id);
         }
         return REDIRECT_APPLICANT_ALL;
     }
+
+    private String addPaginationModel(int page, Page<ApplicantDto> paginated, Model model) {
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", paginated.getTotalPages());
+        model.addAttribute("totalItems", paginated.getTotalElements());
+        model.addAttribute("applicants", paginated);
+        return ALL_APPLICANTS;
+    }
+    private void addUserModel(Model model, Long userId) {
+        model.addAttribute(USER_DTO, userService.findById(userId));
+        ApplicantDto applicantDTO = applicantService.getByUserId(userId);
+        if (applicantDTO != null) {
+            addApplicantModel(model, applicantDTO);
+        }
+    }
+    private void addApplicantModel(Model model, ApplicantDto applicantDTO) {
+        model.addAttribute(APPLICANT_DTO, applicantDTO);
+        model.addAttribute(SCORES, applicantDTO.getScores());
+        model.addAttribute(REQUESTS, applicantDTO.getRequests());
+    }
+
 }

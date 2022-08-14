@@ -3,14 +3,18 @@ package com.patrycjagalant.admissionscommittee.service.mapper;
 
 import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Slf4j
+@Component
 public class EnrollmentRequestMapper {
 
     public EnrollmentRequestDto mapToDto(EnrollmentRequest enrollmentRequest) {
+        log.debug("EnrollmentRequest entity before mapping: {}", enrollmentRequest);
         ApplicantMapper applicantMapper = new ApplicantMapper();
         FacultyMapper facultyMapper = new FacultyMapper();
         return EnrollmentRequestDto.builder()
@@ -22,11 +26,12 @@ public class EnrollmentRequestMapper {
     }
 
     public List<EnrollmentRequestDto> mapToDto(List<EnrollmentRequest> enrollmentRequests) {
-        EnrollmentRequestMapper mapper = new EnrollmentRequestMapper();
-        return enrollmentRequests.stream().map(mapper::mapToDto).collect(Collectors.toList());
+        log.debug("Mapping List<EnrollmentRequest> to DTOs");
+        return enrollmentRequests.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     public EnrollmentRequest mapToEntity(EnrollmentRequestDto enrollmentRequestDTO) {
+        log.debug("EnrollmentRequest Dto before mapping: {}", enrollmentRequestDTO);
         ApplicantMapper applicantMapper = new ApplicantMapper();
         FacultyMapper facultyMapper = new FacultyMapper();
 
@@ -38,6 +43,7 @@ public class EnrollmentRequestMapper {
     }
 
     public void mapToEntity(EnrollmentRequest enrollmentRequest, EnrollmentRequestDto enrollmentRequestDTO) {
+        log.debug("EnrollmentRequest entity: {} and Dto: {} before mapping", enrollmentRequest, enrollmentRequestDTO);
         FacultyMapper facultyMapper = new FacultyMapper();
         ApplicantMapper applicantMapper = new ApplicantMapper();
         Character status = enrollmentRequestDTO.getStatus();

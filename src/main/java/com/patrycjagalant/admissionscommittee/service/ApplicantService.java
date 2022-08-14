@@ -55,9 +55,17 @@ public class ApplicantService {
     @Transactional
     public void editApplicant(ApplicantDto applicantdto, Long userID, MultipartFile file) throws NoSuchApplicantException, FileStorageException {
         Applicant current = applicantRepository.findByUserId(userID).orElseThrow(NoSuchApplicantException::new);
-        String fileName = userID + "_" + current.getLastName() + "_" + current.getFirstName() + "_certificate";
-        String fileCode = saveFile(file, fileName);
-        applicantdto.setCertificateUrl(fileCode);
+        if (file != null) {
+            String fileName = userID + "_" + current.getLastName() + "_" + current.getFirstName() + "_certificate";
+            String fileCode = saveFile(file, fileName);
+            applicantdto.setCertificateUrl(fileCode);
+        }
+        ApplicantMapper applicantMapper = new ApplicantMapper();
+        applicantMapper.mapToEntity(applicantdto, current);
+    }
+@Transactional
+    public void editApplicant(ApplicantDto applicantdto, Long userID) throws NoSuchApplicantException {
+        Applicant current = applicantRepository.findByUserId(userID).orElseThrow(NoSuchApplicantException::new);
         ApplicantMapper applicantMapper = new ApplicantMapper();
         applicantMapper.mapToEntity(applicantdto, current);
     }

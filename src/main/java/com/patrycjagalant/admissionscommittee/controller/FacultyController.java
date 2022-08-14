@@ -57,7 +57,7 @@ public class FacultyController {
             long id = Long.parseLong(idString);
             FacultyDto facultyDTO = facultyService.getById(id);
             model.addAttribute(FACULTY_DTO, facultyDTO);
-            return "faculties/facultyView";
+            return "faculties/viewFaculty";
         }
         return REDIRECT_FACULTIES;
     }

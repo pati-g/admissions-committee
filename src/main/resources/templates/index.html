@@ -1,14 +1,14 @@
 <!doctype html>
-<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html th:lang="${#locale.language}" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Home</title>
+    <title th:text="#{home}"></title>
 </head>
 <body>
 <div class="text-center" layout:fragment="content">
     <img alt="Graduation hat icon" class="img-fluid mb-4" th:src="@{/static/favicon.ico}" width="50"/>
-    <h1 class="text-white fs-3 fw-bolder">Welcome to Admissions Committee</h1>
-    <p class="text-white-50 mb-0">Start your educational journey here!</p>
+    <h1 class="text-white fs-3 fw-bolder" th:text="#{welcome}">Welcome to Admissions Committee</h1>
+    <p class="text-white-50 mb-0" th:text="#{welcome2}">Start your educational journey here!</p>
     <img class="pt-4 img-fluid" th:src="@{/images/students_sitting_on_stairs.jpeg}"/>
 </div>
 </body>

@@ -45,7 +45,7 @@ applicant_ID bigint NOT NULL,
 faculty_ID bigint NOT NULL,
 requested_on timestamp,
 points int DEFAULT -1,
-status char(1) DEFAULT 'P',
+status varchar(30) DEFAULT 'pending',
 FOREIGN KEY (applicant_ID) REFERENCES Applicants(ID),
 FOREIGN KEY (faculty_ID) REFERENCES Faculties(ID)
 );

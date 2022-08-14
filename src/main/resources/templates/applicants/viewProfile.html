@@ -2,69 +2,70 @@
 <html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Edit your profile</title>
+    <title th:text="#{view.profile}">View your profile</title>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
-            <h1 class="py-3 text-center">View profile</h1>
+            <h1 class="py-3 text-center" th:text="#{view.profile}">View profile</h1>
             <form class="text-dark" method="get" th:object="${userDTO}">
                 <div class="form-floating mb-3">
                     <input class="form-control" disabled id="username" readonly th:value="*{username}"
                            type="text"/>
-                    <label for="username">Username</label>
+                    <label for="username" th:text="#{username}">Username</label>
                 </div>
                 <br>
                 <div class="form-floating mb-3">
                     <input class="form-control" disabled id="email" readonly th:value="*{email}" type="text"/>
-                    <label for="email">E-mail</label>
+                    <label for="email" th:text="#{email}">E-mail</label>
                 </div>
             </form>
             <br><br>
-            <form class="text-dark" method="get" th:if="${applicantDTO != null}" th:object="${applicantDTO}">
+            <div th:if="${applicantDTO != null}">
+            <form class="text-dark" method="get" th:object="${applicantDTO}">
                 <div class="form-floating mb-3">
                     <input class="form-control" disabled id="fname" readonly th:value="*{firstName}" type="text"/>
-                    <label for="fname">First name</label>
+                    <label for="fname" th:text="#{fname}">First name</label>
                 </div>
                 <br>
                 <div class="form-floating mb-3">
                     <input class="form-control" disabled id="lname" readonly th:value="*{lastName}" type="text"/>
-                    <label for="lname">Last name</label>
+                    <label for="lname" th:text="#{lname}">Last name</label>
                 </div>
                 <br>
                 <div class="form-floating mb-3">
                     <input class="form-control" disabled id="city" readonly th:value="*{city}" type="text"/>
-                    <label for="city">City</label>
+                    <label for="city" th:text="#{city}">City</label>
                 </div>
                 <br>
                 <div class="form-floating mb-3">
                     <input class="form-control" disabled id="region" readonly th:value="*{region}" type="text"/>
-                    <label for="region">Region</label>
+                    <label for="region" th:text="#{region}">Region</label>
                 </div>
                 <br>
                 <div class="form-floating mb-3">
                     <input class="form-control" disabled id="inst" readonly th:value="*{educationalInstitution}"
                            type="text"/>
-                    <label for="inst">Educational institution</label>
+                    <label for="inst" th:text="#{edu.inst}">Educational institution</label>
                 </div>
                 <br>
                 <div class="text center">
                     <a class="btn btn-primary" th:if="${applicantDTO.certificateUrl != null}"
                        th:href="@{download-certificate/{id} (id = ${applicantDTO.getUserDetails.getId})}">
-                        <i class="bi bi-download" aria-hidden="true"><span class="text-center m-2">Download certificate</span></i></a>
+                        <i class="bi bi-download" aria-hidden="true"><span class="text-center m-2" th:text="#{download.cert}">Download certificate</span></i></a>
                 </div>
 
             </form>
                                                 <!--List of applicant's scores-->
             <div th:if="${!applicantDTO.scores.isEmpty}">
-            <h3 class="py-3 text-center">Scores</h3>
+            <h3 class="py-3 text-center" th:text="#{scores}">Scores</h3>
             <div class="py-3 table-responsive">
                 <table class="table table-hover table-light">
                     <thead class="thead-dark">
                     <tr>
-                        <th>Subject name</th>
-                        <th>Result</th>
+                        <th th:text="#{score.subject}">Subject name</th>
+                        <th th:text="#{score.result}">Result</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -78,14 +79,14 @@
                 </div>
                                     <!--List of applicant's requests and current status -->
             <div th:if="${!applicantDTO.requests.isEmpty}">
-            <h3 class="py-3 text-center">Faculties' application requests</h3>
+            <h3 class="py-3 text-center" th:text="#{requests.list}">Faculties' application requests</h3>
             <div class="py-3 table-responsive">
                 <table class="table table-hover table-light">
                     <thead class="thead-dark">
                     <tr>
-                        <th>Faculty name</th>
-                        <th>Requested on</th>
-                        <th>Current status</th>
+                        <th th:text="#{faculty.name}">Faculty name</th>
+                        <th th:text="#{request.date}">Requested on</th>
+                        <th th:text="#{request.status}">Current status</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -98,10 +99,11 @@
                 </table>
             </div>
             </div>
+            </div>
 <!--Edit profile button-->
         <div class="text-center">
             <a class="btn btn-primary" role="button"
-               th:href="@{/applicant/{id}/edit(id = ${applicantDTO.getUserDetails.getId})}">Edit profile</a>
+               th:href="@{/applicant/{username}/edit(username = ${userDTO.getUsername})}" th:text="#{edit.profile}">Edit profile</a>
         </div>
         </div>
     </div>

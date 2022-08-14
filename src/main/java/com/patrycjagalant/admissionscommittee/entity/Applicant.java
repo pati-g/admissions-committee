@@ -3,7 +3,6 @@ package com.patrycjagalant.admissionscommittee.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @NoArgsConstructor
@@ -22,27 +21,21 @@ public class Applicant {
     @Column(name = "ID")
     private Long id;
 
-    @Size(min = 2, max = 255)
     @Column(name = "first_name")
     private String firstName;
 
-    @Size(min = 2, max = 255)
     @Column(name = "last_name")
     private String lastName;
 
-    @Size(min = 2, max = 255)
     @Column(name = "city")
     private String city;
 
-    @Size(min = 2, max = 255)
     @Column(name = "region")
     private String region;
 
-    @Size(min = 2, max = 255)
     @Column(name = "educational_institution")
     private String educationalInstitution;
 
-    @Size(min = 2, max = 255)
     @Column(name = "certificate")
     private String certificateUrl;
 

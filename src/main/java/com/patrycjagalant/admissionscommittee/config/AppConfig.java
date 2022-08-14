@@ -1,8 +1,5 @@
 package com.patrycjagalant.admissionscommittee.config;
 
-import com.patrycjagalant.admissionscommittee.service.mapper.EnrollmentRequestMapper;
-import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
-import com.patrycjagalant.admissionscommittee.service.mapper.ScoreMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -14,7 +11,7 @@ import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 import java.util.Collections;
 
 @Configuration
-public class AppConfiguration {
+public class AppConfig {
     @Bean
     public SimpleUrlHandlerMapping customFaviconHandlerMapping() {
         SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
@@ -30,21 +27,6 @@ public class AppConfiguration {
                 = new ResourceHttpRequestHandler();
         requestHandler.setLocations(Collections.singletonList(new ClassPathResource("/")));
         return requestHandler;
-    }
-
-    @Bean
-    public FacultyMapper getFacultyMapper() {
-        return new FacultyMapper();
-    }
-
-    @Bean
-    public ScoreMapper getScoreMapper() {
-        return new ScoreMapper();
-    }
-
-    @Bean
-    public EnrollmentRequestMapper getEnrollmentMapper() {
-        return new EnrollmentRequestMapper();
     }
 
     @Bean

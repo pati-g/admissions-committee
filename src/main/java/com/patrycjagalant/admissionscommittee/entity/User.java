@@ -1,6 +1,7 @@
 package com.patrycjagalant.admissionscommittee.entity;
 
 import lombok.*;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,8 +33,10 @@ public class User implements UserDetails {
     private String email;
 
     @Column(name = "password")
+    @ToStringExclude
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role = Role.USER;
 
@@ -45,7 +48,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(this.getRole().toString()));
+        return Collections.singleton(new SimpleGrantedAuthority(String.valueOf(role)));
     }
 
     @Override

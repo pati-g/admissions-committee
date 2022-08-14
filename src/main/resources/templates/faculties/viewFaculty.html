@@ -3,37 +3,38 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Faculty details</title>
+    <title th:text="#{faculty.title}">Faculty details</title>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
-            <h1 class="py-3 text-center">View faculty details</h1>
+            <h1 class="py-3 text-center" th:text="#{faculty.view.details}">View faculty details</h1>
             <form class="text-dark" th:object="${facultyDTO}">
                 <div class="form-floating mb-3">
                     <input class="form-control" disabled id="name" readonly th:value="*{name}" type="text"/>
-                    <label for="name"><b>Faculty Name</b></label>
+                    <label for="name" th:text="#{faculty.name}" class="font-weight-bold">Faculty name</label>
                 </div>
                 <br>
                 <div class="form-floating mb-3">
                     <input class="form-control" disabled id="budget" readonly th:value="*{budgetPlaces}" type="text"/>
-                    <label for="budget"><b>Budget places</b></label>
+                    <label for="budget" th:text="#{faculty.budget}">Budget places</label>
                 </div>
                 <br>
                 <div class="form-floating mb-3">
                     <input class="form-control" disabled id="total" readonly th:value="*{totalPlaces}" type="text"/>
-                    <label for="total"><b>Total places</b></label>
+                    <label for="total" th:text="#{faculty.total}">Total places</label>
                 </div>
                 <br><br>
                 <div class="text-center">
-                    <a class="btn btn-primary"
-                       role="button" sec:authorize="hasAnyRole('ROLE_ADMIN')" th:href="@{/faculties/{id}/edit(id = ${facultyDTO.getId})}">Edit</a>
+                    <a class="btn btn-primary" role="button" th:text="#{edit}"
+                       sec:authorize="hasAnyRole('ROLE_ADMIN')"
+                       th:href="@{/faculties/{id}/edit(id = ${facultyDTO.getId})}">Edit</a>
                 </div>
                 <div class="text-center">
                     <a class="btn btn-success"
-                           onClick="return confirm('Are you sure you want to apply for this faculty?')"
-                           role="button"
+                           onClick="return confirm(th:text='#{confirm.apply}')"
+                           role="button" th:text="#{apply}"
                            sec:authorize="hasRole('ROLE_USER')"
                            th:href="@{/applicant/new-request}" th:method="post">Apply</a>
                 </div>
