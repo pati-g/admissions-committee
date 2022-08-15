@@ -15,13 +15,13 @@ public class EnrollmentRequestMapper {
 
     public EnrollmentRequestDto mapToDto(EnrollmentRequest enrollmentRequest) {
         log.debug("EnrollmentRequest entity before mapping: {}", enrollmentRequest);
-        ApplicantMapper applicantMapper = new ApplicantMapper();
-        FacultyMapper facultyMapper = new FacultyMapper();
+ApplicantMapper applicantMapper = new ApplicantMapper();
+ FacultyMapper facultyMapper = new FacultyMapper();
         return EnrollmentRequestDto.builder()
                 .id(enrollmentRequest.getId())
                 .registrationDate(enrollmentRequest.getRegistrationDate() != null ? enrollmentRequest.getRegistrationDate() : null)
                 .status(enrollmentRequest.getStatus())
-                .applicant(applicantMapper.mapToDtoWithoutRelations(enrollmentRequest.getApplicant()))
+                .applicant(applicantMapper.mapToDtoWithoutRequests(enrollmentRequest.getApplicant()))
                 .faculty(facultyMapper.mapToDto(enrollmentRequest.getFaculty())).build();
     }
 
@@ -32,9 +32,8 @@ public class EnrollmentRequestMapper {
 
     public EnrollmentRequest mapToEntity(EnrollmentRequestDto enrollmentRequestDTO) {
         log.debug("EnrollmentRequest Dto before mapping: {}", enrollmentRequestDTO);
-        ApplicantMapper applicantMapper = new ApplicantMapper();
-        FacultyMapper facultyMapper = new FacultyMapper();
-
+ApplicantMapper applicantMapper = new ApplicantMapper();
+FacultyMapper facultyMapper = new FacultyMapper();
         return EnrollmentRequest.builder()
                 .registrationDate(enrollmentRequestDTO.getRegistrationDate())
                 .status(enrollmentRequestDTO.getStatus())
@@ -44,9 +43,9 @@ public class EnrollmentRequestMapper {
 
     public void mapToEntity(EnrollmentRequest enrollmentRequest, EnrollmentRequestDto enrollmentRequestDTO) {
         log.debug("EnrollmentRequest entity: {} and Dto: {} before mapping", enrollmentRequest, enrollmentRequestDTO);
-        FacultyMapper facultyMapper = new FacultyMapper();
-        ApplicantMapper applicantMapper = new ApplicantMapper();
         Character status = enrollmentRequestDTO.getStatus();
+ApplicantMapper applicantMapper = new ApplicantMapper();
+FacultyMapper facultyMapper = new FacultyMapper();
         if (status != null) {
             enrollmentRequest.setStatus(status);
         }

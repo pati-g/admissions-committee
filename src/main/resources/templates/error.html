@@ -2,7 +2,7 @@
 <html th:lang="${#locale.language}" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="error.title" >Something went wrong...</title>
+    <title th:text="#{error.title}" >Something went wrong...</title>
 </head>
 <body>
 <div layout:fragment="content">
@@ -12,7 +12,7 @@
             <li class="list-group-item" th:text="#{status.code} + ': '+ ${status}"></li>
         </ul>
         <br><br>
-        <p><a href="/" th:href="@{/}" th:text="return.home">Back to home page</a></p>
+        <p><a class="btn btn-primary" href="/" th:href="@{/}" th:text="#{return.home}">Back to home page</a></p>
     </div>
 </div>
 </body>

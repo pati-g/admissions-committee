@@ -2,35 +2,53 @@
 <html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="#{statement.generate}">Generate statement</title>
+    <title th:text="#{request.statement}">Generate statement</title>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="row h-100 justify-content-center align-items-center">
-        <div class="col-10 col-md-8 col-lg-6">
-            <h1 class="py-3 text-center" th:text="#{statement.generate}">Generate statement</h1>
-            <form class="text-dark" method="post" th:action="@{/faculties/add}" th:object="${facultyDTO}">
-                <div class="form-floating mb-3 mt-3">
-                    <input class="form-control" id="name" placeholder="#{faculty.name}" required th:field="*{name}"
-                           type="text"/>
-                    <label for="name" th:text="#{faculty.name}">Faculty Name</label>
+        <div class="col-8 col-md-6 col-lg-3">
+            <h1 class="py-3 text-center" th:text="#{request.statement}">Generate statement</h1>
+            <form class="text-light" method="post" th:action="@{/faculties/add}" th:object="${request}">
+                <div class="form-group row mb-3 mt-3">
+                    <label for="faculty" th:text="#{faculty.name}">Faculty Name</label>
+                <input class="form-control-plaintext" disabled readonly id="faculty" th:value="${faculty.name}" type="text"/>
                 </div>
+                    <!--                View faculty option? -->
                 <br>
-                <div class="form-floating mb-3 mt-3">
-                    <input class="form-control" id="budget" placeholder="#{faculty.budget}" required
-                           th:field="*{budgetPlaces}"
-                           type="text"/>
-                    <label for="budget" th:text="#{faculty.budget}">Budget places</label>
+                <div class="form-group row mb-3 mt-3">
+                    <label for="applicant" th:text="#{applicant.name}">Applicant name</label>
+                <input class="form-control-plaintext" disabled readonly id="applicant" th:value="${applicant.fullName}" type="text"/>
                 </div>
+                    <!--                View applicant option? -->
                 <br>
-                <div class="form-floating mb-3 mt-3">
-                    <input class="form-control" id="total" placeholder="#{faculty.budget}" required
-                           th:field="*{totalPlaces}"
-                           type="text"/>
-                    <label for="total" th:text="#{faculty.budget}">Total places</label>
+                    <h3 class="py-3 text-center" th:text="#{request.scores}">Applicant's results</h3>
+                <div th:if="${scores != null}">
+                <div class="py-3 table-responsive">
+                        <table class="table table-light">
+                            <thead class="table-secondary">
+                            <tr>
+                                <th th:text="#{score.subject}">Subject name</th>
+                                <th th:text="#{score.result}">Result</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="score : ${scores}">
+                                <td th:text="${score.subjectName}">Subject name</td>
+                                <td id="result" th:text="${score.result}">Result</td>
+                            </tr>
+                            </tbody>
+                            <tfoot class="table-secondary">
+                            <tr>
+                                <td th:text="#{request.points}">Total points</td>
+                                <td id="total" th:text="${request.points}"></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
                 <br><br>
-                <input class="btn btn-primary" type="submit" th:value="#{faculty.create}">
+                <input class="btn btn-primary" type="submit" th:value="#{request.statement}">
             </form>
         </div>
     </div>

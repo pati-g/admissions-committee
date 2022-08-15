@@ -1,6 +1,8 @@
 package com.patrycjagalant.admissionscommittee.service;
 
+import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
+import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
 import com.patrycjagalant.admissionscommittee.repository.EnrollmentRequestRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.EnrollmentRequestMapper;
@@ -32,7 +34,9 @@ public class EnrollmentRequestService {
     // Read request by id
     public EnrollmentRequestDto getRequestById(Long id) {
         EnrollmentRequest request = enrollmentRequestRepository.getReferenceById(id);
-        return mapper.mapToDto(request);
+        EnrollmentRequestDto requestDto = mapper.mapToDto(request);
+        updatePoints(requestDto);
+        return requestDto;
     }
 
     // Read requests for one applicant
@@ -59,4 +63,17 @@ public class EnrollmentRequestService {
         enrollmentRequestRepository.deleteById(id);
     }
 
+//    public void addScoresToRequest(EnrollmentRequestDto requestDto, ApplicantDto applicantDto) {}
+
+    public void updatePoints(EnrollmentRequestDto requestDto) {
+        ApplicantDto applicantDto = requestDto.getApplicant();
+        List<ScoreDto> relevantScores = applicantDto.getScores();
+        if(relevantScores != null && !relevantScores.isEmpty()) {
+        Integer total = relevantScores.stream().mapToInt(ScoreDto::getResult).sum();
+        requestDto.setPoints(total);
+        EnrollmentRequest request = enrollmentRequestRepository.findById(requestDto.getId()).orElseThrow();
+        request.setPoints(total);
+        enrollmentRequestRepository.save(request);
+        }
+    }
 }

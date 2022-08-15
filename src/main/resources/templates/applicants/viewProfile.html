@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="#{view.profile}">View your profile</title>
 </head>
@@ -87,6 +87,7 @@
                         <th th:text="#{faculty.name}">Faculty name</th>
                         <th th:text="#{request.date}">Requested on</th>
                         <th th:text="#{request.status}">Current status</th>
+                        <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{request.statement}">Generate statement</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -94,6 +95,9 @@
                         <td th:text="${request.faculty.getName}">Faculty name</td>
                         <td th:text="${request.registrationDate}">Date of request submission</td>
                         <td th:text="${request.status}">Status</td>
+                        <td><a class="btn btn-primary" role="button" sec:authorize="hasRole('ROLE_ADMIN')"
+                               th:href="@{/request/{id}/statement(id = ${request.id})}" th:text="#{request.statement}">Generate statement</a>
+                        </td>
                     </tr>
                     </tbody>
                 </table>

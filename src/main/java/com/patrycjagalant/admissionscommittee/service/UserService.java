@@ -51,10 +51,13 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user).getId();
     }
 
-//    private boolean emailExists(String email) {
-//        return userRepository.findByEmail(email) != null;
-//    }
-
+    @Transactional
+    public boolean changeBlockedStatus(Long id) {
+        User user = userRepository.getReferenceById(id);
+        user.setBlocked(!user.isBlocked());
+        userRepository.save(user);
+        return user.isBlocked();
+    }
     private boolean usernameExists(String username) {
         return userRepository.findByUsername(username) != null;
     }

@@ -19,7 +19,7 @@
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a aria-current="page" class="nav-link active" th:href="@{/}" th:text="#{home}">Home</a></li>
                 <li class="nav-item"><a class="nav-link" th:href="@{/faculties}" th:text="#{faculties}">Faculties</a></li>
-                <li class="nav-item"><a class="nav-link" sec:authorize="hasAnyRole('ROLE_ADMIN')"
+                <li class="nav-item"><a class="nav-link" sec:authorize="hasRole('ROLE_ADMIN')"
                                         th:href="@{/applicant/all}" th:text="#{applicants}">Applicants</a></li>
                 <li class="nav-item dropdown">
                     <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
@@ -28,8 +28,9 @@
                        th:text="#{greeting} + ', ' + ${#authentication.name}"></a>
                     <ul aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-end"
                         sec:authorize="isAuthenticated()">
-                        <li><a class="dropdown-item" th:href="@{applicant/{username} (username = ${#authentication.principal.username})}" th:text="#{view.profile}">View profile</a></li>
-                        <li><a class="dropdown-item" th:href="@{applicant/{username}/edit (username = ${#authentication.principal.username})}" th:text="#{edit.profile}">Edit your profile</a></li>
+                        <li><a class="dropdown-item" th:href="@{/applicant/{username} (username = ${#authentication.principal.username})}" th:text="#{view.profile}">View profile</a></li>
+                        <li><a class="dropdown-item" th:href="@{/user/{username}/edit (username = ${#authentication.principal.username})}" th:text="#{edit.account}">Edit account</a></li>
+                        <li><a class="dropdown-item" th:href="@{/applicant/{username}/edit (username = ${#authentication.principal.username})}" th:text="#{edit.profile}">Edit profile</a></li>
                         <li>
                             <hr class="dropdown-divider"/>
                         </li>

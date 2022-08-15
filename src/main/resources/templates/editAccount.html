@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="#{edit.account}">Edit account</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row h-100 justify-content-center align-items-center">
+        <div class="col-10 col-md-8 col-lg-6">
+            <h1 class="py-3 text-center" th:text="#{edit.account}">Edit account</h1>
+            <form class="text-dark" th:action="@{/user/{username}/edit (username = ${userDTO.getUsername})}" th:method="put" th:object="${userDTO}">
+                <div class="alert alert-success text-center p-1" role="alert" th:if="${message}">
+                    <h5 th:text="${message}"></h5></div>
+                <div class="alert alert-danger py-0" th:if="${#fields.hasErrors('*')}">
+                    <p th:text="#{error.message}">Please correct errors listed below</p>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input class="form-control" disabled id="username" readonly th:value="*{username}"
+                           type="text"/>
+                    <label for="username" th:text="#{username}">Username</label>
+                    <span class="help-block" th:if="${#fields.hasErrors('username')}">
+                <p class="text-danger py-0" th:errors="*{username}">Username error</p>
+                   </span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input class="form-control" id="email" placeholder="*{email}" required th:field="*{email}"
+                           type="text"/>
+                    <label for="email" th:text="#{email}">E-mail</label>
+                    <span class="help-block" th:if="${#fields.hasErrors('email')}">
+                <p class="text-danger py-0" th:errors="*{email}">E-mail error</p>
+                   </span>
+                </div>
+                <div class="form-floating mb-3 has-feedback">
+                    <input class="form-control" id="password" placeholder="*{password}" th:field="*{password}"
+                           type="password"/>
+                    <label for="password" th:text="#{password.change}">Change password</label>
+                    <div class="py-2"><input onclick="show1()" type="checkbox"><span class="text-light px-2">Show Password</span>
+                        <span class="help-block" th:if="${#fields.hasErrors('password')}">
+                <p class="text-danger py-0" th:errors="*{password}">Password error</p>
+                   </span>
+                    </div>
+                    <script>
+                    function show1() {
+  var x = document.getElementById("password");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+
+
+
+                </script>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" id="matchingPassword" th:field="*{matchingPassword}"
+                               type="password"/>
+                        <label for="matchingPassword" th:text="#{password2}">Confirm new password</label>
+                        <div class="py-2"><input onclick="show2()" type="checkbox"><span class="text-light px-2">Show Password</span>
+                        </div>
+                        <span class="help-block" th:if="${#fields.hasErrors('matchingPassword')}">
+                <p class="text-danger py-0" th:errors="*{matchingPassword}">Password error</p>
+                   </span>
+                    </div>
+                    <script>
+                    function show2() {
+  var x = document.getElementById("matchingPassword");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+                </script>
+                    <div class="text-center">
+                        <input class="btn btn-primary" type="submit" th:value="#{submit}"></div>
+                </div>
+            </form>
+            <br><br>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

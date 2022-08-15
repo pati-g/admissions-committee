@@ -10,7 +10,6 @@ import com.patrycjagalant.admissionscommittee.exceptions.FileStorageException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.repository.ApplicantRepository;
-import com.patrycjagalant.admissionscommittee.repository.UserRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.ApplicantMapper;
 import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
 import org.apache.commons.io.FilenameUtils;
@@ -37,42 +36,32 @@ import java.util.Objects;
 @Service
 public class ApplicantService {
     private final ApplicantRepository applicantRepository;
-    private final UserRepository userRepository;
     private final ScoreService scoreService;
     private final EnrollmentRequestService enrollmentRequestService;
+    private final ApplicantMapper applicantMapper;
 
     @Value("${app.upload.dir:${user.home}}")
     public String filesPathString;
 
-    public ApplicantService(ApplicantRepository applicantRepository, UserRepository userRepository,
-                            ScoreService scoreService, EnrollmentRequestService enrollmentRequestService) {
-        this.userRepository = userRepository;
+    public ApplicantService(ApplicantRepository applicantRepository, ScoreService scoreService, EnrollmentRequestService enrollmentRequestService, ApplicantMapper applicantMapper) {
         this.applicantRepository = applicantRepository;
         this.scoreService = scoreService;
         this.enrollmentRequestService = enrollmentRequestService;
+        this.applicantMapper = applicantMapper;
     }
 
     @Transactional
-    public void editApplicant(ApplicantDto applicantdto, Long userID, MultipartFile file) throws NoSuchApplicantException, FileStorageException {
-        Applicant current = applicantRepository.findByUserId(userID).orElseThrow(NoSuchApplicantException::new);
-        if (file != null) {
-            String fileName = userID + "_" + current.getLastName() + "_" + current.getFirstName() + "_certificate";
-            String fileCode = saveFile(file, fileName);
-            applicantdto.setCertificateUrl(fileCode);
-        }
-        ApplicantMapper applicantMapper = new ApplicantMapper();
-        applicantMapper.mapToEntity(applicantdto, current);
-    }
-@Transactional
     public void editApplicant(ApplicantDto applicantdto, Long userID) throws NoSuchApplicantException {
         Applicant current = applicantRepository.findByUserId(userID).orElseThrow(NoSuchApplicantException::new);
-        ApplicantMapper applicantMapper = new ApplicantMapper();
         applicantMapper.mapToEntity(applicantdto, current);
     }
 
-    private String saveFile(MultipartFile file, String fileName) throws FileStorageException {
+    @Transactional
+    public void saveFile(MultipartFile file, String id) throws FileStorageException, NoSuchApplicantException {
+        if (file == null) {
+            throw new FileStorageException("Error during uploading file");
+        }
         Path uploadPath = Paths.get(filesPathString);
-
         if (!Files.exists(uploadPath)) {
             try {
                 Files.createDirectories(uploadPath);
@@ -80,12 +69,19 @@ public class ApplicantService {
                 throw new RuntimeException(e);
             }
         }
+        if (!ParamValidator.isNumeric(id)) {
+            throw new NoSuchApplicantException();
+        }
+        Long idNumber = Long.parseLong(id);
+        Applicant applicant = applicantRepository.findById(idNumber).orElseThrow();
+        String fileName = id + "_" + applicant.getLastName() + "_" + applicant.getFirstName() + "_certificate";
 
         try (InputStream inputStream = file.getInputStream()) {
             String extension = FilenameUtils.getExtension(file.getOriginalFilename());
             Path filePath = uploadPath.resolve(fileName + "." + extension);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-            return filePath.toString();
+            String pathString =  filePath.toString();
+            applicant.setCertificateUrl(pathString);
         } catch (IOException ioe) {
             throw new FileStorageException("Could not save file: " + fileName);
         }
@@ -96,8 +92,8 @@ public class ApplicantService {
             throw new NoSuchApplicantException();
         }
         Long idNumber = Long.parseLong(id);
-        ApplicantDto dto = this.getByUserId(idNumber);
-        FileSystemResource resource = new FileSystemResource(dto.getCertificateUrl());
+        Applicant applicant = applicantRepository.findByUserId(idNumber).orElseThrow();
+        FileSystemResource resource = new FileSystemResource(applicant.getCertificateUrl());
         MediaType mediaType = MediaTypeFactory.getMediaType(resource).orElse(MediaType.APPLICATION_OCTET_STREAM);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(mediaType);
@@ -107,7 +103,6 @@ public class ApplicantService {
     }
 
     public Applicant addApplicant(ApplicantDto applicantDTO, User loggedUser) {
-        ApplicantMapper applicantMapper = new ApplicantMapper();
         Applicant newApplicant = applicantMapper.mapToEntity(applicantDTO);
         newApplicant.setUser(loggedUser);
         return applicantRepository.save(newApplicant);
@@ -116,7 +111,6 @@ public class ApplicantService {
     public ApplicantDto getByUserId(Long id) {
         Applicant applicant = applicantRepository.findByUserId(id).orElse(null);
         if (applicant != null) {
-            ApplicantMapper applicantMapper = new ApplicantMapper();
             ApplicantDto applicantDto = applicantMapper.mapToDto(applicant);
             Long applicantID = applicantDto.getId();
             List<ScoreDto> scores = scoreService.getScoresForApplicant(applicantID);
@@ -142,18 +136,11 @@ public class ApplicantService {
         }
         Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
         Page<Applicant> applicantPage = applicantRepository.findAll(PageRequest.of(page - 1, size, Sort.by(sortDirection, sortBy)));
-        ApplicantMapper applicantMapper = new ApplicantMapper();
         List<ApplicantDto> applicantDtos = applicantMapper.mapToDto(applicantPage.getContent());
         return new PageImpl<>(applicantDtos, PageRequest.of(page - 1, size, Sort.by(sortDirection, sortBy)), facultiesTotal);
     }
 
-    @Transactional
-    public boolean changeBlockedStatus(Long id) {
-        User user = userRepository.getReferenceById(id);
-        user.setBlocked(!user.isBlocked());
-        userRepository.save(user);
-        return user.isBlocked();
-    }
+
 
     public void deleteApplicant(Long id) throws NoSuchFacultyException {
         if (applicantRepository.findById(id).isPresent()) {
