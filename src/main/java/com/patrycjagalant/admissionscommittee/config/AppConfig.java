@@ -7,8 +7,10 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Collections;
+import java.util.function.BiFunction;
 
 @Configuration
 public class AppConfig {
@@ -32,5 +34,12 @@ public class AppConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new Argon2PasswordEncoder();
+    }
+
+    @Bean
+    public BiFunction<String, String, String> replaceOrAddParam() {
+        return (paramName, newValue) -> ServletUriComponentsBuilder.fromCurrentRequest()
+                .replaceQueryParam(paramName, newValue)
+                .toUriString();
     }
 }

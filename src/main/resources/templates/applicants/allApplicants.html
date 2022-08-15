@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html th:lang="${#locale.language}" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="#{applicants.list}">Applicants' list</title>
@@ -10,9 +10,38 @@
         <div class="col-10 px-3">
             <h1 class="py-3 text-center text-dark" th:text="#{applicants.list}">List of applicants</h1>
             <!--    <a class="btn btn-outline-primary" th:href="@{/faculties/new}" role="button">Add new</a>-->
+            <div class="btn-group dropdown">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="btn-label" th:text="#{items.page}">Items per page</span></button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '5')}">5</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '10')}">10</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '20')}">20</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '30')}">30</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '50')}">50</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '100')}">100</a></li>
+                </ul>
+            </div>
+<!--            Items per page and sorting-->
+            <div class="btn-group dropdown">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="btn-label" th:text="#{sortby}">Sort by</span></button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sortBy', 'lastName')}" th:text="#{lname2}">Last name</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sortBy', 'city')}" th:text="#{city}">City</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sortBy', 'region')}" th:text="#{region}">Region</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sortBy', 'educationalInstitution')}" th:text="#{edu.inst}">Educational Institution</a></li>
+                </ul></div>
+            <div class="btn-group dropdown">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="btn-label"><i class="bi bi-arrow-down-up" th:text="#{sort}">Sort order</i></span></button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sort', 'ASC')}" th:text="#{asc}">Ascending</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sort', 'DESC')}" th:text="#{desc}">Descending</a></li>
+                </ul></div>
             <div class="py-3 table-responsive">
                 <table class="table">
-                    <tbody>
+                    <thead>
                     <tr>
                         <th th:text="#{applicant.name}">Name of the applicant</th>
                         <th th:text="#{city}">City</th>
@@ -20,7 +49,10 @@
                         <th th:text="#{email}">E-mail</th>
                         <th th:text="#{edu.inst}">Educational institution</th>
                         <th th:text="#{certificate}">Certificate</th>
+                        <th th:text="#{a.status}">Account status</th>
                     </tr>
+                    </thead>
+                    <tbody>
                     <tr th:each="applicant : ${applicants.content}">
                         <td th:text="${applicant.fullName}">Full name</td>
                         <td th:text="${applicant.city}">City</td>
@@ -32,6 +64,7 @@
                                                    th:if="${applicant.certificateUrl != null}">
                             <i aria-hidden="true" class="bi bi-download"></i>
                         </a></td>
+                        <td th:text="${applicant.userDetails.isBlocked}">Is blocked status</td>
                         <td><a class="btn btn-outline-primary"
                                th:href="@{/applicant/{username}(username = ${applicant.getUserDetails.getUsername})}" th:text="#{view}">View</a>
                         </td>

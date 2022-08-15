@@ -48,9 +48,9 @@
                             <i class="bi bi-translate"></i><span th:text="' ' + #{lang.change}" class="btn-label"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="?lang=en" th:text="#{lang.en}">English</a></li>
-                            <li><a class="dropdown-item" href="?lang=pl" th:text="#{lang.pl}">Polish</a></li>
-                            <li><a class="dropdown-item" href="?lang=ua" th:text="#{lang.ua}">Ukrainian</a></li>
+                            <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'en')}" th:text="#{lang.en}">English</a></li>
+                            <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'pl')}">Polish</a></li>
+                            <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'ua')}">Ukrainian</a></li>
                         </ul>
                     </div>
                 </li>

@@ -10,6 +10,35 @@
         <div class="col-10 px-3">
             <h1 class="py-3 text-center text-dark" th:text="#{requests.list2}">List of applicants' enrollment requests</h1>
             <a class="btn btn-outline-primary" role="button" th:href="@{/faculties/new}" th:text="#{request.add}">Add a new request</a>
+<!--            Items per page and sorting-->
+            <div class="btn-group dropdown">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="btn-label" th:text="#{items.page}">Items per page</span></button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '5')}">5</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '10')}">10</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '20')}">20</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '30')}">30</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '50')}">50</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '100')}">100</a></li>
+                </ul>
+            </div>
+            <div class="btn-group dropdown">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="btn-label" th:text="#{sortby}">Sort by</span></button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sortBy', 'date')}" th:text="#{request.date}">Submission date</a></li>
+<!--                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sortBy', 'name')}" th:text="#{city}">City</a></li>-->
+<!--                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sortBy', 'region')}">Region</a></li>-->
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sortBy', 'status')}" th:text="#{request.status}">Enrollment status</a></li>
+                </ul></div>
+            <div class="btn-group dropdown">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="btn-label"><i class="bi bi-arrow-down-up" th:text="#{sort}">Sort order</i></span></button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sort', 'ASC')}" th:text="#{asc}">Ascending</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sort', 'DESC')}" th:text="#{desc}">Descending</a></li>
+                </ul></div>
             <div class="py-3 table-responsive">
                 <table class="table">
                     <tbody>
