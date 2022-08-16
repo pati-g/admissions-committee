@@ -40,7 +40,7 @@ public class EnrollmentRequest {
     @Column(name = "points", columnDefinition = "integer default -1")
     private Integer points = -1;
 
-//    @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition="character default 'P'")
-    private Character status = 'P';
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status = Status.P;
 }

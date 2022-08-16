@@ -11,6 +11,7 @@ import com.patrycjagalant.admissionscommittee.service.ScoreService;
 import com.patrycjagalant.admissionscommittee.service.UserService;
 import com.patrycjagalant.admissionscommittee.utils.FileValidator;
 import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -25,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 import javax.validation.Valid;
 
+@Slf4j
 @Controller
 @RequestMapping("/applicant")
 public class ApplicantController {
@@ -97,20 +99,21 @@ public class ApplicantController {
         return REDIRECT_APPLICANT_ID_EDIT;
     }
 
-    @PostMapping("/save-certificate/{id}")
+    @PostMapping("/save-certificate/{username}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String saveCertificate(@ModelAttribute("file") MultipartFile file,
-                                  @PathVariable String id, Model model) throws FileStorageException, NoSuchApplicantException {
+                                  @PathVariable String username, Model model) throws FileStorageException {
         boolean isValid = fileValidator.validate(file);
         if (!isValid) {
             return APPLICANTS_EDIT_PROFILE;
         }
-        applicantService.saveFile(file, id);
-        return "redirect:/";
+        applicantService.saveFile(file, username);
+        return REDIRECT_HOME;
     }
 
-    @GetMapping(value = "/download-certificate/{id}")
-    public ResponseEntity<Resource> downloadCertificate(@PathVariable("id") String id) throws NoSuchApplicantException {
-        return applicantService.downloadFile(id);
+    @GetMapping(value = "/download-certificate/{username}")
+    public ResponseEntity<Resource> downloadCertificate(@PathVariable String username) {
+            return applicantService.downloadFile(username);
     }
 
     @GetMapping("/new-score")
@@ -158,6 +161,7 @@ public class ApplicantController {
     }
 
     @RequestMapping(value = "/{id}/delete", method = {RequestMethod.DELETE, RequestMethod.POST})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteApplicant(@PathVariable String id, Model model) throws NoSuchFacultyException {
         if (id.matches("(\\d)+")) {
             long idNumber = Long.parseLong(id);

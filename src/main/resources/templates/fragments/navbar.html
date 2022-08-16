@@ -30,7 +30,8 @@
                         sec:authorize="isAuthenticated()">
                         <li><a class="dropdown-item" th:href="@{/applicant/{username} (username = ${#authentication.principal.username})}" th:text="#{view.profile}">View profile</a></li>
                         <li><a class="dropdown-item" th:href="@{/user/{username}/edit (username = ${#authentication.principal.username})}" th:text="#{edit.account}">Edit account</a></li>
-                        <li><a class="dropdown-item" th:href="@{/applicant/{username}/edit (username = ${#authentication.principal.username})}" th:text="#{edit.profile}">Edit profile</a></li>
+                        <li><a class="dropdown-item" sec:authorize="hasRole('ROLE_USER')"
+                               th:href="@{/applicant/{username}/edit (username = ${#authentication.principal.username})}" th:text="#{edit.profile}">Edit profile</a></li>
                         <li>
                             <hr class="dropdown-divider"/>
                         </li>
@@ -50,8 +51,8 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'en')}" th:text="#{lang.en}">English</a></li>
-                            <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'pl')}">Polish</a></li>
-                            <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'ua')}">Ukrainian</a></li>
+                            <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'pl')}" th:text="#{lang.pl}">Polish</a></li>
+                            <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'ua')}" th:text="#{lang.ua}">Ukrainian</a></li>
                         </ul>
                     </div>
                 </li>

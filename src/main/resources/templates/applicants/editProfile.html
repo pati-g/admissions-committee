@@ -72,8 +72,9 @@
             <!--List of applicant's scores-->
                 <div th:if="${!applicantDTO.scores.isEmpty}">
                     <h2 class="py-3 text-center" th:text="#{scores}">Scores</h2>
-                    <div class="text-center"><a class="btn btn-primary" role="button" th:href="@{/applicant/new-score}" th:text="#{score.new}">Add
-                        a new score</a></div>
+                    <div class="text-center">
+                        <a class="btn btn-success" role="button"
+                           th:href="@{/applicant/new-score}" th:text="#{score.new}">Add a new score</a></div>
                     <table class="py-3 table-responsive">
                         <thead>
                         <td class="text-center" th:text="#{score.subject}">Subject Name</td>
@@ -109,34 +110,32 @@
                 </div>
                         <!--List of applicant's requests and current status -->
                 <div th:if="${!applicantDTO.requests.isEmpty}">
-                    <h2 class="py-3 text-center" th:text="#{faculty.list}">Faculties' application requests</h2>
+                    <h2 class="py-3 text-center" th:text="#{requests.list}">List of enrollment requests</h2>
                     <table class="py-3 table-responsive text-center">
                         <thead class="text-center">
                         <td th:text="#{faculty.name}">Faculty Name</td>
+                        <th th:href="#{request.points}">Total points</th>
                         <td th:text="#{request.date}">Registration date</td>
-                        <td th:text="#{request.status}">Enrollment status</td>
+                        <td th:text="#{request.status}">Current status</td>
                         </thead>
                         <br>
-                        <tbody>
+                        <tbody class="bg-light text-dark">
                         <th:block th:each="request : ${requests}">
                             <tr>
-                                <form class="text-dark"
-                                      th:action="@{/applicant/edit-request/{id}(id = ${request.getId})}"
-                                      th:if="${request != null}"
-                                      th:method="put">
-                                    <td><input class="form-control" id="facultyname" placeholder="*{faculty.getName}"
-                                               required th:value="${request.faculty.getName}"
-                                               type="text"/></td>
-                                    <td><input class="form-control" disabled id="date" placeholder="*{registrationDate}"
-                                               readonly required th:value="${request.registrationDate}"
-                                               type="text"/></td>
-                                    <td><input class="form-control" disabled id="status" readonly required
-                                               th:value="${request.status}" type="text"/></td>
+                                <div th:if="${request != null}">
+                                    <td th:text="${request.faculty.getName}"></td>
+                                    <td th:text="${request.points}"></td>
+                                    <td th:text="${request.registrationDate}"></td>
+                                    <td th:text="#{${request.status.statusName}}"></td>
                                     <td class=" px-3">
-                                        <div class="text-center"><input class="btn btn-primary" type="submit"
-                                                                        th:value="#{submit}"></div>
+                                        <div class="text-center">
+                                            <a class="btn btn-outline-danger" role="button"
+                                               onClick="return confirm(th:text='#{confirm.delete}')"
+                                               th:href="@{/request/{id}/delete (id=${request.id})}"
+                                               th:text="#{request.delete}">Delete request</a>
+                                        </div>
                                     </td>
-                                </form>
+                                </div>
                             </tr>
                         </th:block>
                         </tbody>

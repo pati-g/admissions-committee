@@ -4,6 +4,7 @@ import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
+import com.patrycjagalant.admissionscommittee.exceptions.NoSuchRequestException;
 import com.patrycjagalant.admissionscommittee.repository.EnrollmentRequestRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.EnrollmentRequestMapper;
 import org.springframework.data.domain.Page;
@@ -52,19 +53,20 @@ public class EnrollmentRequestService {
 
     // Update a request
     @Transactional
-    public void editApplicationRequest(EnrollmentRequestDto requestDTO, Long id) {
+    public void editRequest(EnrollmentRequestDto requestDTO, Long id) {
         EnrollmentRequest request = enrollmentRequestRepository.getReferenceById(id);
         mapper.mapToEntity(request, requestDTO);
         enrollmentRequestRepository.save(request);
     }
 
     // Delete a request
-    public void deleteApplicationRequest(Long id) {
-        enrollmentRequestRepository.deleteById(id);
+    public void deleteRequest(Long id) throws NoSuchRequestException {
+        if(enrollmentRequestRepository.findById(id).isPresent()) {
+            enrollmentRequestRepository.deleteById(id);
+        } else {
+            throw new NoSuchRequestException("Request not found, please try again.");
+        }
     }
-
-//    public void addScoresToRequest(EnrollmentRequestDto requestDto, ApplicantDto applicantDto) {}
-
     public void updatePoints(EnrollmentRequestDto requestDto) {
         ApplicantDto applicantDto = requestDto.getApplicant();
         List<ScoreDto> relevantScores = applicantDto.getScores();

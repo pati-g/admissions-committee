@@ -1,9 +1,12 @@
 package com.patrycjagalant.admissionscommittee.controller;
 
+import com.patrycjagalant.admissionscommittee.dto.UserDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+
+
+import static com.patrycjagalant.admissionscommittee.utils.Constants.REGISTER;
 
 @Controller
 public class HomepageController {
@@ -23,11 +26,11 @@ public class HomepageController {
         return "logout";
     }
 
-//    @PostMapping("/{lang}")
-//    public String changeLocale()
-//    // Get locale from URL and switch it accordingly
-//    // Get URL from HTTPRequest? - and return it with redirect
-//    }
-
-
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model) {
+        if(!model.containsAttribute("user")) {
+            model.addAttribute("user", new UserDto());
+        }
+        return REGISTER;
+    }
 }

@@ -1,5 +1,6 @@
 package com.patrycjagalant.admissionscommittee.dto;
 
+import com.patrycjagalant.admissionscommittee.entity.Status;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -32,5 +33,5 @@ public class EnrollmentRequestDto {
     private Integer points = -1;
 
     @NotBlank
-    private Character status = 'P';
+    private Status status = Status.P;
 }

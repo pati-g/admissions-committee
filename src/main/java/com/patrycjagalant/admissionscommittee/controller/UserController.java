@@ -1,6 +1,5 @@
 package com.patrycjagalant.admissionscommittee.controller;
 
-import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.dto.UserDto;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.UserAlreadyExistException;
@@ -14,12 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import javax.validation.Valid;
-
 import static com.patrycjagalant.admissionscommittee.controller.ApplicantController.REDIRECT_HOME;
 import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
-import static com.patrycjagalant.admissionscommittee.utils.Constants.REDIRECT_APPLICANT_ID_EDIT;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,14 +24,6 @@ import static com.patrycjagalant.admissionscommittee.utils.Constants.REDIRECT_AP
 public class UserController {
 
     private final UserService userService;
-
-    @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
-        if(!model.containsAttribute("user")) {
-            model.addAttribute("user", new UserDto());
-        }
-        return REGISTER;
-    }
 
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("user") UserDto userDto, BindingResult result, RedirectAttributes redirectAttributes) {

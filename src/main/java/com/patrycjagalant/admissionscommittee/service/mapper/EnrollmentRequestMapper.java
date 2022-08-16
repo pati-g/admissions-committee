@@ -3,10 +3,12 @@ package com.patrycjagalant.admissionscommittee.service.mapper;
 
 import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
+import com.patrycjagalant.admissionscommittee.entity.Status;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -43,7 +45,7 @@ FacultyMapper facultyMapper = new FacultyMapper();
 
     public void mapToEntity(EnrollmentRequest enrollmentRequest, EnrollmentRequestDto enrollmentRequestDTO) {
         log.debug("EnrollmentRequest entity: {} and Dto: {} before mapping", enrollmentRequest, enrollmentRequestDTO);
-        Character status = enrollmentRequestDTO.getStatus();
+        Status status = enrollmentRequestDTO.getStatus();
 ApplicantMapper applicantMapper = new ApplicantMapper();
 FacultyMapper facultyMapper = new FacultyMapper();
         if (status != null) {

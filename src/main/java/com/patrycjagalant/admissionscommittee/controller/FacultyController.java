@@ -8,6 +8,7 @@ import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.service.ApplicantService;
 import com.patrycjagalant.admissionscommittee.service.FacultyService;
 import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +21,7 @@ import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
+@Slf4j
 @Controller
 @RequestMapping("/faculties")
 public class FacultyController {
@@ -52,12 +54,19 @@ public class FacultyController {
     }
 
     @GetMapping("/{id}")
-    public String viewFaculty(Model model, @PathVariable("id") String idString) throws NoSuchFacultyException {
+    public String viewFaculty(Model model, @PathVariable("id") String idString) {
         if (ParamValidator.isNumeric(idString)) {
             long id = Long.parseLong(idString);
-            FacultyDto facultyDTO = facultyService.getById(id);
-            model.addAttribute(FACULTY_DTO, facultyDTO);
-            return "faculties/viewFaculty";
+            try {
+                FacultyDto facultyDTO = facultyService.getById(id);
+                model.addAttribute(FACULTY_DTO, facultyDTO);
+                return "faculties/viewFaculty";
+            }
+            catch (NoSuchFacultyException e) {
+                model.addAttribute("error", "Incorrect faculty ID, please try again.");
+                log.warn("Exception thrown: NoSuchFacultyException, message: " + e.getMessage());
+                return REDIRECT_FACULTIES;
+            }
         }
         return REDIRECT_FACULTIES;
     }

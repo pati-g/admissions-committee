@@ -46,7 +46,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .antMatchers("/", "/index", "/h2-console/**", "/register", "/static/favicon.ico", "/images/*", "/faculties", "/faculties/{id:\\d+}").permitAll()
+                        .antMatchers("/*", "/login*", "/logout*", "/index*", "/h2-console/**", "/register*", "/static/favicon.ico*", "/images/*", "/faculties*", "/faculties/{id:\\d+}*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin()

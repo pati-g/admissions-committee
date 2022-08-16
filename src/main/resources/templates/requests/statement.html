@@ -7,32 +7,33 @@
 <body>
 <div layout:fragment="content">
     <div class="row h-100 justify-content-center align-items-center">
-        <div class="col-8 col-md-6 col-lg-3">
-            <h1 class="py-3 text-center" th:text="#{request.statement}">Generate statement</h1>
-            <form class="text-light" method="post" th:action="@{/faculties/add}" th:object="${request}">
-                <div class="form-group row mb-3 mt-3">
-                    <label for="faculty" th:text="#{faculty.name}">Faculty Name</label>
-                <input class="form-control-plaintext" disabled readonly id="faculty" th:value="${faculty.name}" type="text"/>
-                </div>
-                    <!--                View faculty option? -->
-                <br>
-                <div class="form-group row mb-3 mt-3">
-                    <label for="applicant" th:text="#{applicant.name}">Applicant name</label>
-                <input class="form-control-plaintext" disabled readonly id="applicant" th:value="${applicant.fullName}" type="text"/>
-                </div>
-                    <!--                View applicant option? -->
-                <br>
-                    <h3 class="py-3 text-center" th:text="#{request.scores}">Applicant's results</h3>
-                <div th:if="${scores != null}">
+        <div class="col-10 col-md-8 col-lg-6">
+            <h1 class="py-3 text-center" th:text="#{request.statement}">Generate statement</h1> <br>
+
+            <h3 th:text="#{faculty.name}">Faculty Name</h3>
+            <a class="btn btn-secondary float-right" th:text="#{view}"
+               th:href="@{/faculties/{id}(id = ${faculty.getId})}">View</a>
+            <div class="bg-light text-dark p-3">
+                <span th:text="${faculty.name}"></span>
+            </div>
+            <br>
+            <h3 th:text="#{applicant.name}">Applicant name</h3>
+            <a class="btn btn-secondary float-right" th:text="#{view}"
+               th:href="@{/applicant/{username}(username = ${applicant.getUserDetails.getUsername})}">View</a>
+            <div class="bg-light text-dark clearfix p-3">
+                <span th:text="${applicant.fullName}"></span>
+            </div>
+            <h3 class="py-3 text-center" th:text="#{request.scores}">Applicant's results</h3>
+            <div th:if="${scores != null}">
                 <div class="py-3 table-responsive">
-                        <table class="table table-light">
-                            <thead class="table-secondary">
-                            <tr>
-                                <th th:text="#{score.subject}">Subject name</th>
-                                <th th:text="#{score.result}">Result</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                    <table class="table table-light">
+                        <thead class="table-secondary">
+                        <tr>
+                            <th th:text="#{score.subject}">Subject name</th>
+                            <th th:text="#{score.result}">Result</th>
+                        </tr>
+                        </thead>
+                        <tbody>
                             <tr th:each="score : ${scores}">
                                 <td th:text="${score.subjectName}">Subject name</td>
                                 <td id="result" th:text="${score.result}">Result</td>
@@ -49,7 +50,6 @@
                 </div>
                 <br><br>
                 <input class="btn btn-primary" type="submit" th:value="#{request.statement}">
-            </form>
         </div>
     </div>
 </div>
