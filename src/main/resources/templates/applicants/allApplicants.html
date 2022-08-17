@@ -64,7 +64,7 @@
                                                    th:if="${applicant.certificateUrl != null}">
                             <i aria-hidden="true" class="bi bi-download"></i>
                         </a></td>
-                        <td th:text="${applicant.userDetails.isBlocked}">Is blocked status</td>
+                        <td th:text="${applicant.userDetails.isBlocked} ? #{blocked} : #{active}">Is blocked status</td>
                         <td><a class="btn btn-outline-primary"
                                th:href="@{/applicant/{username}(username = ${applicant.getUserDetails.getUsername})}" th:text="#{view}">View</a>
                         </td>

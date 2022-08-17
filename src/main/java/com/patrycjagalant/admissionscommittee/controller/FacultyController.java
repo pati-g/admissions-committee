@@ -85,17 +85,17 @@ public class FacultyController {
         return REDIRECT_FACULTIES;
     }
 
-// For admin only (manage faculties):
-
+// Manage faculties:
     @GetMapping("/new")
-    public String addNewFacultyForm(Model model) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String getNewFacultyForm(Model model) {
         model.addAttribute(FACULTY_DTO, new FacultyDto());
         return "faculties/addFaculty";
     }
 
     @GetMapping("/{id}/edit")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String editFacultyForm(Model model, @PathVariable("id") String idString) throws NoSuchFacultyException {
+    public String getEditFacultyForm(Model model, @PathVariable("id") String idString) throws NoSuchFacultyException {
         if (ParamValidator.isNumeric(idString)) {
             long id = Long.parseLong(idString);
             FacultyDto facultyDTO = facultyService.getById(id);
@@ -133,6 +133,7 @@ public class FacultyController {
     @RequestMapping(value = "/delete/{id}", method = {RequestMethod.DELETE, RequestMethod.POST})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteFaculty(@PathVariable String id) throws NoSuchFacultyException {
+        //Check if faculty is connected to any request - if so, delete is not possible until requests are handled
         if (id.matches("(\\d)+")) {
             long idNumber = Long.parseLong(id);
             facultyService.deleteFaculty(idNumber);
@@ -140,4 +141,6 @@ public class FacultyController {
         }
         return REDIRECT_FACULTIES;
     }
+
+    //
 }
