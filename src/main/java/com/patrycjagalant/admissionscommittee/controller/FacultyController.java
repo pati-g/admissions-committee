@@ -2,16 +2,17 @@ package com.patrycjagalant.admissionscommittee.controller;
 
 import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
+import com.patrycjagalant.admissionscommittee.dto.SubjectDto;
 import com.patrycjagalant.admissionscommittee.entity.User;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.service.ApplicantService;
 import com.patrycjagalant.admissionscommittee.service.FacultyService;
+import com.patrycjagalant.admissionscommittee.service.SubjectService;
 import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
+
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
@@ -28,11 +31,13 @@ import java.time.LocalDateTime;
 public class FacultyController {
     private final FacultyService facultyService;
     private final ApplicantService applicantService;
+    private final SubjectService subjectService;
 
 
-    public FacultyController(FacultyService facultyService, ApplicantService applicantService) {
+    public FacultyController(FacultyService facultyService, ApplicantService applicantService, SubjectService subjectService) {
         this.facultyService = facultyService;
         this.applicantService = applicantService;
+        this.subjectService = subjectService;
     }
 
     @GetMapping
@@ -102,6 +107,7 @@ public class FacultyController {
             FacultyDto facultyDTO = facultyService.getById(id);
             model.addAttribute(FACULTY_DTO, facultyDTO);
             model.addAttribute("subjects", facultyDTO.getSubjects());
+            model.addAttribute("allSubjects", subjectService.getAll());
             return "faculties/editFaculty";
         }
         return REDIRECT_FACULTIES;
@@ -145,17 +151,33 @@ public class FacultyController {
     }
 
     // Manage subjects
-    @PostMapping("/{facultyId}/add-subject/{subjectId}")
+    @PostMapping("/{facultyId}/add-subject")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String addSubjectToList(@PathVariable String facultyId, @PathVariable String subjectId, Model model) {
-        facultyService.addSubjectToList(facultyId, subjectId);
-        return "redirect:/faculties/" + facultyId + "/edit";
+    public String addSubjectToList(@RequestParam String chosenSubject, @PathVariable String facultyId, Model model) {
+        facultyService.addSubjectToList(facultyId, chosenSubject);
+        return getRedirectUrl(facultyId);
     }
 
     @RequestMapping(value = "/{facultyId}/delete-subject/{subjectId}", method = {RequestMethod.DELETE, RequestMethod.GET})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteSubjectFromList(@PathVariable String facultyId, @PathVariable String subjectId, Model model) {
         facultyService.deleteSubjectFromList(facultyId, subjectId);
+        return getRedirectUrl(facultyId);
+    }
+
+    private String getRedirectUrl(String facultyId) {
         return "redirect:/faculties/" + facultyId + "/edit";
+    }
+
+    @PostMapping("/{facultyId}/new-subject")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Transactional
+    public String createNewSubjectAndAddToList(@RequestParam String subjectName, @PathVariable String facultyId, Model model) {
+        if (!ParamValidator.validateName(subjectName)) {
+            return "/";
+        }
+        SubjectDto subjectDto = subjectService.addNewSubject(subjectName);
+        facultyService.addSubjectToList(facultyId, String.valueOf(subjectDto.getId()));
+        return getRedirectUrl(facultyId);
     }
 }

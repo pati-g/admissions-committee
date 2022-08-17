@@ -14,10 +14,13 @@ public class SubjectMapper {
     public SubjectDto mapToDto (Subject subject) {
         FacultyMapper facultyMapper = new FacultyMapper();
         log.debug("Subject entity before mapping: {}", subject);
-         return SubjectDto.builder()
+         SubjectDto dto = SubjectDto.builder()
                  .id(subject.getId())
-                 .name(subject.getName())
-                 .faculties(facultyMapper.mapToDto(subject.getFaculties())).build();
+                 .name(subject.getName()).build();
+         if(subject.getFaculties() != null) {
+            dto.setFaculties(facultyMapper.mapToDto(subject.getFaculties()));
+         }
+         return dto;
     }
 
     public Subject mapToEntity (SubjectDto subjectDto) {

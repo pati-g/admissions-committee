@@ -36,28 +36,35 @@
 <!--EDIT + ADD SUBJECTS-->
                 <h2 class="py-3 text-center" th:text="#{relevant.subjects}">Relevant subjects</h2>
                 <div class="text-center">
-                <table class="py-3 table-responsive table-light text-dark">
-                    <thead>
-                    <td class="text-center" th:text="#{score.subject}">Subject Name</td>
-                    </thead>
-                    <br>
-                    <tbody>
+                <table class="table table-hover table-light col-md-6">
+                    <tbody class="align-middle">
                     <div th:if="${subjects != null}">
                         <th:block th:each="subject:${subjects}">
                             <tr>
                                 <td th:text="${subject.name}"></td>
                                 <td><a class="btn btn-danger" role="button" th:href="@{/faculties/{facultyId}/delete-subject/{subjectId}
                                 (facultyId = ${facultyDTO.id}, subjectId=${subject.id})}"
-                                >Delete</a></td>
+                                ><i class="bi bi-trash"></i></a></td>
                             </tr>
                         </th:block>
                     </div>
                     </tbody>
                 </table>
                 </div>
-<!--                    <a class="btn btn-success" role="button"-->
-<!--                       th:href="@{/faculties/{facultyId}/add-subject/{subjectId}} (facultyId=${facultyDto.getId, subjectId=$(???)}})"-->
-<!--                    >Add a new subject from list</a></div>-->
+            <form class="text-dark" th:action="@{/faculties/{id}/add-subject (id = ${facultyDTO.id})}"
+                  method="post">
+            <select name="chosenSubject" class="form-select" aria-label="Select subject from list">
+                <option selected disabled>Choose subject from list</option>
+                <option th:each="subject:${allSubjects}" th:value="${subject.id}" th:text="${subject.name}"></option>
+            </select>
+                <br><button class="btn btn-success" type="submit"><i class="bi bi-plus"></i> Add</button>
+            </form>
+            <form class="text-dark" th:action="@{/faculties/{id}/new-subject (id = ${facultyDTO.id})}"
+            method="post">
+                <h5 class="py-3 text-center">Subject not on the list? Add a new one: </h5>
+                <input type="text" class="form-control" id="subjectName" name="subjectName" placeholder="Type subject name" required/>
+                <br><button class="btn btn-success" type="submit"><i class="bi bi-plus"></i> Add</button>
+            </form>
         </div>
     </div>
 </div>

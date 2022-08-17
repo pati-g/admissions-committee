@@ -8,6 +8,7 @@ import com.patrycjagalant.admissionscommittee.service.mapper.SubjectMapper;
 import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,12 +25,13 @@ public class SubjectService {
         this.subjectMapper = subjectMapper;
     }
 
-    public Subject addNewSubject(SubjectDto dto) {
+    public SubjectDto addNewSubject(String subjectName) {
         // Check if subject already exists
-        if (subjectRepository.findByName(dto.getName()).isPresent()) {
-            throw new IllegalArgumentException("Subject with name: " + dto.getName() + " already exists!");
+        if (subjectRepository.findByName(subjectName).isPresent()) {
+            throw new IllegalArgumentException("Subject with name: " + subjectName + " already exists!");
         }
-        return subjectRepository.save(mapper.mapToEntity(dto));
+        Subject subject = subjectRepository.save(Subject.builder().name(subjectName).build());
+        return mapper.mapToDto(subject);
     }
 
     public Subject editSubjectName(SubjectDto dto, Long id) {
@@ -58,6 +60,11 @@ public class SubjectService {
 
     public Set<SubjectDto> getAllForFaculty(Long facultyId) {
         Set<Subject> subjects = subjectRepository.findByFaculties_id(facultyId);
+        return subjectMapper.mapToDto(subjects);
+    }
+
+    public Set<SubjectDto> getAll() {
+        Set<Subject> subjects = new HashSet<>(subjectRepository.findAll());
         return subjectMapper.mapToDto(subjects);
     }
 }
