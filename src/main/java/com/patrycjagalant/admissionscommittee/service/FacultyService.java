@@ -5,11 +5,13 @@ import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
 import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
 import com.patrycjagalant.admissionscommittee.entity.Faculty;
+import com.patrycjagalant.admissionscommittee.entity.Subject;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.repository.FacultyRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.EnrollmentRequestMapper;
 import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
+import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -27,13 +29,15 @@ public class FacultyService {
     private final ApplicantService applicantService;
     private final EnrollmentRequestMapper requestMapper;
     private final EnrollmentRequestService requestService;
+    private final SubjectService subjectService;
 
-    public FacultyService(FacultyRepository facultyRepository, FacultyMapper facultyMapper, ApplicantService applicantService, EnrollmentRequestMapper requestMapper, EnrollmentRequestService requestService) {
+    public FacultyService(FacultyRepository facultyRepository, FacultyMapper facultyMapper, ApplicantService applicantService, EnrollmentRequestMapper requestMapper, EnrollmentRequestService requestService, SubjectService subjectService) {
         this.facultyRepository = facultyRepository;
         this.facultyMapper = facultyMapper;
         this.applicantService = applicantService;
         this.requestMapper = requestMapper;
         this.requestService = requestService;
+        this.subjectService = subjectService;
     }
 
     public Page<FacultyDto> getAllFaculties(int page, int size, Sort.Direction sort, String sortBy) {
@@ -56,7 +60,14 @@ public class FacultyService {
 
     public FacultyDto getById(Long id) throws NoSuchFacultyException {
         Faculty faculty = facultyRepository.findById(id).orElseThrow(NoSuchFacultyException::new);
-        return facultyMapper.mapToDto(faculty);
+        FacultyDto dto = facultyMapper.mapToDto(faculty);
+        if (faculty.getSubjects() != null) {
+            dto.setSubjects(subjectService.getAllForFaculty(faculty.getId()));
+        }
+        if (faculty.getRequests() != null) {
+            dto.setRequests(requestMapper.mapToDto(faculty.getRequests()));
+        }
+        return dto;
     }
 
     // Accessible only to admin:
@@ -79,7 +90,7 @@ public class FacultyService {
         facultyMapper.mapToEntity(currentFaculty, facultyDTO);
         return currentFaculty;
     }
-@Transactional
+    @Transactional
     public void addNewRequest(EnrollmentRequestDto enrollmentRequestDTO) throws NoSuchApplicantException, NoSuchFacultyException {
         ApplicantDto applicantDto = enrollmentRequestDTO.getApplicant();
         EnrollmentRequest request = requestMapper.mapToEntity(enrollmentRequestDTO);
@@ -88,5 +99,25 @@ public class FacultyService {
         Faculty faculty = facultyRepository.findById(facultyDto.getId()).orElseThrow(NoSuchFacultyException::new);
         faculty.getRequests().add(request);
         requestService.saveRequest(enrollmentRequestDTO);
+    }
+
+    @Transactional
+    public void addSubjectToList(String facultyId, String subjectId) {
+        if (ParamValidator.isNumeric(facultyId) && ParamValidator.isNumeric(subjectId)) {
+            Subject subject = subjectService.getById(subjectId);
+            facultyRepository.findById(Long.parseLong(facultyId))
+                    .orElseThrow()
+                    .getSubjects().add(subject);
+        } else { throw new IllegalArgumentException(); }
+    }
+
+    @Transactional
+    public void deleteSubjectFromList(String facultyId, String subjectId) {
+        if (ParamValidator.isNumeric(facultyId) && ParamValidator.isNumeric(subjectId)) {
+            Subject subject = subjectService.getById(subjectId);
+            facultyRepository.findById(Long.parseLong(facultyId))
+                    .orElseThrow()
+                    .getSubjects().remove(subject);
+        } else { throw new IllegalArgumentException(); }
     }
 }

@@ -33,7 +33,7 @@ class FacultyServiceTest {
 
     @BeforeEach
     void setUp() {
-        facultyService = new FacultyService(facultyRepository, facultyMapper, applicantService, requestMapper, requestService);
+        facultyService = new FacultyService(facultyRepository, facultyMapper, applicantService, requestMapper, requestService, subjectService);
     }
 
     @Test

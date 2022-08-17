@@ -62,7 +62,7 @@ ScoreMapper scoreMapper = new ScoreMapper();
 
     public List<ApplicantDto> mapToDto(List<Applicant> applicants) {
         log.debug("Mapping List<Applicant> to DTOs");
-        return applicants.stream().map(this::mapToDto).collect(Collectors.toList());
+        return applicants.stream().map(this::mapToDtoWithoutRelations).collect(Collectors.toList());
     }
 
     public Applicant mapToEntity(ApplicantDto applicantDto) {

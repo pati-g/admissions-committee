@@ -11,6 +11,7 @@ import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -100,6 +101,7 @@ public class FacultyController {
             long id = Long.parseLong(idString);
             FacultyDto facultyDTO = facultyService.getById(id);
             model.addAttribute(FACULTY_DTO, facultyDTO);
+            model.addAttribute("subjects", facultyDTO.getSubjects());
             return "faculties/editFaculty";
         }
         return REDIRECT_FACULTIES;
@@ -134,7 +136,7 @@ public class FacultyController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteFaculty(@PathVariable String id) throws NoSuchFacultyException {
         //Check if faculty is connected to any request - if so, delete is not possible until requests are handled
-        if (id.matches("(\\d)+")) {
+        if (ParamValidator.isNumeric(id)) {
             long idNumber = Long.parseLong(id);
             facultyService.deleteFaculty(idNumber);
 
@@ -142,5 +144,18 @@ public class FacultyController {
         return REDIRECT_FACULTIES;
     }
 
-    //
+    // Manage subjects
+    @PostMapping("/{facultyId}/add-subject/{subjectId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String addSubjectToList(@PathVariable String facultyId, @PathVariable String subjectId, Model model) {
+        facultyService.addSubjectToList(facultyId, subjectId);
+        return "redirect:/faculties/" + facultyId + "/edit";
+    }
+
+    @RequestMapping(value = "/{facultyId}/delete-subject/{subjectId}", method = {RequestMethod.DELETE, RequestMethod.GET})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String deleteSubjectFromList(@PathVariable String facultyId, @PathVariable String subjectId, Model model) {
+        facultyService.deleteSubjectFromList(facultyId, subjectId);
+        return "redirect:/faculties/" + facultyId + "/edit";
+    }
 }

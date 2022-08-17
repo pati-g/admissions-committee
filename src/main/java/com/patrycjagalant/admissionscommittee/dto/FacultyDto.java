@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.validation.constraints.*;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,4 +30,6 @@ public class FacultyDto {
     private Integer totalPlaces;
 
     private List<EnrollmentRequestDto> requests;
+
+    private Set<SubjectDto> subjects;
 }

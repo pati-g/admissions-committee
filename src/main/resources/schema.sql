@@ -31,6 +31,18 @@ budget_places int NOT NULL,
 total_places int NOT NULL
 );
 
+CREATE TABLE Subjects (
+ID bigint PRIMARY KEY AUTO_INCREMENT,
+name varchar(255) NOT NULL
+);
+
+CREATE TABLE Faculties_Subjects (
+faculty_ID bigint NOT NULL,
+subject_ID bigint NOT NULL,
+FOREIGN KEY (faculty_ID) REFERENCES Faculties(ID),
+FOREIGN KEY (subject_ID) REFERENCES Subjects(ID)
+);
+
 CREATE TABLE Scores (
 ID bigint PRIMARY KEY AUTO_INCREMENT,
 applicant_ID bigint NOT NULL,
@@ -38,6 +50,7 @@ subject_name varchar(255) NOT NULL,
 result int NOT NULL,
 FOREIGN KEY (applicant_ID) REFERENCES Applicants(ID)
 );
+
 
 CREATE TABLE Enrollment_Requests (
 ID bigint PRIMARY KEY AUTO_INCREMENT,

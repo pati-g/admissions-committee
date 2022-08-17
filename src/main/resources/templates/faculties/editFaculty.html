@@ -33,6 +33,31 @@
                 <br><br>
                 <div class="text-center"><input class="btn btn-primary" type="submit" th:value="#{submit}"></div>
             </form>
+<!--EDIT + ADD SUBJECTS-->
+                <h2 class="py-3 text-center" th:text="#{relevant.subjects}">Relevant subjects</h2>
+                <div class="text-center">
+                <table class="py-3 table-responsive table-light text-dark">
+                    <thead>
+                    <td class="text-center" th:text="#{score.subject}">Subject Name</td>
+                    </thead>
+                    <br>
+                    <tbody>
+                    <div th:if="${subjects != null}">
+                        <th:block th:each="subject:${subjects}">
+                            <tr>
+                                <td th:text="${subject.name}"></td>
+                                <td><a class="btn btn-danger" role="button" th:href="@{/faculties/{facultyId}/delete-subject/{subjectId}
+                                (facultyId = ${facultyDTO.id}, subjectId=${subject.id})}"
+                                >Delete</a></td>
+                            </tr>
+                        </th:block>
+                    </div>
+                    </tbody>
+                </table>
+                </div>
+<!--                    <a class="btn btn-success" role="button"-->
+<!--                       th:href="@{/faculties/{facultyId}/add-subject/{subjectId}} (facultyId=${facultyDto.getId, subjectId=$(???)}})"-->
+<!--                    >Add a new subject from list</a></div>-->
         </div>
     </div>
 </div>

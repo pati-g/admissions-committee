@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,6 +33,11 @@ public class Faculty {
 
     @OneToMany(mappedBy = "faculty")
     @ToString.Exclude
-    List<EnrollmentRequest> requests;
+    private List<EnrollmentRequest> requests;
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "Faculties_Subjects", joinColumns = @JoinColumn(name = "faculty_ID"), inverseJoinColumns = @JoinColumn(name = "subject_ID"))
+    private Set<Subject> subjects;
 
 }
