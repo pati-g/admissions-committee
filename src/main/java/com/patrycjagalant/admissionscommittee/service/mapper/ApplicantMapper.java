@@ -10,23 +10,17 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class ApplicantMapper {
+
     public ApplicantDto mapToDto (Applicant applicant) {
         log.debug("Applicant entity before using primary mapper {}", applicant);
         ApplicantDto dto = mapToDtoWithoutRelations(applicant);
 ScoreMapper scoreMapper = new ScoreMapper();
-EnrollmentRequestMapper enrollmentRequestMapper = new EnrollmentRequestMapper();
         log.debug("Applicant DTO after primary mapping {}", dto);
         if (applicant.getScores() != null) {
             log.trace("Scores list to be added to Applicant DTO {}", applicant.getScores());
             dto.setScores(scoreMapper.mapToDto(applicant.getScores()));
             log.trace("Score DTOs list after mapping and adding to Applicant DTO {}", dto.getScores());
         }
-        if (applicant.getRequests() != null) {
-            log.trace("Requests list to be added to Applicant DTO {}", applicant.getRequests());
-            dto.setRequests(enrollmentRequestMapper.mapToDto(applicant.getRequests()));
-            log.trace("Request DTOs list after mapping and adding to Applicant DTO {}", dto.getRequests());
-        }
-
         return dto;
     }
     public ApplicantDto mapToDtoWithoutRelations(Applicant applicant) {

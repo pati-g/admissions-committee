@@ -36,7 +36,7 @@
 <!--EDIT + ADD SUBJECTS-->
                 <h2 class="py-3 text-center" th:text="#{relevant.subjects}">Relevant subjects</h2>
                 <div class="text-center">
-                <table class="table table-hover table-light col-md-6">
+                <table class="table table-hover table-light table-responsive">
                     <tbody class="align-middle">
                     <div th:if="${subjects != null}">
                         <th:block th:each="subject:${subjects}">

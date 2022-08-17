@@ -118,6 +118,11 @@ public class ApplicantService {
         Applicant applicant = applicantRepository.findByUserId(id).orElse(null);
         if (applicant != null) {
             ApplicantDto applicantDto = applicantMapper.mapToDto(applicant);
+            if (applicant.getRequests() != null) {
+                log.trace("Requests list to be added to Applicant DTO {}", applicant.getRequests());
+                applicantDto.setRequests(enrollmentRequestService.convertToDto(applicant.getRequests()));
+                log.trace("Request DTOs list after mapping and adding to Applicant DTO {}", applicant.getRequests());
+            }
             Long applicantID = applicantDto.getId();
             List<ScoreDto> scores = scoreService.getScoresForApplicant(applicantID);
             if (scores != null && !scores.isEmpty()) {

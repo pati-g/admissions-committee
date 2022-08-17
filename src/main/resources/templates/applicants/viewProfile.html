@@ -94,7 +94,7 @@
                     <tbody>
                     <tr th:each="request : ${requests}">
                         <td th:text="${request.faculty.getName}">Faculty name</td>
-                        <td th:text="${request.points}">Faculty name</td>
+                        <td th:text="${request.points}">Sum of points</td>
                         <td th:text="${request.registrationDate}">Date of request submission</td>
                         <td class="align-middle text-center" th:switch="${request.status.name}">
                             <span class="bg-warning rounded-pill p-2" th:case="'P'" th:text="#{pending}">Pending</span>

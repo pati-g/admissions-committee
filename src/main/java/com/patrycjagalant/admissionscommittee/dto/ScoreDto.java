@@ -16,6 +16,7 @@ import javax.validation.constraints.Size;
 @Builder
 public class ScoreDto {
 
+
     private long id;
 
     @NotBlank
@@ -29,5 +30,9 @@ public class ScoreDto {
     @Min(value = 0, message = "Minimum value of the result should be 0")
     @Max(value = 100, message = "Maximum value of the result should be 100")
     private Integer result;
+
+    public ScoreDto(ApplicantDto applicant) {
+        this.applicant = applicant;
+    }
 
 }

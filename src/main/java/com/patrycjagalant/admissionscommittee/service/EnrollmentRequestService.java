@@ -78,4 +78,8 @@ public class EnrollmentRequestService {
         enrollmentRequestRepository.save(request);
         }
     }
+
+    public List<EnrollmentRequestDto> convertToDto(List<EnrollmentRequest> requests) {
+        return mapper.mapToDto(requests);
+    }
 }

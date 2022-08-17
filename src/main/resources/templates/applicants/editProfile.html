@@ -72,13 +72,11 @@
             <!--List of applicant's scores-->
                 <div th:if="${!applicantDTO.scores.isEmpty}">
                     <h2 class="py-3 text-center" th:text="#{scores}">Scores</h2>
-                    <div class="text-center">
-                        <a class="btn btn-success" role="button"
-                           th:href="@{/applicant/new-score}" th:text="#{score.new}">Add a new score</a></div>
-                    <table class="py-3 table-responsive">
+                    <table class="table table-hover table-light table-responsive">
                         <thead>
                         <td class="text-center" th:text="#{score.subject}">Subject Name</td>
                         <td class="text-center" th:text="#{score.result}">Result</td>
+                        <td></td>
                         </thead>
                         <br>
                         <tbody>
@@ -89,10 +87,10 @@
                                           th:action="@{/applicant/edit-score/{id}(id = ${score.getId})}"
                                           th:if="${score != null}"
                                           th:method="put">
-                                        <td><input class="form-control" id="name" placeholder="${score.subjectName}"
-                                                   required
-                                                   th:value="${score.subjectName}"
-                                                   type="text"/></td>
+                                        <td> <select th:value="${score.subjectName}" class="form-select" aria-label="Select subject from list">
+                                            <option selected disabled th:text="${score.subjectName}"></option>
+                                            <option th:each="subject:${allSubjects}" th:value="${subject.id}" th:text="${subject.name}"></option>
+                                        </select>
                                         <td><input class="form-control" id="result" placeholder="${score.result}"
                                                    required
                                                    th:value="${score.result}"
@@ -107,19 +105,32 @@
                         </div>
                         </tbody>
                     </table>
+                    <form class="text-dark" th:action="@{/applicant/new-score}" th:object="${newScore}"
+                          method="post">
+                        <label for="name" th:text="#{subject.name}">Subject Name</label>
+                        <select id="name" th:field="*{subjectName}" class="form-select" aria-label="Select subject from list">
+                            <option value="" selected disabled>Choose subject from list</option>
+                            <option th:each="subject:${allSubjects}" th:value="${subject.name}" th:text="${subject.name}"></option>
+                        </select>
+                        <input class="form-control" id="enterResult" placeholder="Enter result" required th:field="${score+++++++++++++++++++++++.result}"
+                               type="text"/>
+                        <label for="enterResult" th:text="#{score.result}">Result</label>
+                        <br><button class="btn btn-success" type="submit" th:text="#{score.new}"><i class="bi bi-plus"></i> Add a new score</button>
+                    </form>
                 </div>
                         <!--List of applicant's requests and current status -->
                 <div th:if="${!applicantDTO.requests.isEmpty}">
                     <h2 class="py-3 text-center" th:text="#{requests.list}">List of enrollment requests</h2>
-                    <table class="py-3 table-responsive text-center">
+                    <table class="table table-hover table-light table-responsive">
                         <thead class="text-center">
                         <td th:text="#{faculty.name}">Faculty Name</td>
                         <th th:href="#{request.points}">Total points</th>
                         <td th:text="#{request.date}">Registration date</td>
                         <td th:text="#{request.status}">Current status</td>
+                        <td></td>
                         </thead>
                         <br>
-                        <tbody class="bg-light text-dark">
+                        <tbody>
                         <th:block th:each="request : ${requests}">
                             <tr>
                                 <div th:if="${request != null}">

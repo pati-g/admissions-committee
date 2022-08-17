@@ -6,9 +6,7 @@ import com.patrycjagalant.admissionscommittee.dto.UserDto;
 import com.patrycjagalant.admissionscommittee.exceptions.FileStorageException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
-import com.patrycjagalant.admissionscommittee.service.ApplicantService;
-import com.patrycjagalant.admissionscommittee.service.ScoreService;
-import com.patrycjagalant.admissionscommittee.service.UserService;
+import com.patrycjagalant.admissionscommittee.service.*;
 import com.patrycjagalant.admissionscommittee.utils.FileValidator;
 import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -35,15 +33,17 @@ public class ApplicantController {
     private final ScoreService scoreService;
     private final UserService userService;
     private final FileValidator fileValidator;
+    private final SubjectService subjectService;
 
     public ApplicantController(ApplicantService applicantService,
                                ScoreService scoreService,
                                FileValidator fileValidator,
-                               UserService userService) {
+                               UserService userService, SubjectService subjectService) {
         this.applicantService = applicantService;
         this.scoreService = scoreService;
         this.fileValidator = fileValidator;
         this.userService = userService;
+        this.subjectService = subjectService;
     }
 
     @GetMapping("/{username}")
@@ -55,6 +55,7 @@ public class ApplicantController {
             ApplicantDto applicantDto = applicantService.getByUserId(userDto.getId());
             if (applicantDto != null) {
                 addApplicantModel(model, applicantDto);
+
             }
             return VIEW_PROFILE;
         }
@@ -116,16 +117,9 @@ public class ApplicantController {
             return applicantService.downloadFile(username);
     }
 
-    @GetMapping("/new-score")
-    public String newScoreForm(Model model) {
-        ScoreDto scoreDto = new ScoreDto();
-        model.addAttribute(SCORE_DTO, scoreDto);
-        return "applicants/addScore";
-    }
-
     @PostMapping("/new-score")
-    public String newScoreForm(@Valid @ModelAttribute ScoreDto scoreDto,
-                               BindingResult result, Model model) {
+    public String addNewScore(@Valid @ModelAttribute ScoreDto scoreDto,
+                              BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "applicants/addScore";
         }
@@ -184,6 +178,8 @@ public class ApplicantController {
         model.addAttribute(APPLICANT_DTO, applicantDTO);
         model.addAttribute(SCORES, applicantDTO.getScores());
         model.addAttribute(REQUESTS, applicantDTO.getRequests());
+        model.addAttribute("newScore", new ScoreDto(applicantDTO));
+        model.addAttribute("allSubjects", subjectService.getAll());
     }
 
 }
