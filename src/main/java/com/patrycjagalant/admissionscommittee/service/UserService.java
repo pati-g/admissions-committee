@@ -67,7 +67,7 @@ public class UserService implements UserDetailsService {
         if (user == null)
             return null;
         UserMapper mapper = new UserMapper();
-        return mapper.mapToDTO(user);
+        return mapper.mapToDto(user);
     }
 
     public UserDto findByUsername(String username) {
@@ -75,7 +75,7 @@ public class UserService implements UserDetailsService {
         if (user == null)
             return null;
         UserMapper mapper = new UserMapper();
-        return mapper.mapToDTO(user);
+        return mapper.mapToDto(user);
     }
 
     public UserDto findById(Long id) {
@@ -83,7 +83,7 @@ public class UserService implements UserDetailsService {
         if (user == null)
             return null;
         UserMapper mapper = new UserMapper();
-        return mapper.mapToDTO(user);
+        return mapper.mapToDto(user);
     }
 
     @Transactional

@@ -1,8 +1,6 @@
 package com.patrycjagalant.admissionscommittee.service;
 
 import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
-import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
-import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.dto.UserDto;
 import com.patrycjagalant.admissionscommittee.entity.Applicant;
 import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
@@ -36,23 +34,26 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class ApplicantService {
     private final ApplicantRepository applicantRepository;
-    private final ScoreService scoreService;
-    private final EnrollmentRequestService enrollmentRequestService;
     private final ApplicantMapper applicantMapper;
+    private final ScoreService scoreService;
+    private final EnrollmentRequestService requestService;
     private final UserService userService;
 
     @Value("${app.upload.dir:${user.home}}")
     public String filesPathString;
 
-    public ApplicantService(ApplicantRepository applicantRepository, ScoreService scoreService, EnrollmentRequestService enrollmentRequestService, ApplicantMapper applicantMapper, UserService userService) {
+    public ApplicantService(ApplicantRepository applicantRepository, ScoreService scoreService,
+                            EnrollmentRequestService requestService,
+                            ApplicantMapper applicantMapper, UserService userService) {
         this.applicantRepository = applicantRepository;
         this.scoreService = scoreService;
-        this.enrollmentRequestService = enrollmentRequestService;
+        this.requestService = requestService;
         this.applicantMapper = applicantMapper;
         this.userService = userService;
     }
@@ -77,8 +78,9 @@ public class ApplicantService {
             }
         }
         UserDto userDto = userService.findByUsername(username);
-        Applicant applicant = applicantRepository.findById(userDto.getId()).orElseThrow();
-        String fileName = userDto.getId() + "_" + applicant.getLastName() + "_" + applicant.getFirstName() + "_certificate";
+        Applicant applicant = applicantRepository.findByUserId(userDto.getId()).orElseThrow();
+        String fileName = userDto.getId() + "_" + applicant.getLastName() + "_"
+                + applicant.getFirstName() + "_certificate";
 
         try (InputStream inputStream = file.getInputStream()) {
             String extension = FilenameUtils.getExtension(file.getOriginalFilename());
@@ -114,44 +116,46 @@ public class ApplicantService {
         return applicantRepository.save(newApplicant);
     }
 
-    public ApplicantDto getByUserId(Long id) {
+    public ApplicantDto getByUserId(Long id) throws NoSuchApplicantException {
         Applicant applicant = applicantRepository.findByUserId(id).orElse(null);
-        if (applicant != null) {
-            ApplicantDto applicantDto = applicantMapper.mapToDto(applicant);
-            if (applicant.getRequests() != null) {
-                log.trace("Requests list to be added to Applicant DTO {}", applicant.getRequests());
-                applicantDto.setRequests(enrollmentRequestService.convertToDto(applicant.getRequests()));
-                log.trace("Request DTOs list after mapping and adding to Applicant DTO {}", applicant.getRequests());
-            }
-            Long applicantID = applicantDto.getId();
-            List<ScoreDto> scores = scoreService.getScoresForApplicant(applicantID);
-            if (scores != null && !scores.isEmpty()) {
-                applicantDto.setScores(scores);
-            }
-            List<EnrollmentRequestDto> requests = enrollmentRequestService.getAllForApplicantId(applicantID);
-            if (requests != null && !requests.isEmpty()) {
-                applicantDto.setRequests(requests);
-            }
-            return applicantDto;
-        } else {
-            return null;
+        if (applicant == null) {
+            log.warn("Applicant with user ID: " + id + "not found.");
+            throw new NoSuchApplicantException("Could not find the requested applicant, please try again.");
         }
+        return getDto(applicant);
     }
 
-    // Admin only
+    private ApplicantDto getDto(Applicant applicant) {
+        ApplicantDto applicantDto = applicantMapper.mapToDto(applicant);
+        Long applicantID = applicantDto.getId();
+        if(applicant.getScores() != null) {
+            applicantDto.setScores(scoreService.getAllForApplicantId(applicantID));
+        }
+        if (applicant.getRequests() != null) {
+            applicantDto.setRequests(requestService.getAllForApplicantId(applicantID));
+        }
+        return applicantDto;
+    }
+
     public Page<ApplicantDto> getAllApplicants(int page, int size, Sort.Direction sort, String sortBy) {
-        long facultiesTotal = applicantRepository.count();
-        if ((long) page * size > facultiesTotal) {
-            page = 1;
-            size = 5;
+        long applicantsTotal = applicantRepository.count();
+        if (size > applicantsTotal) {
+            size = 100;
+        } else if ((long) page * size > applicantsTotal) {
+            page = (int) applicantsTotal / size + 1;
         }
         Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
-        Page<Applicant> applicantPage = applicantRepository.findAll(PageRequest.of(page - 1, size, Sort.by(sortDirection, sortBy)));
-        List<ApplicantDto> applicantDtos = applicantMapper.mapToDto(applicantPage.getContent());
-        return new PageImpl<>(applicantDtos, PageRequest.of(page - 1, size, Sort.by(sortDirection, sortBy)), facultiesTotal);
+        Page<Applicant> applicantPage = applicantRepository
+                .findAll(PageRequest.of(page - 1, size, Sort.by(sortDirection, sortBy)));
+        List<ApplicantDto> applicantDtos = applicantPage
+                .getContent()
+                .stream()
+                .map(this::getDto)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(applicantDtos,
+                PageRequest.of(page - 1, size, Sort.by(sortDirection, sortBy)), applicantsTotal);
     }
-
-
 
     public void deleteApplicant(Long id) throws NoSuchFacultyException {
         if (applicantRepository.findById(id).isPresent()) {
@@ -160,9 +164,12 @@ public class ApplicantService {
             throw new NoSuchFacultyException();
         }
     }
-@Transactional
+    @Transactional
     public void addRequest(ApplicantDto applicantDto, EnrollmentRequest request) throws NoSuchApplicantException {
-        Applicant applicant = applicantRepository.findById(applicantDto.getId()).orElseThrow(NoSuchApplicantException::new);
+        Applicant applicant = applicantRepository
+                .findById(applicantDto.getId())
+                .orElseThrow(NoSuchApplicantException::new);
+
         applicant.getRequests().add(request);
     }
 }

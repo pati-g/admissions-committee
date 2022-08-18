@@ -14,7 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
-import static com.patrycjagalant.admissionscommittee.controller.ApplicantController.REDIRECT_HOME;
 import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 
 @Slf4j

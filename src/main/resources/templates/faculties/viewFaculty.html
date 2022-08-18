@@ -9,28 +9,32 @@
 <div layout:fragment="content">
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
-            <h1 class="py-3 text-center" th:text="#{faculty.view.details}">View faculty details</h1>
+            <div class="row">
+                <div class="col">
+            <h1 class="py-3 text-center" th:text="#{faculty.view.details}">View faculty details</h1></div>
+            <div class="col">
+                <a class="btn btn-primary btn-lg" role="button" th:text="#{edit}"
+                   sec:authorize="hasAnyRole('ROLE_ADMIN')"
+                   th:href="@{/faculties/{id}/edit(id = ${facultyDTO.getId})}">Edit</a></div>
+            </div>
             <form class="text-dark" th:object="${facultyDTO}">
                 <div class="form-floating mb-3">
                     <input class="form-control" disabled id="name" readonly th:value="*{name}" type="text"/>
                     <label for="name" th:text="#{faculty.name}" class="font-weight-bold">Faculty name</label>
                 </div>
                 <br>
-                <div class="form-floating mb-3">
+                <div class="row">
+                <div class="col form-floating mb-3">
                     <input class="form-control" disabled id="budget" readonly th:value="*{budgetPlaces}" type="text"/>
                     <label for="budget" th:text="#{faculty.budget}">Budget places</label>
                 </div>
                 <br>
-                <div class="form-floating mb-3">
+                <div class="col form-floating mb-3">
                     <input class="form-control" disabled id="total" readonly th:value="*{totalPlaces}" type="text"/>
                     <label for="total" th:text="#{faculty.total}">Total places</label>
                 </div>
-                <br><br>
-                <div class="text-center">
-                    <a class="btn btn-primary" role="button" th:text="#{edit}"
-                       sec:authorize="hasAnyRole('ROLE_ADMIN')"
-                       th:href="@{/faculties/{id}/edit(id = ${facultyDTO.getId})}">Edit</a>
                 </div>
+                <br><br>
                 <div class="text-center">
                     <a class="btn btn-success"
                            onClick="return confirm(th:text='#{confirm.apply}')"
@@ -38,8 +42,26 @@
                            sec:authorize="hasRole('ROLE_USER')"
                            th:href="@{/applicant/new-request}" th:method="post">Apply</a>
                 </div>
-
             </form>
+
+            <h2 class="py-3 text-center" th:text="#{relevant.subjects}">Relevant subjects</h2>
+            <div class="text-center">
+                <table class="table table-hover table-light table-responsive">
+                    <tbody class="align-middle">
+                    <div th:if="${subjects != null}">
+                        <th:block th:each="subject:${subjects}">
+                            <tr>
+                                <td class="text-center" th:text="${subject.name}"></td>
+                                <td><a class="btn btn-danger" role="button" sec:authorize="hasRole('ROLE_ADMIN')"
+                                       th:href="@{/faculties/{facultyId}/delete-subject/{subjectId}
+                                (facultyId = ${facultyDTO.id}, subjectId=${subject.id})}"
+                                ><i class="bi bi-trash"></i></a></td>
+                            </tr>
+                        </th:block>
+                    </div>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

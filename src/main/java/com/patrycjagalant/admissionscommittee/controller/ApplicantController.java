@@ -6,6 +6,7 @@ import com.patrycjagalant.admissionscommittee.dto.UserDto;
 import com.patrycjagalant.admissionscommittee.exceptions.FileStorageException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
+import com.patrycjagalant.admissionscommittee.exceptions.ScoreAlreadyInListException;
 import com.patrycjagalant.admissionscommittee.service.*;
 import com.patrycjagalant.admissionscommittee.utils.FileValidator;
 import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
@@ -28,7 +29,6 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/applicant")
 public class ApplicantController {
-    public static final String REDIRECT_HOME = "redirect:/";
     private final ApplicantService applicantService;
     private final ScoreService scoreService;
     private final UserService userService;
@@ -48,7 +48,7 @@ public class ApplicantController {
 
     @GetMapping("/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
-    public String viewAccountAndProfile(Model model, @PathVariable("username") String username) {
+    public String viewAccountAndProfile(Model model, @PathVariable("username") String username) throws NoSuchApplicantException {
         UserDto userDto = userService.findByUsername(username);
         if(userDto != null) {
             model.addAttribute(USER_DTO, userDto);
@@ -64,7 +64,7 @@ public class ApplicantController {
 
     @GetMapping("/{username}/edit")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
-    public String getProfileForm(Model model, @PathVariable("username") String username) {
+    public String getProfileForm(Model model, @PathVariable("username") String username) throws NoSuchApplicantException {
         UserDto userDto = userService.findByUsername(username);
         if(userDto != null) {
             if(!model.containsAttribute("username")) {
@@ -97,7 +97,7 @@ public class ApplicantController {
         }
         applicantService.editApplicant(applicantDTO, userDto.getId());
         redirectAttributes.addFlashAttribute(MESSAGE, "Your changes have been submitted");
-        return REDIRECT_APPLICANT_ID_EDIT;
+        return REDIRECT_EDIT_APPLICANT;
     }
 
     @PostMapping("/save-certificate/{username}")
@@ -109,39 +109,43 @@ public class ApplicantController {
             return APPLICANTS_EDIT_PROFILE;
         }
         applicantService.saveFile(file, username);
-        return REDIRECT_HOME;
+        return REDIRECT_EDIT_APPLICANT;
     }
 
     @GetMapping(value = "/download-certificate/{username}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public ResponseEntity<Resource> downloadCertificate(@PathVariable String username) {
             return applicantService.downloadFile(username);
     }
 
-    @PostMapping("/new-score")
-    public String addNewScore(@Valid @ModelAttribute ScoreDto scoreDto,
-                              BindingResult result, Model model) {
+    @PostMapping("/{username}/new-score")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
+    public String addNewScore(@Valid @ModelAttribute("newScore") ScoreDto newScore,
+                              @PathVariable String username,
+                              BindingResult result,
+                              Model model) throws ScoreAlreadyInListException {
         if (result.hasErrors()) {
-            return "applicants/addScore";
+            return "applicants/editProfile";
         }
-        scoreService.addNewScore(scoreDto);
-        return REDIRECT_APPLICANT;
+        scoreService.addNewScore(newScore);
+        return REDIRECT_EDIT_APPLICANT;
     }
 
-    @RequestMapping(value = "/applicant/edit-score/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
+    @RequestMapping(value = "/{username}/edit-score/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String editScore(@Valid @ModelAttribute("score") ScoreDto scoreDto,
                             BindingResult result,
+                            @PathVariable String username,
                             @PathVariable String id,
-                            Model model) {
+                            Model model) throws ScoreAlreadyInListException {
         if (result.hasErrors() || !ParamValidator.isNumeric(id)) {
             model.addAttribute(ERROR, "Something went wrong, please try again");
         } else {
             scoreService.editScore(scoreDto, Long.parseLong(id));
         }
-        return REDIRECT_APPLICANT;
+        return REDIRECT_EDIT_APPLICANT;
     }
 
-
-    //Admin only
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getAllApplicants(@RequestParam(required = false) String page,
@@ -178,7 +182,7 @@ public class ApplicantController {
         model.addAttribute(APPLICANT_DTO, applicantDTO);
         model.addAttribute(SCORES, applicantDTO.getScores());
         model.addAttribute(REQUESTS, applicantDTO.getRequests());
-        model.addAttribute("newScore", new ScoreDto(applicantDTO));
+        model.addAttribute("newScore", new ScoreDto(applicantDTO.getId()));
         model.addAttribute("allSubjects", subjectService.getAll());
     }
 

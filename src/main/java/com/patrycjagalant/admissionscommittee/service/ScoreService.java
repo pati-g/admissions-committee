@@ -1,12 +1,14 @@
 package com.patrycjagalant.admissionscommittee.service;
 
 import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
+import com.patrycjagalant.admissionscommittee.entity.Applicant;
 import com.patrycjagalant.admissionscommittee.entity.Score;
+import com.patrycjagalant.admissionscommittee.exceptions.ScoreAlreadyInListException;
+import com.patrycjagalant.admissionscommittee.repository.ApplicantRepository;
 import com.patrycjagalant.admissionscommittee.repository.ScoreRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.ScoreMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,19 +18,31 @@ public class ScoreService {
 
     private final ScoreRepository scoreRepository;
     private final ScoreMapper mapper;
+    private final ApplicantRepository applicantRepository;
 
-    public ScoreService(ScoreRepository scoreRepository, ScoreMapper mapper) {
+    public ScoreService(ScoreRepository scoreRepository, ScoreMapper mapper, ApplicantRepository applicantRepository) {
         this.scoreRepository = scoreRepository;
         this.mapper = mapper;
+        this.applicantRepository = applicantRepository;
     }
 
-    // Create a new score
-    public void addNewScore(ScoreDto scoreDTO) {
+    public void addNewScore(ScoreDto scoreDTO) throws ScoreAlreadyInListException {
         Score newScore = mapper.mapToEntity(scoreDTO);
+        setApplicantToScoreEntity(scoreDTO, newScore);
         scoreRepository.save(newScore);
     }
 
-    // Add many scores at once
+    private void setApplicantToScoreEntity(ScoreDto scoreDTO, Score newScore) throws ScoreAlreadyInListException {
+        Applicant applicant = applicantRepository.findById(scoreDTO.getApplicantId()).orElseThrow();
+        List<String> applicantScores = applicant.getScores().stream()
+                .map(Score::getSubjectName)
+                .collect(Collectors.toList());
+        if(applicantScores.contains(newScore.getSubjectName())) {
+            throw new ScoreAlreadyInListException();
+        }
+        newScore.setApplicant(applicant);
+    }
+
     public void addListOfScores(List<ScoreDto> scoreDtos) {
         List<Score> scores = new ArrayList<>();
         for (ScoreDto scoreDTO : scoreDtos) {
@@ -37,29 +51,23 @@ public class ScoreService {
         scoreRepository.saveAll(scores);
     }
 
-    // Read a specific score
     public ScoreDto getScoreById(Long id) {
         Score score = scoreRepository.getReferenceById(id);
         return mapper.mapToDto(score);
     }
 
-    // Read all scores for specific applicant
-    public List<ScoreDto> getScoresForApplicant(Long applicantID) {
+    public List<ScoreDto> getAllForApplicantId(Long applicantID) {
         List<Score> scores = scoreRepository.findByApplicantId(applicantID);
         return scores.stream().map(mapper::mapToDto).collect(Collectors.toList());
     }
-
-    // Read all scores?
-
-    // Edit(update) score
     @Transactional
-    public void editScore(ScoreDto scoreDTO, Long id) {
+    public void editScore(ScoreDto scoreDTO, Long id) throws ScoreAlreadyInListException {
         Score score = scoreRepository.getReferenceById(id);
         mapper.mapToEntity(score, scoreDTO);
+        setApplicantToScoreEntity(scoreDTO, score);
         scoreRepository.save(score);
     }
 
-    // Delete a score
     public void deleteScore(Long id) {
         scoreRepository.deleteById(id);
     }

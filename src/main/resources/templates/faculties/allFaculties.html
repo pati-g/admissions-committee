@@ -79,13 +79,14 @@
                     </tbody>
                 </table>
             </div>
+<!--            Navigation-->
             <nav aria-label="Page navigation for list of faculties" class="pagination  justify-content-center"
                  th:if="${totalPages > 1}">
                 <ul class="pagination justify-content-center">
                     <li class="page-item">
                         <a aria-label="Previous"
                            class="page-link"
-                           th:href="@{/faculties(size=${faculties.size}, page=${currentPage-1 > 0 ? currentPage-1 : 1})}">
+                           th:href="@{/faculties(size=${faculties.size}, page=${currentPage-1 > totalPages ? totalPages-1 : currentPage-1})}">
                             <span aria-hidden="true">&laquo;</span>
                             <span class="sr-only" th:text="#{previous}">Previous</span>
                         </a>
@@ -98,7 +99,7 @@
                     <li class="page-item">
                         <a aria-label="Next"
                            class="page-link"
-                           th:href="@{/faculties(size=${faculties.size}, page=${currentPage+1 < totalPages ? currentPage+1 : totalPages})}">
+                           th:href="@{/faculties(size=${faculties.size}, page=${currentPage+1 > totalPages ? totalPages : currentPage+1})}">
                             <span class="sr-only" th:text="#{next}">Next</span>
                             <span aria-hidden="true">&raquo;</span>
                         </a>

@@ -17,18 +17,22 @@
                     <label for="name" th:text="#{faculty.name}">Faculty Name</label>
                 </div>
                 <br>
+                <div class="row">
+                    <div class="col">
                 <div class="form-floating mb-3 mt-3">
                     <input class="form-control" id="budget" placeholder="*{budgetPlaces}" required
                            th:field="*{budgetPlaces}"
                            type="text"/>
                     <label for="budget" th:text="#{faculty.budget}">Budget places</label>
-                </div>
+                </div></div>
                 <br>
+                    <div class="col">
                 <div class="form-floating mb-3 mt-3">
                     <input class="form-control" id="total" placeholder="*{totalPlaces}" required
                            th:field="*{totalPlaces}"
                            type="text"/>
                     <label for="total" th:text="#{faculty.total}">Total places</label>
+                </div></div>
                 </div>
                 <br><br>
                 <div class="text-center"><input class="btn btn-primary" type="submit" th:value="#{submit}"></div>
@@ -61,7 +65,7 @@
             </form>
             <form class="text-dark" th:action="@{/faculties/{id}/new-subject (id = ${facultyDTO.id})}"
             method="post">
-                <h5 class="py-3 text-center">Subject not on the list? Add a new one: </h5>
+                <h5 class="py-3 text-center text-light">Subject not on the list? Add a new one: </h5>
                 <input type="text" class="form-control" id="subjectName" name="subjectName" placeholder="Type subject name" required/>
                 <br><button class="btn btn-success" type="submit"><i class="bi bi-plus"></i> Add</button>
             </form>

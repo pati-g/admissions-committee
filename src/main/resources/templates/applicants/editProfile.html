@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <title th:text="#{edit.profile}">Edit your profile</title>
 </head>
@@ -12,7 +12,8 @@
             <br>
                 <form class="text-dark" th:action="@{/applicant/{username}/edit(username = ${username})}"
                       th:method="put" th:object="${applicantDTO}">
-                    <div class="form-floating mb-3">
+                    <div class="row">
+                    <div class="col form-floating mb-3">
                         <input class="form-control" id="fname" placeholder="*{firstName}" required
                                th:field="*{firstName}"
                                type="text"/>
@@ -22,13 +23,14 @@
                    </span>
                     </div>
                     <br>
-                    <div class="form-floating mb-3">
-                        <input class="form-control" id="lname" placeholder="*{lastName}" required th:field="*{lastName}"
-                               type="text"/>
+                    <div class="col form-floating mb-3">
+                        <input class="form-control" id="lname" placeholder="*{lastName}"
+                               required th:field="*{lastName}" type="text"/>
                         <label for="lname" th:text="#{lname}">Last name</label>
                         <span class="help-block" th:if="${#fields.hasErrors('lastName')}">
                 <p class="text-danger py-0" th:errors="*{lastName}">Last name error</p>
                    </span>
+                    </div>
                     </div>
                     <br>
                     <div class="form-floating mb-3">
@@ -59,92 +61,124 @@
                    </span>
                     </div>
                     <div class="text-center"><input class="btn btn-primary" type="submit" th:value="#{submit}"></div>
-                </form>
+                </form><br>
 
             <form class="text-dark" th:action="@{/applicant/save-certificate/{id}(id = ${applicantDTO.getId})}"
                   th:method="post" enctype="multipart/form-data">
-                <div class="form-group mb-3">
-                    <label class="form-label" for="certificate"><span class="text-light">(Optional) Upload a scan of your certificate</span></label>
+                <div class="row">
+                <div class="col form-group mb-3">
+                    <label class="form-label" for="certificate"><span class="text-light">
+                        (Optional) Upload a scan of your certificate</span></label>
                     <input accept=".pdf, image/*" class="form-control" id="certificate" name="file" type="file">
                 </div>
-                <div class="text-center"><input class="btn btn-primary" type="submit" th:value="#{upload}"></div>
+                <div class="col text-center"><input class="btn btn-primary" type="submit" th:value="#{upload}"></div>
+                </div>
             </form>
             <!--List of applicant's scores-->
-                <div th:if="${!applicantDTO.scores.isEmpty}">
                     <h2 class="py-3 text-center" th:text="#{scores}">Scores</h2>
-                    <table class="table table-hover table-light table-responsive">
-                        <thead>
-                        <td class="text-center" th:text="#{score.subject}">Subject Name</td>
-                        <td class="text-center" th:text="#{score.result}">Result</td>
+            <p class="text-center text-light" th:if="${requests.isEmpty}" th:text="#{scores.list.is.empty}"></p>
+            <div th:if="${!scores.isEmpty}">
+            <table class="table table-hover table-light table-responsive">
+                        <thead class="table-secondary fw-bold">
+                        <th class="text-center" th:text="#{score.subject}">Subject Name</th>
+                        <th class="text-center" th:text="#{score.result}">Result</th>
                         <td></td>
                         </thead>
                         <br>
                         <tbody>
-                        <div th:if="${scores != null}">
                             <th:block th:each="score:${scores}">
                                 <tr>
                                     <form class="text-dark"
-                                          th:action="@{/applicant/edit-score/{id}(id = ${score.getId})}"
+                                          th:action="@{/applicant/{username}/edit-score/{id}
+                                          (id = ${score.getId}, username = ${username})}"
                                           th:if="${score != null}"
                                           th:method="put">
-                                        <td> <select th:value="${score.subjectName}" class="form-select" aria-label="Select subject from list">
+                                        <td> <select th:value="${score.subjectName}" class="form-select"
+                                                     aria-label="Select subject from list">
                                             <option selected disabled th:text="${score.subjectName}"></option>
-                                            <option th:each="subject:${allSubjects}" th:value="${subject.id}" th:text="${subject.name}"></option>
+                                            <option th:each="subject:${allSubjects}" th:value="${subject.id}"
+                                                    th:text="${subject.name}"></option>
                                         </select>
                                         <td><input class="form-control" id="result" placeholder="${score.result}"
                                                    required
                                                    th:value="${score.result}"
                                                    type="text"/></td>
                                         <td class=" px-3">
-                                            <div class="text-center"><input class="btn btn-primary" type="submit"
-                                                                            th:value="#{submit}"></div>
+                                            <div class="text-center"><input class="btn btn-outline-primary"
+                                                                            type="submit" th:value="#{submit}"></div>
                                         </td>
                                     </form>
                                 </tr>
                             </th:block>
-                        </div>
                         </tbody>
                     </table>
-                    <form class="text-dark" th:action="@{/applicant/new-score}" th:object="${newScore}"
-                          method="post">
-                        <label for="name" th:text="#{subject.name}">Subject Name</label>
-                        <select id="name" th:field="*{subjectName}" class="form-select" aria-label="Select subject from list">
+            </div><br>
+            <h5>Add a new score</h5>
+            <form class="text-dark" th:action="@{/applicant/{username}/new-score(username = ${username})}"
+                  th:object="${newScore}" method="post">
+                <input type="hidden" th:field="*{applicantId}"  th:value="${applicantDTO.id}" id="applicantId">
+                <div class="row">
+                <div class="col form-floating mb-3 has-feedback">
+                        <select id="name" th:field="*{subjectName}" class="form-select"
+                                aria-label="Select subject from list">
                             <option value="" selected disabled>Choose subject from list</option>
-                            <option th:each="subject:${allSubjects}" th:value="${subject.name}" th:text="${subject.name}"></option>
+                            <option th:each="subject:${allSubjects}" th:value="${subject.name}"
+                                    th:text="${subject.name}"></option>
                         </select>
-                        <input class="form-control" id="enterResult" placeholder="Enter result" required th:field="${score+++++++++++++++++++++++.result}"
+                    <label for="name" th:text="#{subject.name}">Subject Name</label>
+                </div>
+                    <div class="col form-floating mb-3 has-feedback">
+                <input class="form-control" id="enterResult" placeholder="Enter result" required th:field="*{result}"
                                type="text"/>
                         <label for="enterResult" th:text="#{score.result}">Result</label>
-                        <br><button class="btn btn-success" type="submit" th:text="#{score.new}"><i class="bi bi-plus"></i> Add a new score</button>
-                    </form>
                 </div>
+                    <div class="col">
+                        <br><button class="btn btn-success" type="submit" th:text="#{score.new}">
+                        <i class="bi bi-plus"></i> Add a new score</button>
+                </div></div>
+            </form>
+
                         <!--List of applicant's requests and current status -->
-                <div th:if="${!applicantDTO.requests.isEmpty}">
                     <h2 class="py-3 text-center" th:text="#{requests.list}">List of enrollment requests</h2>
+            <p class="text-center text-light" th:if="${requests.isEmpty}" th:text="#{requests.list.is.empty}"></p>
+            <div th:if="${!requests.isEmpty}">
                     <table class="table table-hover table-light table-responsive">
-                        <thead class="text-center">
-                        <td th:text="#{faculty.name}">Faculty Name</td>
+                        <thead class="table-secondary text-center fw-bold">
+                        <th th:text="#{faculty.name}">Faculty Name</th>
                         <th th:href="#{request.points}">Total points</th>
-                        <td th:text="#{request.date}">Registration date</td>
-                        <td th:text="#{request.status}">Current status</td>
-                        <td></td>
+                        <th th:text="#{request.date}">Registration date</th>
+                        <th th:text="#{request.status}">Current status</th>
+                        <td th:text="#{request.delete}">Delete request</td>
+                        <td sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{statement.preview}">Preview statement</td>
                         </thead>
                         <br>
                         <tbody>
                         <th:block th:each="request : ${requests}">
                             <tr>
                                 <div th:if="${request != null}">
-                                    <td th:text="${request.faculty.getName}"></td>
-                                    <td th:text="${request.points}"></td>
-                                    <td th:text="${request.registrationDate}"></td>
-                                    <td th:text="#{${request.status.statusName}}"></td>
-                                    <td class=" px-3">
-                                        <div class="text-center">
+                                    <td><a th:href="@{/faculties/{id}(id = ${request.getFaculty.getId})}"
+                                           th:text="${request.faculty.getName}">Faculty name</a></td>
+                                    <td class="text-center" th:text="${request.points}"></td>
+                                    <td class="text-center" th:text="${request.registrationDate}"></td>
+                                    <td class="align-middle text-center" th:switch="${request.status.name}">
+                                        <span class="bg-warning rounded-pill p-2"
+                                              th:case="'P'" th:text="#{pending}">Pending</span>
+                                        <span class="bg-success rounded-pill p-2"
+                                              th:case="'B'" th:text="#{budget}">Accepted  for budget place</span>
+                                        <span class="bg-success rounded-pill p-2"
+                                              th:case="'C'" th:text="#{contract}">Accepted for contract place</span>
+                                        <span class="bg-danger rounded-pill p-2"
+                                              th:case="'R'" th:text="#{rejected}">Rejected</span>
+                                    </td>
+                                    <td class="align-middle text-center px-3">
                                             <a class="btn btn-outline-danger" role="button"
                                                onClick="return confirm(th:text='#{confirm.delete}')"
-                                               th:href="@{/request/{id}/delete (id=${request.id})}"
-                                               th:text="#{request.delete}">Delete request</a>
-                                        </div>
+                                               th:href="@{/request/{id}/delete (id=${request.id})}">
+                                                <i class="bi bi-trash"></i></a>
+                                    </td>
+                                    <td class="align-middle text-center"><a class="btn btn-outline-success" role="button" sec:authorize="hasRole('ROLE_ADMIN')"
+                                           th:href="@{/request/{id}/statement(id = ${request.id})}"
+                                           th:text="#{preview}">Preview</a>
                                     </td>
                                 </div>
                             </tr>

@@ -66,6 +66,7 @@ public class FacultyController {
             try {
                 FacultyDto facultyDTO = facultyService.getById(id);
                 model.addAttribute(FACULTY_DTO, facultyDTO);
+                model.addAttribute("subjects", facultyDTO.getSubjects());
                 return "faculties/viewFaculty";
             }
             catch (NoSuchFacultyException e) {
@@ -78,15 +79,25 @@ public class FacultyController {
     }
 
     @RequestMapping(value="/{id}/new-request", method = {RequestMethod.POST, RequestMethod.GET})
-    public String newRequest(@PathVariable("id") String idString, @AuthenticationPrincipal User user, Model model) throws NoSuchFacultyException, NoSuchApplicantException {
+    public String newRequest(@PathVariable("id") String idString, @AuthenticationPrincipal User user, Model model){
         if (ParamValidator.isNumeric(idString)) {
             long id = Long.parseLong(idString);
             EnrollmentRequestDto requestDto = new EnrollmentRequestDto();
-            requestDto.setApplicant(applicantService.getByUserId(user.getId()));
-            requestDto.setFaculty(facultyService.getById(id));
-            requestDto.setRegistrationDate(LocalDateTime.now());
-            facultyService.addNewRequest(requestDto);
-            return REDIRECT_APPLICANT;
+            try {
+                requestDto.setApplicant(applicantService.getByUserId(user.getId()));
+                requestDto.setFaculty(facultyService.getById(id));
+                requestDto.setRegistrationDate(LocalDateTime.now());
+                facultyService.addNewRequest(requestDto);
+                return "redirect:/applicant/" + user.getUsername();
+            } catch (NoSuchApplicantException appExc){
+                log.warn("Applicant not found");
+                model.addAttribute(ERROR, "Could not find the applicant, please try again");
+            } catch (NoSuchFacultyException facExc) {
+                log.warn("Faculty not found");
+                model.addAttribute(ERROR, "Could not find requested faculty, please try again");
+            }
+        } else {
+            model.addAttribute(ERROR, "Could not find requested faculty, please try again");
         }
         return REDIRECT_FACULTIES;
     }
@@ -117,14 +128,14 @@ public class FacultyController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String addFaculty(@Valid @ModelAttribute(FACULTY_DTO) FacultyDto facultyDTO, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            return FACULTIES_NEW;
+            return REDIRECT_NEW_FACULTY;
         }
         FacultyDto faculty = facultyService.addFaculty(facultyDTO);
         if (facultyDTO.equals(faculty)) {
             return REDIRECT_FACULTIES;
         } else {
             //do something
-            return FACULTIES_NEW;
+            return REDIRECT_NEW_FACULTY;
         }
     }
 
@@ -132,7 +143,7 @@ public class FacultyController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String editFaculty(@Valid @ModelAttribute FacultyDto facultyDTO, BindingResult result, @PathVariable Long id) throws NoSuchFacultyException {
         if (result.hasErrors()) {
-            return FACULTIES_NEW;
+            return REDIRECT_NEW_FACULTY;
         }
         facultyService.editFaculty(facultyDTO, id);
         return REDIRECT_FACULTIES;
@@ -155,6 +166,7 @@ public class FacultyController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String addSubjectToList(@RequestParam String chosenSubject, @PathVariable String facultyId, Model model) {
         facultyService.addSubjectToList(facultyId, chosenSubject);
+
         return getRedirectUrl(facultyId);
     }
 

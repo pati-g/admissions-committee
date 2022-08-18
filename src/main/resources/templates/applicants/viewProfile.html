@@ -53,7 +53,9 @@
                 <div class="text center">
                     <a class="btn btn-primary" th:if="${applicantDTO.certificateUrl != null}"
                        th:href="@{download-certificate/{id} (id = ${applicantDTO.getUserDetails.getId})}">
-                        <i class="bi bi-download" aria-hidden="true"><span class="text-center m-2" th:text="#{download.cert}">Download certificate</span></i></a>
+                        <i class="bi bi-download" aria-hidden="true">
+                            <span class="text-center m-2"
+                                  th:text="#{download.cert}">Download certificate</span></i></a>
                 </div>
 
             </form>
@@ -88,22 +90,29 @@
                         <th th:href="#{request.points}">Total points</th>
                         <th th:text="#{request.date}">Requested on</th>
                         <th th:text="#{request.status}">Current status</th>
-                        <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{request.statement}">Generate statement</th>
+                        <th sec:authorize="hasRole('ROLE_ADMIN')"
+                            th:text="#{request.statement}">Generate statement</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="request : ${requests}">
-                        <td th:text="${request.faculty.getName}">Faculty name</td>
+                        <td><a th:href="@{/faculties/{id}(id = ${request.getFaculty.getId})}"
+                               th:text="${request.faculty.getName}">Faculty name</a></td>
                         <td th:text="${request.points}">Sum of points</td>
                         <td th:text="${request.registrationDate}">Date of request submission</td>
                         <td class="align-middle text-center" th:switch="${request.status.name}">
-                            <span class="bg-warning rounded-pill p-2" th:case="'P'" th:text="#{pending}">Pending</span>
-                            <span class="bg-success rounded-pill p-2" th:case="'B'" th:text="#{budget}">Accepted  for budget place</span>
-                            <span class="bg-success rounded-pill p-2" th:case="'C'" th:text="#{contract}">Accepted for contract place</span>
-                            <span class="bg-danger rounded-pill p-2" th:case="'R'" th:text="#{rejected}">Rejected</span>
+                            <span class="bg-warning rounded-pill p-2" th:case="'P'"
+                                  th:text="#{pending}">Pending</span>
+                            <span class="bg-success rounded-pill p-2" th:case="'B'"
+                                  th:text="#{budget}">Accepted  for budget place</span>
+                            <span class="bg-success rounded-pill p-2" th:case="'C'"
+                                  th:text="#{contract}">Accepted for contract place</span>
+                            <span class="bg-danger rounded-pill p-2" th:case="'R'"
+                                  th:text="#{rejected}">Rejected</span>
                         </td>
                         <td><a class="btn btn-success" role="button" sec:authorize="hasRole('ROLE_ADMIN')"
-                               th:href="@{/request/{id}/statement(id = ${request.id})}" th:text="#{request.statement}">Generate statement</a>
+                               th:href="@{/request/{id}/statement(id = ${request.id})}"
+                               th:text="#{request.statement}">Generate statement</a>
                         </td>
                     </tr>
                     </tbody>
@@ -114,7 +123,8 @@
 <!--Edit profile button-->
         <div class="text-center">
             <a class="btn btn-primary" role="button"
-               th:href="@{/applicant/{username}/edit(username = ${userDTO.getUsername})}" th:text="#{edit.profile}">Edit profile</a>
+               th:href="@{/applicant/{username}/edit(username = ${userDTO.getUsername})}"
+               th:text="#{edit.profile}">Edit profile</a>
         </div>
         </div>
     </div>

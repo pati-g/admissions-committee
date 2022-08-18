@@ -30,8 +30,8 @@ class FacultyServiceTest {
     private ApplicantService applicantService;
     @Mock
     private ApplicantMapper applicantMapper;
-
-    private final EnrollmentRequestMapper requestMapper = new EnrollmentRequestMapper(applicantMapper, facultyMapper);
+    @Mock
+    private EnrollmentRequestMapper requestMapper;
     @Mock
     private EnrollmentRequestService requestService;
     private SubjectService subjectService;

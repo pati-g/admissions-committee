@@ -4,7 +4,6 @@ import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.entity.Score;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,10 +17,9 @@ public class ScoreMapper {
             log.warn("Score is null!");
             return null;
         }
-        ApplicantMapper mapper = new ApplicantMapper();
         return ScoreDto.builder()
                 .id(score.getId())
-                .applicant(mapper.mapToDtoWithoutRelations(score.getApplicant()))
+                .applicantId(score.getApplicant().getId())
                 .result(score.getResult())
                 .subjectName(score.getSubjectName()).build();
     }
@@ -33,9 +31,7 @@ public class ScoreMapper {
 
     public Score mapToEntity(ScoreDto scoreDTO) {
         log.debug("Score DTO before mapping: {}", scoreDTO);
-        ApplicantMapper mapper = new ApplicantMapper();
         return Score.builder()
-                .applicant(mapper.mapToEntity(scoreDTO.getApplicant()))
                 .result(scoreDTO.getResult())
                 .subjectName(scoreDTO.getSubjectName()).build();
     }
@@ -44,10 +40,6 @@ public class ScoreMapper {
         log.debug("Score entity: {} and DTO: {} before mapping", score, scoreDTO);
         Integer result = scoreDTO.getResult();
         String subject = scoreDTO.getSubjectName();
-        ApplicantMapper mapper = new ApplicantMapper();
-
-        if (scoreDTO.getApplicant() != null)
-            score.setApplicant(mapper.mapToEntity(scoreDTO.getApplicant()));
         if (result != null)
             score.setResult(result);
         if (subject != null && !subject.isEmpty())

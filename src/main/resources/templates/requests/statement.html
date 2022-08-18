@@ -2,28 +2,37 @@
 <html lang="en" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="#{request.statement}">Generate statement</title>
+    <title th:text="#{statement.preview}">Preview statement</title>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
-            <h1 class="py-3 text-center" th:text="#{request.statement}">Generate statement</h1> <br>
+            <h1 class="py-3 text-center" th:text="#{statement.preview}">Preview statement</h1> <br>
 
-            <h3 th:text="#{faculty.name}">Faculty Name</h3>
-            <a class="btn btn-secondary float-right" th:text="#{view}"
-               th:href="@{/faculties/{id}(id = ${faculty.getId})}">View</a>
-            <div class="bg-light text-dark p-3">
-                <span th:text="${faculty.name}"></span>
+            <h4 th:text="#{faculty.name}">Faculty Name</h4>
+            <div class="row">
+                <div class="col bg-light text-dark p-3">
+                    <span th:text="${faculty.name}"></span>
+                </div>
+                <div class="col align-right">
+            <a class="btn btn-secondary float-right p-3" th:text="#{view}"
+               th:href="@{/faculties/{id}(id = ${faculty.getId})}">View</a></div>
             </div>
             <br>
-            <h3 th:text="#{applicant.name}">Applicant name</h3>
-            <a class="btn btn-secondary float-right" th:text="#{view}"
-               th:href="@{/applicant/{username}(username = ${applicant.getUserDetails.getUsername})}">View</a>
-            <div class="bg-light text-dark clearfix p-3">
-                <span th:text="${applicant.fullName}"></span>
-            </div>
+            <h4 th:text="#{applicant.name}">Applicant name</h4>
+            <div class="row">
+                <div class="col bg-light text-dark clearfix p-3">
+                    <span th:text="${applicant.fullName}"></span>
+                </div>
+                <div class="col align-right">
+            <a class="btn btn-secondary float-right p-3" th:text="#{view}"
+               th:href="@{/applicant/{username}(username = ${applicant.getUserDetails.getUsername})}">View</a></div>
+            </div><br>
             <h3 class="py-3 text-center" th:text="#{request.scores}">Applicant's results</h3>
+            <div th:if="${scores} == null or ${scores.isEmpty}">
+                <h6 class="text-center">Applicant has not submitted any scores yet.</h6>
+            </div>
             <div th:if="${scores != null}">
                 <div class="py-3 table-responsive">
                     <table class="table table-light">
@@ -49,7 +58,9 @@
                     </div>
                 </div>
                 <br><br>
-                <input class="btn btn-primary" type="submit" th:value="#{request.statement}">
+            <h6 th:text="#{request.verify.if}">Verify if candidate is eligible for enrollment and choose type of enrollment (budget or contract)</h6>
+
+<!--            <a class="btn btn-primary" th:href="" th:value="#{statement.generate}"></a>-->
         </div>
     </div>
 </div>

@@ -11,20 +11,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ApplicantMapper {
 
-    public ApplicantDto mapToDto (Applicant applicant) {
-        log.debug("Applicant entity before using primary mapper {}", applicant);
-        ApplicantDto dto = mapToDtoWithoutRelations(applicant);
-ScoreMapper scoreMapper = new ScoreMapper();
-        log.debug("Applicant DTO after primary mapping {}", dto);
-        if (applicant.getScores() != null) {
-            log.trace("Scores list to be added to Applicant DTO {}", applicant.getScores());
-            dto.setScores(scoreMapper.mapToDto(applicant.getScores()));
-            log.trace("Score DTOs list after mapping and adding to Applicant DTO {}", dto.getScores());
-        }
-        return dto;
+    private final UserMapper userMapper;
+
+    public ApplicantMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
-    public ApplicantDto mapToDtoWithoutRelations(Applicant applicant) {
-        UserMapper userMapper = new UserMapper();
+
+    public ApplicantDto mapToDto(Applicant applicant) {
         log.debug("Applicant entity before mapping WITHOUT RELATIONAL FIELDS (scores and requests) {}", applicant);
         ApplicantDto dto = ApplicantDto.builder()
                 .id(applicant.getId())
@@ -34,53 +27,42 @@ ScoreMapper scoreMapper = new ScoreMapper();
                 .city(applicant.getCity())
                 .region(applicant.getRegion())
                 .educationalInstitution(applicant.getEducationalInstitution())
-                .certificateUrl(applicant.getCertificateUrl())
-                .userDetails(userMapper.mapToDTO(applicant.getUser()))
+                .userDetails(userMapper.mapToDto(applicant.getUser()))
                 .build();
         log.debug("Applicant DTO after mapping {}", dto);
-        return dto;
-    }
-
-    public ApplicantDto mapToDtoWithoutRequests(Applicant applicant) {
-        log.debug("Applicant entity before using primary mapper {}", applicant);
-        ApplicantDto dto = mapToDtoWithoutRelations(applicant);
-ScoreMapper scoreMapper = new ScoreMapper();
-        log.debug("Applicant DTO after primary mapping {}", dto);
-        if (applicant.getScores() != null) {
-            log.trace("Scores list to be added to Applicant DTO {}", applicant.getScores());
-            dto.setScores(scoreMapper.mapToDto(applicant.getScores()));
-            log.trace("Score DTOs list after mapping and adding to Applicant DTO {}", dto.getScores());
+        String certificateUrl = applicant.getCertificateUrl();
+        if (certificateUrl != null && !certificateUrl.isBlank()) {
+            dto.setCertificateUrl(certificateUrl);
         }
         return dto;
     }
 
     public List<ApplicantDto> mapToDto(List<Applicant> applicants) {
         log.debug("Mapping List<Applicant> to DTOs");
-        return applicants.stream().map(this::mapToDtoWithoutRelations).collect(Collectors.toList());
+        return applicants.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
     public Applicant mapToEntity(ApplicantDto applicantDto) {
         log.debug("Applicant DTO before mapping {}", applicantDto);
-        return Applicant.builder()
+        Applicant applicant = Applicant.builder()
                 .certificateUrl(applicantDto.getCertificateUrl())
                 .city(applicantDto.getCity())
                 .educationalInstitution(applicantDto.getEducationalInstitution())
                 .firstName(applicantDto.getFirstName())
                 .lastName(applicantDto.getLastName())
                 .region(applicantDto.getRegion()).build();
+        log.debug("Applicant entity after mapping {}", applicant);
+        return applicant;
     }
 
     public void mapToEntity(ApplicantDto applicantDto, Applicant applicant) {
         log.debug("Applicant entity: {} and DTO: {} before mapping", applicant, applicantDto);
-        String certificate = applicantDto.getCertificateUrl();
         String city = applicantDto.getCity();
         String institution = applicantDto.getEducationalInstitution();
         String firstname = applicantDto.getFirstName();
         String lastname = applicantDto.getLastName();
         String region = applicantDto.getRegion();
 
-        if (certificate != null && !certificate.isBlank())
-            applicant.setCertificateUrl(certificate);
         if (city != null && !city.isBlank())
             applicant.setCity(city);
         if (institution != null && !institution.isBlank())
@@ -92,7 +74,6 @@ ScoreMapper scoreMapper = new ScoreMapper();
         if (region != null && !region.isBlank())
             applicant.setRegion(region);
     }
-
     public Applicant mapToEntityWithId(ApplicantDto applicantDto) {
         log.debug("Mapping Applicant DTO with ID");
         Applicant applicant = this.mapToEntity(applicantDto);

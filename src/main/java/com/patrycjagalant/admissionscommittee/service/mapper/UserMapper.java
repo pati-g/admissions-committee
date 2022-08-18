@@ -3,14 +3,13 @@ package com.patrycjagalant.admissionscommittee.service.mapper;
 import com.patrycjagalant.admissionscommittee.dto.UserDto;
 import com.patrycjagalant.admissionscommittee.entity.User;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 public class UserMapper {
 
-    public UserDto mapToDTO(User user) {
+    public UserDto mapToDto(User user) {
         log.debug("User entity before mapping: {}", user);
         if (user == null) {
             log.warn("User is null!");

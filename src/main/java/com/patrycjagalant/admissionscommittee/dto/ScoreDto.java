@@ -4,11 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,20 +15,20 @@ public class ScoreDto {
 
     private long id;
 
-    @NotBlank
-    private ApplicantDto applicant;
+    @NotNull
+    private Long applicantId;
 
     @NotBlank(message = "Please enter subject name")
     @Size(min = 2, max = 150, message = "Name should be between 2-150 characters long")
     private String subjectName;
 
-    @NotBlank(message = "Please enter the result")
+    @NotNull(message = "Please enter the result")
     @Min(value = 0, message = "Minimum value of the result should be 0")
     @Max(value = 100, message = "Maximum value of the result should be 100")
     private Integer result;
 
-    public ScoreDto(ApplicantDto applicant) {
-        this.applicant = applicant;
+    public ScoreDto(Long applicantId) {
+        this.applicantId = applicantId;
     }
 
 }

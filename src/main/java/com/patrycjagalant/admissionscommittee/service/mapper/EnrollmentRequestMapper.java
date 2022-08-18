@@ -1,11 +1,14 @@
 package com.patrycjagalant.admissionscommittee.service.mapper;
 
 
+import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
+import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
 import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
 import com.patrycjagalant.admissionscommittee.entity.Status;
+import com.patrycjagalant.admissionscommittee.service.ScoreService;
+import com.patrycjagalant.admissionscommittee.service.SubjectService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,23 +18,30 @@ import java.util.stream.Collectors;
 @Component
 public class EnrollmentRequestMapper {
     private final ApplicantMapper applicantMapper;
-
     private final FacultyMapper facultyMapper;
+    private final ScoreService scoreService;
+    private final SubjectService subjectService;
 
-    public EnrollmentRequestMapper(ApplicantMapper applicantMapper, FacultyMapper facultyMapper) {
+    public EnrollmentRequestMapper(ApplicantMapper applicantMapper, FacultyMapper facultyMapper, ScoreService scoreService, SubjectService subjectService) {
         this.applicantMapper = applicantMapper;
         this.facultyMapper = facultyMapper;
+        this.scoreService = scoreService;
+        this.subjectService = subjectService;
     }
 
     public EnrollmentRequestDto mapToDto(EnrollmentRequest enrollmentRequest) {
         log.debug("EnrollmentRequest entity before mapping: {}", enrollmentRequest);
+        ApplicantDto applicantDto = applicantMapper.mapToDto(enrollmentRequest.getApplicant());
+        applicantDto.setScores(scoreService.getAllForApplicantId(applicantDto.getId()));
+        FacultyDto facultyDto = facultyMapper.mapToDto(enrollmentRequest.getFaculty());
+        facultyDto.setSubjects(subjectService.getAllForFaculty(facultyDto.getId()));
         return EnrollmentRequestDto.builder()
                 .id(enrollmentRequest.getId())
                 .points(enrollmentRequest.getPoints())
                 .registrationDate(enrollmentRequest.getRegistrationDate() != null ? enrollmentRequest.getRegistrationDate() : null)
                 .status(enrollmentRequest.getStatus())
-                .applicant(applicantMapper.mapToDtoWithoutRequests(enrollmentRequest.getApplicant()))
-                .faculty(facultyMapper.mapToDto(enrollmentRequest.getFaculty())).build();
+                .applicant(applicantDto)
+                .faculty(facultyDto).build();
     }
 
     public List<EnrollmentRequestDto> mapToDto(List<EnrollmentRequest> enrollmentRequests) {

@@ -1,13 +1,19 @@
 package com.patrycjagalant.admissionscommittee.controller;
 
+import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
+import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
+import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchRequestException;
 import com.patrycjagalant.admissionscommittee.service.EnrollmentRequestService;
 import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.List;
 import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 
 @Controller
@@ -20,7 +26,6 @@ public class RequestController {
         this.requestService = requestService;
     }
 
-
     @RequestMapping(value = "/{id}/delete", method = {RequestMethod.DELETE, RequestMethod.POST})
     public String deleteRequest(@PathVariable String id,
                               Model model) throws NoSuchRequestException {
@@ -29,11 +34,31 @@ public class RequestController {
             return APPLICANTS_EDIT_PROFILE;
         } else {
             requestService.deleteRequest(Long.parseLong(id));
-            return REDIRECT_APPLICANT_ID_EDIT;
+            return REDIRECT_EDIT_APPLICANT;
         }
     }
 
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String getAllRequests(@RequestParam(required = false) String page,
+                                 @RequestParam(required = false) String size,
+                                 @RequestParam(defaultValue = "registrationDate") String sortBy,
+                                 Sort.Direction sort, Model model){
+        int pageNumber = ParamValidator.isNumeric(page) ? Math.max(Integer.parseInt(page), 1) : 1;
+        int sizeNumber = ParamValidator.isNumeric(size) ? Math.max(Integer.parseInt(size), 0) : 5;
+        Page<EnrollmentRequestDto> requests = requestService.getAll(pageNumber, sizeNumber, sort, sortBy);
+        return addPaginationModel(pageNumber, requests, model);
+    }
+    private String addPaginationModel(int page, Page<EnrollmentRequestDto> paginated, Model model) {
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", paginated.getTotalPages());
+        model.addAttribute("totalItems", paginated.getTotalElements());
+        model.addAttribute("applicants", paginated);
+        return "requests/allRequests";
+    }
+
     @GetMapping("/{id}/statement")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getStatementForm(@PathVariable String id,
                                    Model model) {
         if (!ParamValidator.isNumeric(id)) {
@@ -42,11 +67,26 @@ public class RequestController {
         }
         else {
             EnrollmentRequestDto dto = requestService.getRequestById(Long.parseLong(id));
+            ApplicantDto applicantDto = dto.getApplicant();
+            FacultyDto facultyDto = dto.getFaculty();
+            List<ScoreDto> relevantScores = requestService.getRelevantScoresForApplicant(applicantDto, facultyDto);
             model.addAttribute("request", dto);
-            model.addAttribute("applicant", dto.getApplicant());
-            model.addAttribute("faculty", dto.getFaculty());
-            model.addAttribute("scores", dto.getApplicant().getScores());
+            model.addAttribute("applicant", applicantDto);
+            model.addAttribute("faculty", facultyDto);
+            model.addAttribute("scores", relevantScores);
             return "requests/statement";
+        }
+    }
+
+    @PostMapping("/{id}/submit-statement")
+    public String submitStatement(@PathVariable String id,
+                                  Model model) throws NoSuchRequestException {
+        if (!ParamValidator.isNumeric(id)) {
+            model.addAttribute(ERROR, "Incorrect request ID, please try again");
+            return "requests/allRequests";
+        } else {
+            requestService.deleteRequest(Long.parseLong(id));
+            return REDIRECT_EDIT_APPLICANT;
         }
     }
 }
