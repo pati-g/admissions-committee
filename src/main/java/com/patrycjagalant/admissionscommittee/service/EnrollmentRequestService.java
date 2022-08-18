@@ -1,6 +1,7 @@
 package com.patrycjagalant.admissionscommittee.service;
 
 import com.patrycjagalant.admissionscommittee.dto.*;
+import com.patrycjagalant.admissionscommittee.dto.other.RequestWithNamesDto;
 import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
 import com.patrycjagalant.admissionscommittee.entity.Subject;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchRequestException;
@@ -73,7 +74,7 @@ public class EnrollmentRequestService {
         return relevantScores;
     }
 
-    public Page<EnrollmentRequestDto> getAll(int page, int size, Sort.Direction sort, String sortBy) {
+    public Page<RequestWithNamesDto> getAll(int page, int size, Sort.Direction sort, String sortBy) {
         long requestsTotal = enrollmentRequestRepository.count();
         if (size > requestsTotal) {
             size = 100;
@@ -83,10 +84,9 @@ public class EnrollmentRequestService {
         Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.ASC;
         Page<EnrollmentRequest> requestsPage = enrollmentRequestRepository
                 .findAll(PageRequest.of(page - 1, size, Sort.by(sortDirection, sortBy)));
-        List<EnrollmentRequestDto> requestDtos = mapper.mapToDto(requestsPage
-                .getContent());
-
-        return new PageImpl<>(requestDtos,
+        List<RequestWithNamesDto> requestsWithApplicantAndFacultyName = requestsPage
+                .getContent().stream().map(mapper::mapToDtoWithNames).collect(Collectors.toList());
+        return new PageImpl<>(requestsWithApplicantAndFacultyName,
                 PageRequest.of(page - 1, size, Sort.by(sortDirection, sortBy)), requestsTotal);
     }
 

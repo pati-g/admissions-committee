@@ -8,8 +8,8 @@ import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantExceptio
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.exceptions.ScoreAlreadyInListException;
 import com.patrycjagalant.admissionscommittee.service.*;
-import com.patrycjagalant.admissionscommittee.utils.FileValidator;
-import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
+import com.patrycjagalant.admissionscommittee.utils.validators.FileValidator;
+import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -148,13 +148,15 @@ public class ApplicantController {
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String getAllApplicants(@RequestParam(required = false) String page,
-                                   @RequestParam(required = false) String size,
+    public String getAllApplicants(@RequestParam(defaultValue = "1") String page,
+                                   @RequestParam(defaultValue = "5") String size,
                                    @RequestParam(defaultValue = "lastName") String sortBy,
                                    Sort.Direction sort, Model model) {
         int pageNumber = ParamValidator.isNumeric(page) ? Math.max(Integer.parseInt(page), 1) : 1;
         int sizeNumber = ParamValidator.isNumeric(size) ? Math.max(Integer.parseInt(size), 0) : 5;
         Page<ApplicantDto> applicantDTOPage = applicantService.getAllApplicants(pageNumber, sizeNumber, sort, sortBy);
+        model.addAttribute("sort", sort);
+        model.addAttribute("sortBy", sortBy);
         return addPaginationModel(pageNumber, applicantDTOPage, model);
     }
 

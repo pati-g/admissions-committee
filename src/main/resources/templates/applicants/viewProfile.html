@@ -24,14 +24,16 @@
             <br><br>
             <div th:if="${applicantDTO != null}">
             <form class="text-dark" method="get" th:object="${applicantDTO}">
-                <div class="form-floating mb-3">
+                <div class="row">
+                <div class="col form-floating mb-3">
                     <input class="form-control" disabled id="fname" readonly th:value="*{firstName}" type="text"/>
                     <label for="fname" th:text="#{fname}">First name</label>
                 </div>
                 <br>
-                <div class="form-floating mb-3">
+                <div class="col form-floating mb-3">
                     <input class="form-control" disabled id="lname" readonly th:value="*{lastName}" type="text"/>
                     <label for="lname" th:text="#{lname}">Last name</label>
+                </div>
                 </div>
                 <br>
                 <div class="form-floating mb-3">

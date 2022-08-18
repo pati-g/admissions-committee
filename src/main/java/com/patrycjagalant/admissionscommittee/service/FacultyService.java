@@ -11,7 +11,7 @@ import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.repository.FacultyRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.EnrollmentRequestMapper;
 import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
-import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
+import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -49,11 +49,11 @@ public class FacultyService {
 
     public Page<FacultyDto> getAllFaculties(int page, int size, Sort.Direction sort, String sortBy) {
         long facultiesTotal = facultyRepository.count();
-        if ((long) page * size > facultiesTotal) {
-            page = 1;
-            size = 5;
+        if (size > facultiesTotal) {
+            size = 100;
+        } else if ((long) page * size > facultiesTotal) {
+            page = (int) facultiesTotal / size + 1;
         }
-
         Sort.Direction sortDirection = sort != null ? sort : Sort.Direction.DESC;
         Page<Faculty> facultyPage = facultyRepository
                 .findAll(PageRequest.of(page - 1, size, Sort.by(sortDirection, sortBy)));

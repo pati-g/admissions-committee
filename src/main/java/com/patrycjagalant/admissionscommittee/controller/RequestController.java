@@ -4,9 +4,10 @@ import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
 import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
+import com.patrycjagalant.admissionscommittee.dto.other.RequestWithNamesDto;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchRequestException;
 import com.patrycjagalant.admissionscommittee.service.EnrollmentRequestService;
-import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
+import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,20 +41,22 @@ public class RequestController {
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String getAllRequests(@RequestParam(required = false) String page,
-                                 @RequestParam(required = false) String size,
+    public String getAllRequests(@RequestParam(defaultValue = "1") String page,
+                                 @RequestParam(defaultValue = "5") String size,
                                  @RequestParam(defaultValue = "registrationDate") String sortBy,
                                  Sort.Direction sort, Model model){
         int pageNumber = ParamValidator.isNumeric(page) ? Math.max(Integer.parseInt(page), 1) : 1;
         int sizeNumber = ParamValidator.isNumeric(size) ? Math.max(Integer.parseInt(size), 0) : 5;
-        Page<EnrollmentRequestDto> requests = requestService.getAll(pageNumber, sizeNumber, sort, sortBy);
+        Page<RequestWithNamesDto> requests = requestService.getAll(pageNumber, sizeNumber, sort, sortBy);
+        model.addAttribute("sort", sort);
+        model.addAttribute("sortBy", sortBy);
         return addPaginationModel(pageNumber, requests, model);
     }
-    private String addPaginationModel(int page, Page<EnrollmentRequestDto> paginated, Model model) {
+    private String addPaginationModel(int page, Page<RequestWithNamesDto> paginated, Model model) {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", paginated.getTotalPages());
         model.addAttribute("totalItems", paginated.getTotalElements());
-        model.addAttribute("applicants", paginated);
+        model.addAttribute("requests", paginated);
         return "requests/allRequests";
     }
 

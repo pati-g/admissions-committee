@@ -1,4 +1,4 @@
-package com.patrycjagalant.admissionscommittee.utils;
+package com.patrycjagalant.admissionscommittee.utils.converters;
 
 import com.patrycjagalant.admissionscommittee.entity.Status;
 import javax.persistence.AttributeConverter;

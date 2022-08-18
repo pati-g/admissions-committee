@@ -4,7 +4,7 @@ import com.patrycjagalant.admissionscommittee.dto.UserDto;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.UserAlreadyExistException;
 import com.patrycjagalant.admissionscommittee.service.UserService;
-import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
+import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
 import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;

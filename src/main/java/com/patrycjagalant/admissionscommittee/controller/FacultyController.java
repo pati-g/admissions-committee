@@ -9,7 +9,7 @@ import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.service.ApplicantService;
 import com.patrycjagalant.admissionscommittee.service.FacultyService;
 import com.patrycjagalant.admissionscommittee.service.SubjectService;
-import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
+import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -48,6 +48,8 @@ public class FacultyController {
         int pageNumber = ParamValidator.isNumeric(page) ? Math.max(Integer.parseInt(page), 1) : 1;
         int sizeNumber = ParamValidator.isNumeric(size) ? Math.max(Integer.parseInt(size), 0) : 5;
         Page<FacultyDto> facultyDTOPage = facultyService.getAllFaculties(pageNumber, sizeNumber, sort, sortBy);
+        model.addAttribute("sort", sort);
+        model.addAttribute("sortBy", sortBy);
         return addPaginationModel(pageNumber, facultyDTOPage, model);
     }
 

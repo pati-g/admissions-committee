@@ -1,6 +1,6 @@
 package com.patrycjagalant.admissionscommittee.annotations;
 
-import com.patrycjagalant.admissionscommittee.utils.EmailValidator;
+import com.patrycjagalant.admissionscommittee.utils.validators.EmailValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

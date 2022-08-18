@@ -4,7 +4,10 @@ package com.patrycjagalant.admissionscommittee.service.mapper;
 import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
+import com.patrycjagalant.admissionscommittee.dto.other.RequestWithNamesDto;
+import com.patrycjagalant.admissionscommittee.entity.Applicant;
 import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
+import com.patrycjagalant.admissionscommittee.entity.Faculty;
 import com.patrycjagalant.admissionscommittee.entity.Status;
 import com.patrycjagalant.admissionscommittee.service.ScoreService;
 import com.patrycjagalant.admissionscommittee.service.SubjectService;
@@ -74,5 +77,17 @@ public class EnrollmentRequestMapper {
         if (enrollmentRequestDTO.getPoints() != null) {
             enrollmentRequest.setPoints(enrollmentRequestDTO.getPoints());
         }
+    }
+    public RequestWithNamesDto mapToDtoWithNames(EnrollmentRequest request) {
+        Applicant applicant = request.getApplicant();
+        Faculty faculty = request.getFaculty();
+        return RequestWithNamesDto.builder()
+                .faculty(faculty.getName())
+                .applicant(applicant.getLastName() + " " + applicant.getFirstName())
+                .id(request.getId())
+                .points(request.getPoints())
+                .date(request.getRegistrationDate())
+                .status(request.getStatus())
+                .build();
     }
 }

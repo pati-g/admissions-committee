@@ -17,42 +17,66 @@
             <span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a aria-current="page" class="nav-link active" th:href="@{/}" th:text="#{home}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/faculties}" th:text="#{faculties}">Faculties</a></li>
+                <li class="nav-item"><a aria-current="page" class="nav-link active" th:href="@{/}"
+                                        th:text="#{home}">Home</a></li>
+                <li class="nav-item dropdown">
+                    <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
+                       id="navbarDropdownFaculties" role="button" th:text="#{faculties}"> Faculties </a>
+                    <ul aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" th:href="@{/faculties}"
+                               th:text="#{faculty.list}">View faculty list</a></li>
+                        <li><a class="dropdown-item" sec:authorize="hasRole('ROLE_ADMIN')"
+                               th:href="@{/request/all}"
+                               th:text="#{requests.list}">List of enrollment requests</a></li>
+                    </ul>
+                </li>
                 <li class="nav-item"><a class="nav-link" sec:authorize="hasRole('ROLE_ADMIN')"
                                         th:href="@{/applicant/all}" th:text="#{applicants}">Applicants</a></li>
                 <li class="nav-item dropdown">
                     <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
-                       id="navbarDropdown"
+                       id="navbarDropdownUser"
                        role="button" sec:authorize="isAuthenticated()"
                        th:text="#{greeting} + ', ' + ${#authentication.name}"></a>
                     <ul aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-end"
                         sec:authorize="isAuthenticated()">
-                        <li><a class="dropdown-item" th:href="@{/applicant/{username} (username = ${#authentication.principal.username})}" th:text="#{view.profile}">View profile</a></li>
-                        <li><a class="dropdown-item" th:href="@{/user/{username}/edit (username = ${#authentication.principal.username})}" th:text="#{edit.account}">Edit account</a></li>
+                        <li><a class="dropdown-item"
+                               th:href="@{/applicant/{username} (username = ${#authentication.principal.username})}"
+                               th:text="#{view.profile}">View profile</a></li>
+                        <li><a class="dropdown-item"
+                               th:href="@{/user/{username}/edit (username = ${#authentication.principal.username})}"
+                               th:text="#{edit.account}">Edit account</a></li>
                         <li><a class="dropdown-item" sec:authorize="hasRole('ROLE_USER')"
-                               th:href="@{/applicant/{username}/edit (username = ${#authentication.principal.username})}" th:text="#{edit.profile}">Edit profile</a></li>
+                               th:href="@{/applicant/{username}/edit
+                               (username = ${#authentication.principal.username})}"
+                               th:text="#{edit.profile}">Edit profile</a></li>
                         <li>
                             <hr class="dropdown-divider"/>
                         </li>
                         <li><a class="dropdown-item" th:href="@{/logout}" th:text="#{logout}">Log out</a></li>
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}" th:text="#{login}">Log in</a>
+                <li class="nav-item"><a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}"
+                                        th:text="#{login}">Log in</a>
                 </li>
                 <li class="nav-item"><a class="nav-link" sec:authorize="isAnonymous()"
                                         th:href="@{/register}" th:text="#{register}">Register</a></li>
-                <li class="nav-item"><a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/logout}" th:text="#{logout}">Log
+                <li class="nav-item"><a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/logout}"
+                                        th:text="#{logout}">Log
                     out</a></li>
                 <li>
                     <div class="nav-item dropdown">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-translate"></i><span th:text="' ' + #{lang.change}" class="btn-label"></span>
+                        <button type="button" class="btn btn-outline-secondary"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-translate"></i>
+                            <span th:text="' ' + #{lang.change}" class="btn-label"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'en')}" th:text="#{lang.en}">English</a></li>
-                            <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'pl')}" th:text="#{lang.pl}">Polish</a></li>
-                            <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'ua')}" th:text="#{lang.ua}">Ukrainian</a></li>
+                            <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'en')}"
+                                   th:text="#{lang.en}">English</a></li>
+                            <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'pl')}"
+                                   th:text="#{lang.pl}">Polish</a></li>
+                            <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'ua')}"
+                                   th:text="#{lang.ua}">Ukrainian</a></li>
                         </ul>
                     </div>
                 </li>

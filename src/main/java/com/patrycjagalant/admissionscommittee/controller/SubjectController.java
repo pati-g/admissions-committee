@@ -1,7 +1,7 @@
 package com.patrycjagalant.admissionscommittee.controller;
 
 import com.patrycjagalant.admissionscommittee.service.SubjectService;
-import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
+import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;

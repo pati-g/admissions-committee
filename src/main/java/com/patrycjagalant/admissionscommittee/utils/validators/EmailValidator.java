@@ -1,4 +1,4 @@
-package com.patrycjagalant.admissionscommittee.utils;
+package com.patrycjagalant.admissionscommittee.utils.validators;
 
 import com.patrycjagalant.admissionscommittee.annotations.ValidEmail;
 import com.patrycjagalant.admissionscommittee.service.UserService;

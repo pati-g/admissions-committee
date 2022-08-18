@@ -5,7 +5,7 @@ import com.patrycjagalant.admissionscommittee.entity.Faculty;
 import com.patrycjagalant.admissionscommittee.entity.Subject;
 import com.patrycjagalant.admissionscommittee.repository.SubjectRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.SubjectMapper;
-import com.patrycjagalant.admissionscommittee.utils.ParamValidator;
+import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;

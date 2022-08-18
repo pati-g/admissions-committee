@@ -1,6 +1,6 @@
 package com.patrycjagalant.admissionscommittee.annotations;
 
-import com.patrycjagalant.admissionscommittee.utils.PasswordMatcherValidator;
+import com.patrycjagalant.admissionscommittee.utils.validators.PasswordMatcherValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
