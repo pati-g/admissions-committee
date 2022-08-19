@@ -7,24 +7,23 @@ import com.patrycjagalant.admissionscommittee.exceptions.ScoreAlreadyInListExcep
 import com.patrycjagalant.admissionscommittee.repository.ApplicantRepository;
 import com.patrycjagalant.admissionscommittee.repository.ScoreRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.ScoreMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class ScoreService {
 
     private final ScoreRepository scoreRepository;
     private final ScoreMapper mapper;
     private final ApplicantRepository applicantRepository;
-
-    public ScoreService(ScoreRepository scoreRepository, ScoreMapper mapper, ApplicantRepository applicantRepository) {
-        this.scoreRepository = scoreRepository;
-        this.mapper = mapper;
-        this.applicantRepository = applicantRepository;
-    }
 
     public void addNewScore(ScoreDto scoreDTO) throws ScoreAlreadyInListException {
         Score newScore = mapper.mapToEntity(scoreDTO);
@@ -37,7 +36,7 @@ public class ScoreService {
         List<String> applicantScores = applicant.getScores().stream()
                 .map(Score::getSubjectName)
                 .collect(Collectors.toList());
-        if(applicantScores.contains(newScore.getSubjectName())) {
+        if (applicantScores.contains(newScore.getSubjectName())) {
             throw new ScoreAlreadyInListException();
         }
         newScore.setApplicant(applicant);
@@ -60,6 +59,7 @@ public class ScoreService {
         List<Score> scores = scoreRepository.findByApplicantId(applicantID);
         return scores.stream().map(mapper::mapToDto).collect(Collectors.toList());
     }
+
     @Transactional
     public void editScore(ScoreDto scoreDTO, Long id) throws ScoreAlreadyInListException {
         Score score = scoreRepository.getReferenceById(id);

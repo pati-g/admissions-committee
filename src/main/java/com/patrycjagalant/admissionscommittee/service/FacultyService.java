@@ -12,6 +12,8 @@ import com.patrycjagalant.admissionscommittee.repository.FacultyRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.EnrollmentRequestMapper;
 import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
 import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class FacultyService {
     private final FacultyRepository facultyRepository;
@@ -32,20 +36,6 @@ public class FacultyService {
     private final EnrollmentRequestMapper requestMapper;
     private final EnrollmentRequestService requestService;
     private final SubjectService subjectService;
-
-    public FacultyService(FacultyRepository facultyRepository,
-                          FacultyMapper facultyMapper,
-                          ApplicantService applicantService,
-                          EnrollmentRequestMapper requestMapper,
-                          EnrollmentRequestService requestService,
-                          SubjectService subjectService) {
-        this.facultyRepository = facultyRepository;
-        this.facultyMapper = facultyMapper;
-        this.applicantService = applicantService;
-        this.requestMapper = requestMapper;
-        this.requestService = requestService;
-        this.subjectService = subjectService;
-    }
 
     public Page<FacultyDto> getAllFaculties(int page, int size, Sort.Direction sort, String sortBy) {
         long facultiesTotal = facultyRepository.count();
@@ -99,6 +89,7 @@ public class FacultyService {
         facultyMapper.mapToEntity(currentFaculty, facultyDTO);
         return currentFaculty;
     }
+
     @Transactional
     public void addNewRequest(EnrollmentRequestDto enrollmentRequestDTO)
             throws NoSuchApplicantException, NoSuchFacultyException {
@@ -120,7 +111,9 @@ public class FacultyService {
             Set<Subject> subjects = faculty.getSubjects();
             subjects.add(subjectToBeAdded);
             updateApplicantPointsForRequests(id, subjects);
-        } else { throw new IllegalArgumentException(); }
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     private void updateApplicantPointsForRequests(Long id, Set<Subject> subjects) {
@@ -129,7 +122,7 @@ public class FacultyService {
                 .map(Subject::getName)
                 .collect(Collectors.toSet());
         List<EnrollmentRequestDto> facultyRequests = requestService.getAllForFacultyId(id);
-        if(facultyRequests != null && !facultyRequests.isEmpty()) {
+        if (facultyRequests != null && !facultyRequests.isEmpty()) {
             facultyRequests.forEach(request ->
                     requestService.updatePoints(request, request.getId(), subjectNames));
         }
@@ -144,6 +137,8 @@ public class FacultyService {
             Set<Subject> subjects = faculty.getSubjects();
             subjects.remove(subject);
             updateApplicantPointsForRequests(id, subjects);
-        } else { throw new IllegalArgumentException(); }
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 }

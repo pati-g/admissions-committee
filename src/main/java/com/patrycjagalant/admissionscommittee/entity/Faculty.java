@@ -37,7 +37,11 @@ public class Faculty {
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "Faculties_Subjects", joinColumns = @JoinColumn(name = "faculty_ID"), inverseJoinColumns = @JoinColumn(name = "subject_ID"))
+    @JoinTable(name = "Faculties_Subjects",
+            joinColumns = @JoinColumn(name = "faculty_ID"),
+            inverseJoinColumns = @JoinColumn(name = "subject_ID"))
+
+    @ToString.Exclude
     private Set<Subject> subjects;
 
 }

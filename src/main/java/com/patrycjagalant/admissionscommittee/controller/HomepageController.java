@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-
 import static com.patrycjagalant.admissionscommittee.utils.Constants.REGISTER;
 
 @Controller
@@ -28,7 +27,7 @@ public class HomepageController {
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        if(!model.containsAttribute("user")) {
+        if (!model.containsAttribute("user")) {
             model.addAttribute("user", new UserDto());
         }
         return REGISTER;

@@ -2,6 +2,7 @@ package com.patrycjagalant.admissionscommittee.dto.other;
 
 import com.patrycjagalant.admissionscommittee.entity.Status;
 import lombok.*;
+
 import java.time.LocalDateTime;
 
 @AllArgsConstructor

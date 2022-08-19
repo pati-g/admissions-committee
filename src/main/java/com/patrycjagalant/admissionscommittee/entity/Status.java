@@ -4,7 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum Status {
-    P("pending"), R("rejected"), B("budget"), C("contract");
+    PENDING("pending"),
+    REJECTED("rejected"),
+    BUDGET("budget"),
+    CONTRACT("contract");
 
     private final String statusName;
 

@@ -23,7 +23,8 @@ public class UserDto {
     @NotBlank(message = "Please provide username")
     @Size(min = 2, max = 50, message = "Username should be between 2-50 characters long")
     @Pattern(regexp = "^[\\p{L}\\d_.-]{2,}$",
-            message = "Username can consist only of letters (upper- and lowercase), numbers and '_', '-', '.' characters.")
+            message = "Username can consist only of letters (upper- and lowercase), " +
+                    "numbers and '_', '-', '.' characters.")
     private String username;
 
     @ValidEmail(message = "Please provide a valid e-mail address")

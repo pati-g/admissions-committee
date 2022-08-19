@@ -10,6 +10,7 @@ import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantExceptio
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.repository.ApplicantRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.ApplicantMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,26 +38,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class ApplicantService {
+    @Value("${app.upload.dir:${user.home}}")
+    public final String filesPathString;
     private final ApplicantRepository applicantRepository;
     private final ApplicantMapper applicantMapper;
     private final ScoreService scoreService;
     private final EnrollmentRequestService requestService;
     private final UserService userService;
-
-    @Value("${app.upload.dir:${user.home}}")
-    public String filesPathString;
-
-    public ApplicantService(ApplicantRepository applicantRepository, ScoreService scoreService,
-                            EnrollmentRequestService requestService,
-                            ApplicantMapper applicantMapper, UserService userService) {
-        this.applicantRepository = applicantRepository;
-        this.scoreService = scoreService;
-        this.requestService = requestService;
-        this.applicantMapper = applicantMapper;
-        this.userService = userService;
-    }
 
     @Transactional
     public void editApplicant(ApplicantDto applicantdto, Long userID) throws NoSuchApplicantException {
@@ -86,7 +77,7 @@ public class ApplicantService {
             String extension = FilenameUtils.getExtension(file.getOriginalFilename());
             Path filePath = uploadPath.resolve(fileName + "." + extension);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-            String pathString =  filePath.toString();
+            String pathString = filePath.toString();
             applicant.setCertificateUrl(pathString);
         } catch (IOException ioe) {
             throw new FileStorageException("Could not save file: " + fileName);
@@ -98,7 +89,7 @@ public class ApplicantService {
         Optional<Applicant> applicantOptional = applicantRepository.findByUserId(userDto.getId());
         if (applicantOptional.isEmpty()) {
             log.warn("Applicant with username: " + username + " not found");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Could not find applicant with username: " + username + ", please try again");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not find applicant with username: " + username + ", please try again");
         }
         Applicant applicant = applicantOptional.get();
         FileSystemResource resource = new FileSystemResource(applicant.getCertificateUrl());
@@ -128,7 +119,7 @@ public class ApplicantService {
     private ApplicantDto getDto(Applicant applicant) {
         ApplicantDto applicantDto = applicantMapper.mapToDto(applicant);
         Long applicantID = applicantDto.getId();
-        if(applicant.getScores() != null) {
+        if (applicant.getScores() != null) {
             applicantDto.setScores(scoreService.getAllForApplicantId(applicantID));
         }
         if (applicant.getRequests() != null) {
@@ -164,6 +155,7 @@ public class ApplicantService {
             throw new NoSuchFacultyException();
         }
     }
+
     @Transactional
     public void addRequest(ApplicantDto applicantDto, EnrollmentRequest request) throws NoSuchApplicantException {
         Applicant applicant = applicantRepository

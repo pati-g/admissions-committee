@@ -1,6 +1,7 @@
 package com.patrycjagalant.admissionscommittee.entity;
 
 import lombok.*;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class Subject {
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "subjects")
+
     @ToString.Exclude
     private List<Faculty> faculties;
 }

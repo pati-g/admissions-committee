@@ -7,6 +7,8 @@ import com.patrycjagalant.admissionscommittee.entity.Subject;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchRequestException;
 import com.patrycjagalant.admissionscommittee.repository.EnrollmentRequestRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.EnrollmentRequestMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -18,17 +20,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class EnrollmentRequestService {
 
     private final EnrollmentRequestRepository enrollmentRequestRepository;
     private final EnrollmentRequestMapper mapper;
-
-    public EnrollmentRequestService(EnrollmentRequestRepository enrollmentRequestRepository,
-                                    EnrollmentRequestMapper mapper) {
-        this.enrollmentRequestRepository = enrollmentRequestRepository;
-        this.mapper = mapper;
-    }
 
     public void saveRequest(EnrollmentRequestDto requestDto) {
         EnrollmentRequest request = mapper.mapToEntity(requestDto);
@@ -69,7 +67,7 @@ public class EnrollmentRequestService {
                 .collect(Collectors.toList()));
 
         relevantScores.addAll(relevantSubjectNames.stream()
-                .map(name->
+                .map(name ->
                         new ScoreDto(0, applicantDto.getId(), name, 0)).collect(Collectors.toList()));
         return relevantScores;
     }
@@ -98,16 +96,17 @@ public class EnrollmentRequestService {
     }
 
     public void deleteRequest(Long id) throws NoSuchRequestException {
-        if(enrollmentRequestRepository.findById(id).isPresent()) {
+        if (enrollmentRequestRepository.findById(id).isPresent()) {
             enrollmentRequestRepository.deleteById(id);
         } else {
             throw new NoSuchRequestException("Request not found, please try again.");
         }
     }
+
     public void updatePoints(EnrollmentRequestDto requestDto, Long id, Set<String> relevantSubjects) {
         ApplicantDto applicantDto = requestDto.getApplicant();
         List<ScoreDto> applicantScores = applicantDto.getScores();
-        if(applicantScores == null || applicantScores.isEmpty()) {
+        if (applicantScores == null || applicantScores.isEmpty()) {
             throw new RuntimeException();
         }
         Integer averageResult = getAverageResult(relevantSubjects, applicantScores);
@@ -120,7 +119,7 @@ public class EnrollmentRequestService {
     private Integer getAverageResult(Set<String> relevantSubjects, List<ScoreDto> applicantScores) {
         int total = applicantScores.stream()
                 .filter(score -> relevantSubjects.stream().anyMatch(subject ->
-                                subject.equalsIgnoreCase(score.getSubjectName())))
+                        subject.equalsIgnoreCase(score.getSubjectName())))
                 .mapToInt(ScoreDto::getResult).sum();
         int nrOfSubjects = relevantSubjects.size();
         return Math.toIntExact(Math.round((double) total / nrOfSubjects));

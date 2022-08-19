@@ -65,10 +65,10 @@
                     out</a></li>
                 <li>
                     <div class="nav-item dropdown">
-                        <button type="button" class="btn btn-outline-secondary"
-                                data-bs-toggle="dropdown" aria-expanded="false">
+                        <button aria-expanded="false" class="btn btn-outline-secondary"
+                                data-bs-toggle="dropdown" type="button">
                             <i class="bi bi-translate"></i>
-                            <span th:text="' ' + #{lang.change}" class="btn-label"></span>
+                            <span class="btn-label" th:text="' ' + #{lang.change}"></span>
                         </button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('lang', 'en')}"

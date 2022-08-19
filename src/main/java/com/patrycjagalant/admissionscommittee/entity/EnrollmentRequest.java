@@ -42,5 +42,5 @@ public class EnrollmentRequest {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private Status status = Status.P;
+    private Status status = Status.PENDING;
 }

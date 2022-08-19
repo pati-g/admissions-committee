@@ -6,6 +6,8 @@ import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantExceptio
 import com.patrycjagalant.admissionscommittee.exceptions.UserAlreadyExistException;
 import com.patrycjagalant.admissionscommittee.repository.UserRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.UserMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,19 +16,14 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
-        super();
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.userMapper = userMapper;
-    }
+    private final UserMapper mapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -47,7 +44,7 @@ public class UserService implements UserDetailsService {
         }
         String password = userDto.getPassword();
         String passwordEncoded = passwordEncoder.encode(password);
-        User user = userMapper.mapToEntity(userDto, passwordEncoded);
+        User user = mapper.mapToEntity(userDto, passwordEncoded);
         return userRepository.save(user).getId();
     }
 
@@ -58,6 +55,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
         return user.isBlocked();
     }
+
     private boolean usernameExists(String username) {
         return userRepository.findByUsername(username) != null;
     }
@@ -66,7 +64,6 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return null;
-        UserMapper mapper = new UserMapper();
         return mapper.mapToDto(user);
     }
 
@@ -74,7 +71,6 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByUsername(username);
         if (user == null)
             return null;
-        UserMapper mapper = new UserMapper();
         return mapper.mapToDto(user);
     }
 
@@ -82,7 +78,6 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(id).orElse(null);
         if (user == null)
             return null;
-        UserMapper mapper = new UserMapper();
         return mapper.mapToDto(user);
     }
 
@@ -96,7 +91,7 @@ public class UserService implements UserDetailsService {
         if (user == null) {
             throw new NoSuchApplicantException();
         }
-        userMapper.mapToEntity(userDto, user);
+        mapper.mapToEntity(userDto, user);
         userRepository.save(user);
     }
 }

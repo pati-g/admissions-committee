@@ -23,111 +23,114 @@
             </form>
             <br><br>
             <div th:if="${applicantDTO != null}">
-            <form class="text-dark" method="get" th:object="${applicantDTO}">
-                <div class="row">
-                <div class="col form-floating mb-3">
-                    <input class="form-control" disabled id="fname" readonly th:value="*{firstName}" type="text"/>
-                    <label for="fname" th:text="#{fname}">First name</label>
-                </div>
-                <br>
-                <div class="col form-floating mb-3">
-                    <input class="form-control" disabled id="lname" readonly th:value="*{lastName}" type="text"/>
-                    <label for="lname" th:text="#{lname}">Last name</label>
-                </div>
-                </div>
-                <br>
-                <div class="form-floating mb-3">
-                    <input class="form-control" disabled id="city" readonly th:value="*{city}" type="text"/>
-                    <label for="city" th:text="#{city}">City</label>
-                </div>
-                <br>
-                <div class="form-floating mb-3">
-                    <input class="form-control" disabled id="region" readonly th:value="*{region}" type="text"/>
-                    <label for="region" th:text="#{region}">Region</label>
-                </div>
-                <br>
-                <div class="form-floating mb-3">
-                    <input class="form-control" disabled id="inst" readonly th:value="*{educationalInstitution}"
-                           type="text"/>
-                    <label for="inst" th:text="#{edu.inst}">Educational institution</label>
-                </div>
-                <br>
-                <div class="text center">
-                    <a class="btn btn-primary" th:if="${applicantDTO.certificateUrl != null}"
-                       th:href="@{download-certificate/{id} (id = ${applicantDTO.getUserDetails.getId})}">
-                        <i class="bi bi-download" aria-hidden="true">
+                <form class="text-dark" method="get" th:object="${applicantDTO}">
+                    <div class="row">
+                        <div class="col form-floating mb-3">
+                            <input class="form-control" disabled id="fname" readonly th:value="*{firstName}"
+                                   type="text"/>
+                            <label for="fname" th:text="#{fname}">First name</label>
+                        </div>
+                        <br>
+                        <div class="col form-floating mb-3">
+                            <input class="form-control" disabled id="lname" readonly th:value="*{lastName}"
+                                   type="text"/>
+                            <label for="lname" th:text="#{lname}">Last name</label>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" disabled id="city" readonly th:value="*{city}" type="text"/>
+                        <label for="city" th:text="#{city}">City</label>
+                    </div>
+                    <br>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" disabled id="region" readonly th:value="*{region}" type="text"/>
+                        <label for="region" th:text="#{region}">Region</label>
+                    </div>
+                    <br>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" disabled id="inst" readonly th:value="*{educationalInstitution}"
+                               type="text"/>
+                        <label for="inst" th:text="#{edu.inst}">Educational institution</label>
+                    </div>
+                    <br>
+                    <div class="text center">
+                        <a class="btn btn-primary" th:href="@{download-certificate/{id} (id = ${applicantDTO.getUserDetails.getId})}"
+                           th:if="${applicantDTO.certificateUrl != null}">
+                            <i aria-hidden="true" class="bi bi-download">
                             <span class="text-center m-2"
                                   th:text="#{download.cert}">Download certificate</span></i></a>
-                </div>
+                    </div>
 
-            </form>
-                                                <!--List of applicant's scores-->
-            <div th:if="${!applicantDTO.scores.isEmpty}">
-            <h3 class="py-3 text-center" th:text="#{scores}">Scores</h3>
-            <div class="py-3 table-responsive">
-                <table class="table table-hover table-light">
-                    <thead class="table-secondary">
-                    <tr>
-                        <th th:text="#{score.subject}">Subject name</th>
-                        <th th:text="#{score.result}">Result</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="score : ${scores}">
-                        <td th:text="${score.subjectName}">Subject name</td>
-                        <td th:text="${score.result}">Result</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+                </form>
+                <!--List of applicant's scores-->
+                <div th:if="${!applicantDTO.scores.isEmpty}">
+                    <h3 class="py-3 text-center" th:text="#{scores}">Scores</h3>
+                    <div class="py-3 table-responsive">
+                        <table class="table table-hover table-light">
+                            <thead class="table-secondary">
+                            <tr>
+                                <th th:text="#{score.subject}">Subject name</th>
+                                <th th:text="#{score.result}">Result</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="score : ${scores}">
+                                <td th:text="${score.subjectName}">Subject name</td>
+                                <td th:text="${score.result}">Result</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                                    <!--List of applicant's requests and current status -->
-            <div th:if="${!applicantDTO.requests.isEmpty}">
-            <h3 class="py-3 text-center" th:text="#{requests.list}">Faculties' application requests</h3>
-            <div class="py-3 table-responsive">
-                <table class="table table-hover table-light">
-                    <thead class="table-secondary">
-                    <tr>
-                        <th th:text="#{faculty.name}">Faculty name</th>
-                        <th th:href="#{request.points}">Total points</th>
-                        <th th:text="#{request.date}">Requested on</th>
-                        <th th:text="#{request.status}">Current status</th>
-                        <th sec:authorize="hasRole('ROLE_ADMIN')"
-                            th:text="#{request.statement}">Generate statement</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="request : ${requests}">
-                        <td><a th:href="@{/faculties/{id}(id = ${request.getFaculty.getId})}"
-                               th:text="${request.faculty.getName}">Faculty name</a></td>
-                        <td th:text="${request.points}">Sum of points</td>
-                        <td th:text="${request.registrationDate}">Date of request submission</td>
-                        <td class="align-middle text-center" th:switch="${request.status.name}">
+                <!--List of applicant's requests and current status -->
+                <div th:if="${!applicantDTO.requests.isEmpty}">
+                    <h3 class="py-3 text-center" th:text="#{requests.list}">Faculties' application requests</h3>
+                    <div class="py-3 table-responsive">
+                        <table class="table table-hover table-light">
+                            <thead class="table-secondary">
+                            <tr>
+                                <th th:text="#{faculty.name}">Faculty name</th>
+                                <th th:href="#{request.points}">Total points</th>
+                                <th th:text="#{request.date}">Requested on</th>
+                                <th th:text="#{request.status}">Current status</th>
+                                <th sec:authorize="hasRole('ROLE_ADMIN')"
+                                    th:text="#{request.statement}">Generate statement
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="request : ${requests}">
+                                <td><a th:href="@{/faculties/{id}(id = ${request.getFaculty.getId})}"
+                                       th:text="${request.faculty.getName}">Faculty name</a></td>
+                                <td th:text="${request.points}">Sum of points</td>
+                                <td th:text="${request.registrationDate}">Date of request submission</td>
+                                <td class="align-middle text-center" th:switch="${request.status.name}">
                             <span class="bg-warning rounded-pill p-2" th:case="'P'"
                                   th:text="#{pending}">Pending</span>
-                            <span class="bg-success rounded-pill p-2" th:case="'B'"
-                                  th:text="#{budget}">Accepted  for budget place</span>
-                            <span class="bg-success rounded-pill p-2" th:case="'C'"
-                                  th:text="#{contract}">Accepted for contract place</span>
-                            <span class="bg-danger rounded-pill p-2" th:case="'R'"
-                                  th:text="#{rejected}">Rejected</span>
-                        </td>
-                        <td><a class="btn btn-success" role="button" sec:authorize="hasRole('ROLE_ADMIN')"
-                               th:href="@{/request/{id}/statement(id = ${request.id})}"
-                               th:text="#{request.statement}">Generate statement</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                                    <span class="bg-success rounded-pill p-2" th:case="'B'"
+                                          th:text="#{budget}">Accepted  for budget place</span>
+                                    <span class="bg-success rounded-pill p-2" th:case="'C'"
+                                          th:text="#{contract}">Accepted for contract place</span>
+                                    <span class="bg-danger rounded-pill p-2" th:case="'R'"
+                                          th:text="#{rejected}">Rejected</span>
+                                </td>
+                                <td><a class="btn btn-success" role="button" sec:authorize="hasRole('ROLE_ADMIN')"
+                                       th:href="@{/request/{id}/statement(id = ${request.id})}"
+                                       th:text="#{request.statement}">Generate statement</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
+            <!--Edit profile button-->
+            <div class="text-center">
+                <a class="btn btn-primary" role="button"
+                   th:href="@{/applicant/{username}/edit(username = ${userDTO.getUsername})}"
+                   th:text="#{edit.profile}">Edit profile</a>
             </div>
-            </div>
-<!--Edit profile button-->
-        <div class="text-center">
-            <a class="btn btn-primary" role="button"
-               th:href="@{/applicant/{username}/edit(username = ${userDTO.getUsername})}"
-               th:text="#{edit.profile}">Edit profile</a>
-        </div>
         </div>
     </div>
 </div>

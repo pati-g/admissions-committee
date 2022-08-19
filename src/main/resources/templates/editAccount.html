@@ -9,7 +9,8 @@
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
             <h1 class="py-3 text-center" th:text="#{edit.account}">Edit account</h1>
-            <form class="text-dark" th:action="@{/user/{username}/edit (username = ${userDTO.getUsername})}" th:method="put" th:object="${userDTO}">
+            <form class="text-dark" th:action="@{/user/{username}/edit (username = ${userDTO.getUsername})}"
+                  th:method="put" th:object="${userDTO}">
                 <div class="alert alert-success text-center p-1" role="alert" th:if="${message}">
                     <h5 th:text="${message}"></h5></div>
                 <div class="alert alert-danger py-0" th:if="${#fields.hasErrors('*')}">
@@ -36,29 +37,26 @@
                     <input class="form-control" id="password" placeholder="*{password}" th:field="*{password}"
                            type="password"/>
                     <label for="password" th:text="#{password.change}">Change password</label>
-                    <div class="py-2"><input onclick="show1()" type="checkbox"><span class="text-light px-2">Show Password</span>
+                    <div class="py-2"><input onclick="show1()" type="checkbox">Show Password
                         <span class="help-block" th:if="${#fields.hasErrors('password')}">
-                <p class="text-danger py-0" th:errors="*{password}">Password error</p>
-                   </span>
+                <p class="text-danger py-0" th:errors="*{password}">Password error</p></span>
                     </div>
                     <script>
                     function show1() {
-  var x = document.getElementById("password");
-  if (x.type === "password") {
-    x.type = "text";
-  } else {
-    x.type = "password";
-  }
-}
-
-
-
-                </script>
+                    var x = document.getElementById("password");
+                        if (x.type === "password") {
+                            x.type = "text";
+                        } else {
+                            x.type = "password";
+                        }
+                    }
+                    </script>
                     <div class="form-floating mb-3">
                         <input class="form-control" id="matchingPassword" th:field="*{matchingPassword}"
                                type="password"/>
                         <label for="matchingPassword" th:text="#{password2}">Confirm new password</label>
-                        <div class="py-2"><input onclick="show2()" type="checkbox"><span class="text-light px-2">Show Password</span>
+                        <div class="py-2"><input onclick="show2()" type="checkbox">
+                            <span class="text-light px-2">Show Password</span>
                         </div>
                         <span class="help-block" th:if="${#fields.hasErrors('matchingPassword')}">
                 <p class="text-danger py-0" th:errors="*{matchingPassword}">Password error</p>
@@ -66,21 +64,21 @@
                     </div>
                     <script>
                     function show2() {
-  var x = document.getElementById("matchingPassword");
-  if (x.type === "password") {
-    x.type = "text";
-  } else {
-    x.type = "password";
-  }
-}
-                </script>
+                    var x = document.getElementById("matchingPassword");
+                    if (x.type === "password") {
+                        x.type = "text";
+                        } else {
+                        x.type = "password";
+                        }
+                    }
+                    </script>
                     <div class="text-center">
-                        <input class="btn btn-primary" type="submit" th:value="#{submit}"></div>
+                        <input class="btn btn-primary" th:value="#{submit}" type="submit"></div>
                 </div>
             </form>
             <br><br>
-            </div>
         </div>
     </div>
+</div>
 </body>
 </html>

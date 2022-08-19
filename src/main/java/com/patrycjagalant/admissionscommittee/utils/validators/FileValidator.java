@@ -1,16 +1,20 @@
 package com.patrycjagalant.admissionscommittee.utils.validators;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 
+@UtilityClass
 @Component
 public class FileValidator {
     public static final long MAXSIZE = 5242880;
 
     public boolean validate(MultipartFile file) {
-        return !file.isEmpty() && isSupportedContentType(Objects.requireNonNull(file.getContentType())) && file.getSize() <= MAXSIZE;
+        return !file.isEmpty()
+                && isSupportedContentType(Objects.requireNonNull(file.getContentType()))
+                && file.getSize() <= MAXSIZE;
     }
 
     private boolean isSupportedContentType(String contentType) {

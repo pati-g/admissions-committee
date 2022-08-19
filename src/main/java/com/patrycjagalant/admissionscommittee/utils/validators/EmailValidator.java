@@ -2,18 +2,19 @@ package com.patrycjagalant.admissionscommittee.utils.validators;
 
 import com.patrycjagalant.admissionscommittee.annotations.ValidEmail;
 import com.patrycjagalant.admissionscommittee.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@RequiredArgsConstructor
 public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
-    private static final String EMAIL_PATTERN = "^(?=.{1,64}@)[\\p{L}\\d_-]+(\\.[\\p{L}\\d_-]++)*+@[^-][\\p{L}\\d-]+(\\.[\\p{L}\\d-]++)*(\\.\\p{L}{2,})$";
-    String message;
-    @Autowired
-    private UserService userService;
+    private static final String EMAIL_PATTERN =
+            "^(?=.{1,64}@)[\\p{L}\\d_-]+(\\.[\\p{L}\\d_-]++)*+@[^-][\\p{L}\\d-]+(\\.[\\p{L}\\d-]++)*(\\.\\p{L}{2,})$";
+    private final UserService userService;
+    private String message;
 
     @Override
     public void initialize(ValidEmail constraintAnnotation) {

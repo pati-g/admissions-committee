@@ -8,28 +8,28 @@ import com.patrycjagalant.admissionscommittee.dto.other.RequestWithNamesDto;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchRequestException;
 import com.patrycjagalant.admissionscommittee.service.EnrollmentRequestService;
 import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+
 import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/request")
 public class RequestController {
 
     private final EnrollmentRequestService requestService;
 
-    public RequestController(EnrollmentRequestService requestService) {
-        this.requestService = requestService;
-    }
-
     @RequestMapping(value = "/{id}/delete", method = {RequestMethod.DELETE, RequestMethod.POST})
     public String deleteRequest(@PathVariable String id,
-                              Model model) throws NoSuchRequestException {
+                                Model model) throws NoSuchRequestException {
         if (!ParamValidator.isNumeric(id)) {
             model.addAttribute(ERROR, "Incorrect request ID, please try again");
             return APPLICANTS_EDIT_PROFILE;
@@ -44,7 +44,7 @@ public class RequestController {
     public String getAllRequests(@RequestParam(defaultValue = "1") String page,
                                  @RequestParam(defaultValue = "5") String size,
                                  @RequestParam(defaultValue = "registrationDate") String sortBy,
-                                 Sort.Direction sort, Model model){
+                                 Sort.Direction sort, Model model) {
         int pageNumber = ParamValidator.isNumeric(page) ? Math.max(Integer.parseInt(page), 1) : 1;
         int sizeNumber = ParamValidator.isNumeric(size) ? Math.max(Integer.parseInt(size), 0) : 5;
         Page<RequestWithNamesDto> requests = requestService.getAll(pageNumber, sizeNumber, sort, sortBy);
@@ -52,6 +52,7 @@ public class RequestController {
         model.addAttribute("sortBy", sortBy);
         return addPaginationModel(pageNumber, requests, model);
     }
+
     private String addPaginationModel(int page, Page<RequestWithNamesDto> paginated, Model model) {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", paginated.getTotalPages());
@@ -67,8 +68,7 @@ public class RequestController {
         if (!ParamValidator.isNumeric(id)) {
             model.addAttribute(ERROR, "Something went wrong, please try again");
             return APPLICANTS_EDIT_PROFILE;
-        }
-        else {
+        } else {
             EnrollmentRequestDto dto = requestService.getRequestById(Long.parseLong(id));
             ApplicantDto applicantDto = dto.getApplicant();
             FacultyDto facultyDto = dto.getFaculty();

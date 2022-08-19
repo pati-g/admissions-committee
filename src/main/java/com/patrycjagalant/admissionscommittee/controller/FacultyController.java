@@ -10,6 +10,7 @@ import com.patrycjagalant.admissionscommittee.service.ApplicantService;
 import com.patrycjagalant.admissionscommittee.service.FacultyService;
 import com.patrycjagalant.admissionscommittee.service.SubjectService;
 import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -19,26 +20,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 
+import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
+
 @Slf4j
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/faculties")
 public class FacultyController {
     private final FacultyService facultyService;
     private final ApplicantService applicantService;
     private final SubjectService subjectService;
-
-
-    public FacultyController(FacultyService facultyService, ApplicantService applicantService, SubjectService subjectService) {
-        this.facultyService = facultyService;
-        this.applicantService = applicantService;
-        this.subjectService = subjectService;
-    }
 
     @GetMapping
     public String getAllFaculties(@RequestParam(defaultValue = "1") String page,
@@ -70,8 +66,7 @@ public class FacultyController {
                 model.addAttribute(FACULTY_DTO, facultyDTO);
                 model.addAttribute("subjects", facultyDTO.getSubjects());
                 return "faculties/viewFaculty";
-            }
-            catch (NoSuchFacultyException e) {
+            } catch (NoSuchFacultyException e) {
                 model.addAttribute("error", "Incorrect faculty ID, please try again.");
                 log.warn("Exception thrown: NoSuchFacultyException, message: " + e.getMessage());
                 return REDIRECT_FACULTIES;
@@ -80,8 +75,8 @@ public class FacultyController {
         return REDIRECT_FACULTIES;
     }
 
-    @RequestMapping(value="/{id}/new-request", method = {RequestMethod.POST, RequestMethod.GET})
-    public String newRequest(@PathVariable("id") String idString, @AuthenticationPrincipal User user, Model model){
+    @RequestMapping(value = "/{id}/new-request", method = {RequestMethod.POST, RequestMethod.GET})
+    public String newRequest(@PathVariable("id") String idString, @AuthenticationPrincipal User user, Model model) {
         if (ParamValidator.isNumeric(idString)) {
             long id = Long.parseLong(idString);
             EnrollmentRequestDto requestDto = new EnrollmentRequestDto();
@@ -91,7 +86,7 @@ public class FacultyController {
                 requestDto.setRegistrationDate(LocalDateTime.now());
                 facultyService.addNewRequest(requestDto);
                 return "redirect:/applicant/" + user.getUsername();
-            } catch (NoSuchApplicantException appExc){
+            } catch (NoSuchApplicantException appExc) {
                 log.warn("Applicant not found");
                 model.addAttribute(ERROR, "Could not find the applicant, please try again");
             } catch (NoSuchFacultyException facExc) {
@@ -104,7 +99,7 @@ public class FacultyController {
         return REDIRECT_FACULTIES;
     }
 
-// Manage faculties:
+    // Manage faculties:
     @GetMapping("/new")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getNewFacultyForm(Model model) {
@@ -128,7 +123,8 @@ public class FacultyController {
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String addFaculty(@Valid @ModelAttribute(FACULTY_DTO) FacultyDto facultyDTO, BindingResult result, Model model) {
+    public String addFaculty(@Valid @ModelAttribute(FACULTY_DTO) FacultyDto facultyDTO,
+                             BindingResult result, Model model) {
         if (result.hasErrors()) {
             return REDIRECT_NEW_FACULTY;
         }
@@ -143,7 +139,8 @@ public class FacultyController {
 
     @RequestMapping(value = "/{id}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String editFaculty(@Valid @ModelAttribute FacultyDto facultyDTO, BindingResult result, @PathVariable Long id) throws NoSuchFacultyException {
+    public String editFaculty(@Valid @ModelAttribute FacultyDto facultyDTO, BindingResult result,
+                              @PathVariable Long id) throws NoSuchFacultyException {
         if (result.hasErrors()) {
             return REDIRECT_NEW_FACULTY;
         }
@@ -172,7 +169,8 @@ public class FacultyController {
         return getRedirectUrl(facultyId);
     }
 
-    @RequestMapping(value = "/{facultyId}/delete-subject/{subjectId}", method = {RequestMethod.DELETE, RequestMethod.GET})
+    @RequestMapping(value = "/{facultyId}/delete-subject/{subjectId}",
+            method = {RequestMethod.DELETE, RequestMethod.GET})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteSubjectFromList(@PathVariable String facultyId, @PathVariable String subjectId, Model model) {
         facultyService.deleteSubjectFromList(facultyId, subjectId);
@@ -186,8 +184,9 @@ public class FacultyController {
     @PostMapping("/{facultyId}/new-subject")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
-    public String createNewSubjectAndAddToList(@RequestParam String subjectName, @PathVariable String facultyId, Model model) {
-        if (!ParamValidator.validateName(subjectName)) {
+    public String createNewSubjectAndAddToList(@RequestParam String subjectName,
+                                               @PathVariable String facultyId, Model model) {
+        if (ParamValidator.isNameInvalid(subjectName)) {
             return "/";
         }
         SubjectDto subjectDto = subjectService.addNewSubject(subjectName);

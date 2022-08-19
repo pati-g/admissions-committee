@@ -11,6 +11,7 @@ import com.patrycjagalant.admissionscommittee.entity.Faculty;
 import com.patrycjagalant.admissionscommittee.entity.Status;
 import com.patrycjagalant.admissionscommittee.service.ScoreService;
 import com.patrycjagalant.admissionscommittee.service.SubjectService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -18,19 +19,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class EnrollmentRequestMapper {
     private final ApplicantMapper applicantMapper;
     private final FacultyMapper facultyMapper;
     private final ScoreService scoreService;
     private final SubjectService subjectService;
-
-    public EnrollmentRequestMapper(ApplicantMapper applicantMapper, FacultyMapper facultyMapper, ScoreService scoreService, SubjectService subjectService) {
-        this.applicantMapper = applicantMapper;
-        this.facultyMapper = facultyMapper;
-        this.scoreService = scoreService;
-        this.subjectService = subjectService;
-    }
 
     public EnrollmentRequestDto mapToDto(EnrollmentRequest enrollmentRequest) {
         log.debug("EnrollmentRequest entity before mapping: {}", enrollmentRequest);
@@ -78,6 +73,7 @@ public class EnrollmentRequestMapper {
             enrollmentRequest.setPoints(enrollmentRequestDTO.getPoints());
         }
     }
+
     public RequestWithNamesDto mapToDtoWithNames(EnrollmentRequest request) {
         Applicant applicant = request.getApplicant();
         Faculty faculty = request.getFaculty();

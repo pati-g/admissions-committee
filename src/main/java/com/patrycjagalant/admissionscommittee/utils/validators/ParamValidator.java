@@ -1,11 +1,11 @@
 package com.patrycjagalant.admissionscommittee.utils.validators;
 
 
-import java.util.regex.Pattern;
+import lombok.experimental.UtilityClass;
 
+import java.util.regex.Pattern;
+@UtilityClass
 public class ParamValidator {
-    private ParamValidator() {
-    }
 
     public static boolean isNumeric(String strNum) {
         Pattern pattern = Pattern.compile("-?\\d+(\\d+)?");
@@ -15,12 +15,12 @@ public class ParamValidator {
         return pattern.matcher(strNum).matches();
     }
 
-    public static boolean validateName(String name) {
+    public static boolean isNameInvalid(String name) {
         Pattern pattern = Pattern.compile("^[ \\p{L}\\d-]{2,150}$");
         if (name == null) {
-            return false;
+            return true;
         }
-        return pattern.matcher(name).matches();
+        return !pattern.matcher(name).matches();
     }
 
 }

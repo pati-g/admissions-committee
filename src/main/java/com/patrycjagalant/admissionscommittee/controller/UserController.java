@@ -13,7 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import javax.validation.Valid;
+
 import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 
 @Slf4j
@@ -25,9 +27,11 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public String registerUser(@Valid @ModelAttribute("user") UserDto userDto, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String registerUser(@Valid @ModelAttribute("user") UserDto userDto, BindingResult result,
+                               RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.register", result);
+            redirectAttributes
+                    .addFlashAttribute("org.springframework.validation.BindingResult.register", result);
             redirectAttributes.addFlashAttribute("user", userDto);
         }
         Long newUserId;
@@ -37,7 +41,8 @@ public class UserController {
             redirectAttributes.addFlashAttribute("message", msg);
             return REDIRECT_REGISTER;
         } catch (UserAlreadyExistException e) {
-            redirectAttributes.addFlashAttribute("error", "An account for that email already exists.");
+            redirectAttributes
+                    .addFlashAttribute("error", "An account for that email already exists.");
         }
         return REGISTER;
     }
@@ -45,9 +50,9 @@ public class UserController {
     @RequestMapping(value = "/{username}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String editAccount(@Valid @ModelAttribute("user") UserDto userDto,
-                           BindingResult result,
-                           @PathVariable("username") String username,
-                           Model model) throws NoSuchApplicantException {
+                              BindingResult result,
+                              @PathVariable("username") String username,
+                              Model model) throws NoSuchApplicantException {
         if (!result.hasErrors() && userDto != null && userDto.getUsername().equalsIgnoreCase(username)) {
             userService.editUser(userDto);
             model.addAttribute(MESSAGE, "Your changes have been submitted");
@@ -59,7 +64,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String viewAccount(Model model, @PathVariable("username") String username) {
         UserDto userDto = userService.findByUsername(username);
-        if(userDto != null) {
+        if (userDto != null) {
             model.addAttribute(USER_DTO, userDto);
             return VIEW_PROFILE;
         }
@@ -70,8 +75,8 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String getAccountForm(Model model, @PathVariable("username") String username) {
         UserDto userDto = userService.findByUsername(username);
-        if(userDto != null) {
-            if(!model.containsAttribute(USER_DTO)) {
+        if (userDto != null) {
+            if (!model.containsAttribute(USER_DTO)) {
                 model.addAttribute(USER_DTO, userDto);
             }
             return "editAccount";

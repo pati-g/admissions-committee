@@ -1,6 +1,7 @@
 package com.patrycjagalant.admissionscommittee.utils.converters;
 
 import com.patrycjagalant.admissionscommittee.entity.Status;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.stream.Stream;

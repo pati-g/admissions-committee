@@ -10,12 +10,12 @@
         <div class="col-10 px-3">
             <h1 class="py-3 text-center text-dark"
                 th:text="#{request.list2}">List of applicants' enrollment requests</h1>
-<!--            <a class="btn btn-outline-primary" role="button"
-th:href="@{/requests/new}" th:text="#{request.add}">Add a new request</a>-->
-<!--            Items per page and sorting-->
+            <!--            <a class="btn btn-outline-primary" role="button"
+            th:href="@{/requests/new}" th:text="#{request.add}">Add a new request</a>-->
+            <!--            Items per page and sorting-->
             <div class="btn-group dropdown">
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                <button aria-expanded="false" class="btn btn-outline-secondary" data-bs-toggle="dropdown"
+                        type="button">
                     <span class="btn-label" th:text="#{items.page}">Items per page</span></button>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '5')}">5</a></li>
@@ -27,8 +27,8 @@ th:href="@{/requests/new}" th:text="#{request.add}">Add a new request</a>-->
                 </ul>
             </div>
             <div class="btn-group dropdown">
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                <button aria-expanded="false" class="btn btn-outline-secondary" data-bs-toggle="dropdown"
+                        type="button">
                     <span class="btn-label" th:text="#{sortby}">Sort by</span></button>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sortBy', 'date')}"
@@ -39,10 +39,11 @@ th:href="@{/requests/new}" th:text="#{request.add}">Add a new request</a>-->
                            th:text="#{faculty.name}">Faculty's name</a></li>
                     <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sortBy', 'status')}"
                            th:text="#{request.status}">Enrollment status</a></li>
-                </ul></div>
+                </ul>
+            </div>
             <div class="btn-group dropdown">
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                <button aria-expanded="false" class="btn btn-outline-secondary" data-bs-toggle="dropdown"
+                        type="button">
                     <span class="btn-label"><i class="bi bi-arrow-down-up"
                                                th:text="#{sort}">Sort order</i></span></button>
                 <ul class="dropdown-menu">
@@ -50,7 +51,8 @@ th:href="@{/requests/new}" th:text="#{request.add}">Add a new request</a>-->
                            th:text="#{asc}">Ascending</a></li>
                     <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sort', 'DESC')}"
                            th:text="#{desc}">Descending</a></li>
-                </ul></div>
+                </ul>
+            </div>
             <div class="py-3 table-responsive">
                 <table class="table">
                     <tbody>
@@ -81,15 +83,15 @@ th:href="@{/requests/new}" th:text="#{request.add}">Add a new request</a>-->
                         <td><a class="btn btn-outline-primary"
                                th:href="@{/request/{id}/statement(id = ${request.getId})}"
                                th:text="#{preview}">Preview</a></td>
-<!--                        <td><a class="btn btn-outline-info"-->
-<!--                               th:href="@{/applicant/{id}/edit(id = ${applicant.getUserDetails.getId})}"-->
-<!--                               th:text="#{edit}">Edit</a>-->
-<!--                        </td>-->
+                        <!-- <td><a class="btn btn-outline-info"-->
+                        <!-- th:href="@{/applicant/{id}/edit(id = ${applicant.getUserDetails.getId})}"-->
+                        <!-- th:text="#{edit}">Edit</a>-->
+                        <!-- </td>-->
                         <td><a class="btn btn-outline-danger"
-                                        onClick="return confirm(th:text='#{confirm.delete}')"
-                            th:href="@{/request/{id}/delete (id=${request.id})}"
-                                        type="submit" th:text="#{delete}">
-                                    <i class="bi bi-trash"></i></a></td>
+                               onClick="return confirm(th:text='#{confirm.delete}')"
+                               th:href="@{/request/{id}/delete (id=${request.id})}"
+                               th:text="#{delete}" type="submit">
+                            <i class="bi bi-trash"></i></a></td>
                     </tr>
                     </tbody>
                 </table>

@@ -12,58 +12,60 @@
             <h1 class="py-3 text-center text-dark" th:text="#{faculty.list}">List of faculties</h1>
             <a class="btn btn-outline-primary" role="button" sec:authorize="hasAnyRole('ROLE_ADMIN')"
                th:href="@{/faculties/new}" th:text="#{add}">Add new</a>
-<!--            Items per page and sorting-->
+            <!--            Items per page and sorting-->
             <div class="btn-group dropdown">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                        <span class="btn-label" th:text="#{items.page}">Items per page</span></button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '5')}">5</a></li>
-                        <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '10')}">10</a></li>
-                        <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '20')}">20</a></li>
-                        <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '30')}">30</a></li>
-                        <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '50')}">50</a></li>
-                        <li><a class="dropdown-item"
-                               th:href="${@replaceOrAddParam.apply('size', '100')}">100</a></li>
-                    </ul>
-                </div>
-                <div class="btn-group dropdown">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                        <span class="btn-label" th:text="#{sortby}">Sort by</span></button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item"
-                               th:href="${@replaceOrAddParam.apply('sortBy', 'name')}"
-                               th:text="#{faculty.name}">Name</a></li>
-                        <li><a class="dropdown-item"
-                               th:href="${@replaceOrAddParam.apply('sortBy', 'budgetPlaces')}"
-                               th:text="#{faculty.budget}">Budget places</a></li>
-                        <li><a class="dropdown-item"
-                               th:href="${@replaceOrAddParam.apply('sortBy', 'totalPlaces')}"
-                               th:text="#{faculty.total}">Total places</a></li>
-                        <!--                        <li><a class="dropdown-item"
-                        th:href="${@replaceOrAddParam.apply('sortBy', 'date')}">Creation date</a></li>-->
-                    </ul></div>
-                <div class="btn-group dropdown">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown"
-                            aria-expanded="false">
+                <button aria-expanded="false" class="btn btn-outline-secondary" data-bs-toggle="dropdown"
+                        type="button">
+                    <span class="btn-label" th:text="#{items.page}">Items per page</span></button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '5')}">5</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '10')}">10</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '20')}">20</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '30')}">30</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('size', '50')}">50</a></li>
+                    <li><a class="dropdown-item"
+                           th:href="${@replaceOrAddParam.apply('size', '100')}">100</a></li>
+                </ul>
+            </div>
+            <div class="btn-group dropdown">
+                <button aria-expanded="false" class="btn btn-outline-secondary" data-bs-toggle="dropdown"
+                        type="button">
+                    <span class="btn-label" th:text="#{sortby}">Sort by</span></button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item"
+                           th:href="${@replaceOrAddParam.apply('sortBy', 'name')}"
+                           th:text="#{faculty.name}">Name</a></li>
+                    <li><a class="dropdown-item"
+                           th:href="${@replaceOrAddParam.apply('sortBy', 'budgetPlaces')}"
+                           th:text="#{faculty.budget}">Budget places</a></li>
+                    <li><a class="dropdown-item"
+                           th:href="${@replaceOrAddParam.apply('sortBy', 'totalPlaces')}"
+                           th:text="#{faculty.total}">Total places</a></li>
+                    <!--                        <li><a class="dropdown-item"
+                    th:href="${@replaceOrAddParam.apply('sortBy', 'date')}">Creation date</a></li>-->
+                </ul>
+            </div>
+            <div class="btn-group dropdown">
+                <button aria-expanded="false" class="btn btn-outline-secondary" data-bs-toggle="dropdown"
+                        type="button">
                         <span class="btn-label"><i class="bi bi-arrow-down-up"
                                                    th:text="#{sort}">Sort order</i></span></button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sort', 'ASC')}"
-                               th:text="#{asc}">Ascending</a></li>
-                        <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sort', 'DESC')}"
-                               th:text="#{desc}">Descending</a></li>
-                    </ul></div>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sort', 'ASC')}"
+                           th:text="#{asc}">Ascending</a></li>
+                    <li><a class="dropdown-item" th:href="${@replaceOrAddParam.apply('sort', 'DESC')}"
+                           th:text="#{desc}">Descending</a></li>
+                </ul>
+            </div>
             <div class="py-3 table-responsive">
                 <table class="table">
-                <thead>
+                    <thead>
                     <tr>
                         <th th:text="#{faculty.name}">Faculty's name</th>
                         <th th:text="#{faculty.budget}">Nr of budget places</th>
                         <th th:text="#{faculty.total}">Total nr of places</th>
                     </tr>
-                </thead>
+                    </thead>
                     <tbody>
                     <tr th:each="faculty : ${faculties.content}">
                         <td th:text="${faculty.name}">Name</td>
@@ -86,7 +88,7 @@
                                   th:method="delete" th:object="${faculty}">
                                 <button class="btn btn-outline-dark"
                                         onClick="return confirm(th:text='#{confirm.delete}')"
-                                        type="submit" th:text="#{delete}">Delete
+                                        th:text="#{delete}" type="submit">Delete
                                 </button>
                             </form>
                         </td>
@@ -94,7 +96,7 @@
                     </tbody>
                 </table>
             </div>
-<!--            Navigation-->
+            <!--            Navigation-->
             <nav aria-label="Page navigation for list of faculties" class="pagination  justify-content-center"
                  th:if="${totalPages > 1}">
                 <ul class="pagination justify-content-center">

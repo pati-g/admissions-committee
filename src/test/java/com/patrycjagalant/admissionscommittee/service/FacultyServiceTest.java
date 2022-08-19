@@ -25,26 +25,27 @@ class FacultyServiceTest {
     @Mock
     private FacultyRepository facultyRepository;
     private FacultyService facultyService;
-    private final FacultyMapper facultyMapper = new FacultyMapper();
+    @Mock
+    private FacultyMapper facultyMapper;
     @Mock
     private ApplicantService applicantService;
-    @Mock
-    private ApplicantMapper applicantMapper;
     @Mock
     private EnrollmentRequestMapper requestMapper;
     @Mock
     private EnrollmentRequestService requestService;
-    private SubjectService subjectService;
 
     @BeforeEach
     void setUp() {
-        facultyService = new FacultyService(facultyRepository, facultyMapper, applicantService, requestMapper, requestService, subjectService);
+        facultyService = new FacultyService(facultyRepository,
+                facultyMapper, applicantService, requestMapper, requestService, null);
     }
 
     @Test
-    void testAddFacultyHappyPath(){
-        FacultyDto facultyDtoMock = new FacultyDto( null, "TestName", 10, 20, null, null);
-        Faculty mockFaculty = new Faculty(1L, "TestName", 10, 20, null, null);
+    void testAddFacultyHappyPath() {
+        FacultyDto facultyDtoMock =
+                new FacultyDto(null, "TestName", 10, 20, null, null);
+        Faculty mockFaculty =
+                new Faculty(1L, "TestName", 10, 20, null, null);
 
         when(facultyRepository.save(any(Faculty.class))).thenReturn(mockFaculty);
 
@@ -55,8 +56,10 @@ class FacultyServiceTest {
 
     @Test
     void testEditFacultyHappyPath() throws NoSuchFacultyException {
-        FacultyDto facultyDtoMock = new FacultyDto(null, "ChangedName", null, 25, null, null);
-        Faculty facultyMock = new Faculty(1L, "TestName", 10, 20, null, null);
+        FacultyDto facultyDtoMock =
+                new FacultyDto(null, "ChangedName", null, 25, null, null);
+        Faculty facultyMock =
+                new Faculty(1L, "TestName", 10, 20, null, null);
 
         when(facultyRepository.save(any(Faculty.class))).thenReturn(facultyMock);
         when(facultyRepository.getReferenceById(1L)).thenReturn(facultyMock);

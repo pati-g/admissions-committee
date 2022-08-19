@@ -11,36 +11,38 @@
         <div class="col-10 col-md-8 col-lg-6">
             <div class="row">
                 <div class="col">
-            <h1 class="py-3 text-center" th:text="#{faculty.view.details}">View faculty details</h1></div>
-            <div class="col">
-                <a class="btn btn-primary btn-lg" role="button" th:text="#{edit}"
-                   sec:authorize="hasAnyRole('ROLE_ADMIN')"
-                   th:href="@{/faculties/{id}/edit(id = ${facultyDTO.getId})}">Edit</a></div>
+                    <h1 class="py-3 text-center" th:text="#{faculty.view.details}">View faculty details</h1></div>
+                <div class="col">
+                    <a class="btn btn-primary btn-lg" role="button" sec:authorize="hasAnyRole('ROLE_ADMIN')"
+                       th:href="@{/faculties/{id}/edit(id = ${facultyDTO.getId})}"
+                       th:text="#{edit}">Edit</a></div>
             </div>
             <form class="text-dark" th:object="${facultyDTO}">
                 <div class="form-floating mb-3">
                     <input class="form-control" disabled id="name" readonly th:value="*{name}" type="text"/>
-                    <label for="name" th:text="#{faculty.name}" class="font-weight-bold">Faculty name</label>
+                    <label class="font-weight-bold" for="name" th:text="#{faculty.name}">Faculty name</label>
                 </div>
                 <br>
                 <div class="row">
-                <div class="col form-floating mb-3">
-                    <input class="form-control" disabled id="budget" readonly th:value="*{budgetPlaces}" type="text"/>
-                    <label for="budget" th:text="#{faculty.budget}">Budget places</label>
-                </div>
-                <br>
-                <div class="col form-floating mb-3">
-                    <input class="form-control" disabled id="total" readonly th:value="*{totalPlaces}" type="text"/>
-                    <label for="total" th:text="#{faculty.total}">Total places</label>
-                </div>
+                    <div class="col form-floating mb-3">
+                        <input class="form-control" disabled id="budget" readonly th:value="*{budgetPlaces}"
+                               type="text"/>
+                        <label for="budget" th:text="#{faculty.budget}">Budget places</label>
+                    </div>
+                    <br>
+                    <div class="col form-floating mb-3">
+                        <input class="form-control" disabled id="total" readonly
+                               th:value="*{totalPlaces}" type="text"/>
+                        <label for="total" th:text="#{faculty.total}">Total places</label>
+                    </div>
                 </div>
                 <br><br>
                 <div class="text-center">
                     <a class="btn btn-success"
-                           onClick="return confirm(th:text='#{confirm.apply}')"
-                           role="button" th:text="#{apply}"
-                           sec:authorize="hasRole('ROLE_USER')"
-                           th:href="@{/applicant/new-request}" th:method="post">Apply</a>
+                       onClick="return confirm(th:text='#{confirm.apply}')"
+                       role="button" sec:authorize="hasRole('ROLE_USER')"
+                       th:href="@{/applicant/new-request}"
+                       th:method="post" th:text="#{apply}">Apply</a>
                 </div>
             </form>
 

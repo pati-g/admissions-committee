@@ -19,34 +19,37 @@
                 <br>
                 <div class="row">
                     <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                    <input class="form-control" id="budget" placeholder="*{budgetPlaces}" required
-                           th:field="*{budgetPlaces}"
-                           type="text"/>
-                    <label for="budget" th:text="#{faculty.budget}">Budget places</label>
-                </div></div>
-                <br>
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="form-control" id="budget" placeholder="*{budgetPlaces}" required
+                                   th:field="*{budgetPlaces}"
+                                   type="text"/>
+                            <label for="budget" th:text="#{faculty.budget}">Budget places</label>
+                        </div>
+                    </div>
+                    <br>
                     <div class="col">
-                <div class="form-floating mb-3 mt-3">
-                    <input class="form-control" id="total" placeholder="*{totalPlaces}" required
-                           th:field="*{totalPlaces}"
-                           type="text"/>
-                    <label for="total" th:text="#{faculty.total}">Total places</label>
-                </div></div>
+                        <div class="form-floating mb-3 mt-3">
+                            <input class="form-control" id="total" placeholder="*{totalPlaces}" required
+                                   th:field="*{totalPlaces}"
+                                   type="text"/>
+                            <label for="total" th:text="#{faculty.total}">Total places</label>
+                        </div>
+                    </div>
                 </div>
                 <br><br>
-                <div class="text-center"><input class="btn btn-primary" type="submit" th:value="#{submit}"></div>
+                <div class="text-center"><input class="btn btn-primary" th:value="#{submit}" type="submit"></div>
             </form>
-<!--EDIT + ADD SUBJECTS-->
-                <h2 class="py-3 text-center" th:text="#{relevant.subjects}">Relevant subjects</h2>
-                <div class="text-center">
+            <!--EDIT + ADD SUBJECTS-->
+            <h2 class="py-3 text-center" th:text="#{relevant.subjects}">Relevant subjects</h2>
+            <div class="text-center">
                 <table class="table table-hover table-light table-responsive">
                     <tbody class="align-middle">
                     <div th:if="${subjects != null}">
                         <th:block th:each="subject:${subjects}">
                             <tr>
                                 <td th:text="${subject.name}"></td>
-                                <td><a class="btn btn-danger" role="button" th:href="@{/faculties/{facultyId}/delete-subject/{subjectId}
+                                <td><a class="btn btn-danger" role="button"
+                                       th:href="@{/faculties/{facultyId}/delete-subject/{subjectId}
                                 (facultyId = ${facultyDTO.id}, subjectId=${subject.id})}"
                                 ><i class="bi bi-trash"></i></a></td>
                             </tr>
@@ -54,20 +57,24 @@
                     </div>
                     </tbody>
                 </table>
-                </div>
-            <form class="text-dark" th:action="@{/faculties/{id}/add-subject (id = ${facultyDTO.id})}"
-                  method="post">
-            <select name="chosenSubject" class="form-select" aria-label="Select subject from list">
-                <option selected disabled>Choose subject from list</option>
-                <option th:each="subject:${allSubjects}" th:value="${subject.id}" th:text="${subject.name}"></option>
-            </select>
-                <br><button class="btn btn-success" type="submit"><i class="bi bi-plus"></i> Add</button>
+            </div>
+            <form class="text-dark" method="post"
+                  th:action="@{/faculties/{id}/add-subject (id = ${facultyDTO.id})}">
+                <select aria-label="Select subject from list" class="form-select" name="chosenSubject">
+                    <option disabled selected>Choose subject from list</option>
+                    <option th:each="subject:${allSubjects}" th:text="${subject.name}"
+                            th:value="${subject.id}"></option>
+                </select>
+                <br>
+                <button class="btn btn-success" type="submit"><i class="bi bi-plus"></i> Add</button>
             </form>
-            <form class="text-dark" th:action="@{/faculties/{id}/new-subject (id = ${facultyDTO.id})}"
-            method="post">
+            <form class="text-dark" method="post"
+                  th:action="@{/faculties/{id}/new-subject (id = ${facultyDTO.id})}">
                 <h5 class="py-3 text-center text-light">Subject not on the list? Add a new one: </h5>
-                <input type="text" class="form-control" id="subjectName" name="subjectName" placeholder="Type subject name" required/>
-                <br><button class="btn btn-success" type="submit"><i class="bi bi-plus"></i> Add</button>
+                <input class="form-control" id="subjectName" name="subjectName" placeholder="Type subject name"
+                       required type="text"/>
+                <br>
+                <button class="btn btn-success" type="submit"><i class="bi bi-plus"></i> Add</button>
             </form>
         </div>
     </div>

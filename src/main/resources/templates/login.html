@@ -1,5 +1,6 @@
 <!doctype html>
-<html th:lang="${#locale.language}" layout:decorate="~{layout}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html layout:decorate="~{layout}" th:lang="${#locale.language}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="#{login}">Log in</title>
@@ -25,23 +26,22 @@
                            placeholder="#{password}"
                            type="password"/>
                     <label for="password" th:text="#{password}">Password</label>
-                    <div class="py-2"><input onclick="show()" type="checkbox"><span class="text-light px-2">Show Password</span>
+                    <div class="py-2"><input onclick="show()" type="checkbox">
+                        <span class="text-light px-2">Show Password</span>
                     </div>
                     <script>
                     function show() {
-  var x = document.getElementById("password");
-  if (x.type === "password") {
-    x.type = "text";
-  } else {
-    x.type = "password";
-  }
-}
-
-
+                        var x = document.getElementById("password");
+                        if (x.type === "password") {
+                            x.type = "text";
+                        } else {
+                            x.type = "password";
+                        }
+                    }
                     </script>
                 </div>
                 <div class="text-center">
-                    <button class="btn btn-primary" type="submit" th:text="#{login}">Log in</button>
+                    <button class="btn btn-primary" th:text="#{login}" type="submit">Log in</button>
                 </div>
             </form>
         </div>

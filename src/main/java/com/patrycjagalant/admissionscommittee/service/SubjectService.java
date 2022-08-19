@@ -6,24 +6,22 @@ import com.patrycjagalant.admissionscommittee.entity.Subject;
 import com.patrycjagalant.admissionscommittee.repository.SubjectRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.SubjectMapper;
 import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class SubjectService {
 
     private final SubjectRepository subjectRepository;
     private final SubjectMapper mapper;
     private final SubjectMapper subjectMapper;
-
-    public SubjectService(SubjectRepository subjectRepository, SubjectMapper mapper, SubjectMapper subjectMapper) {
-        this.subjectRepository = subjectRepository;
-        this.mapper = mapper;
-        this.subjectMapper = subjectMapper;
-    }
 
     public SubjectDto addNewSubject(String subjectName) {
         // Check if subject already exists
@@ -40,8 +38,8 @@ public class SubjectService {
         return subjectRepository.save(subject);
     }
 
-    public Subject getById(String id){
-        if(ParamValidator.isNumeric(id)) {
+    public Subject getById(String id) {
+        if (ParamValidator.isNumeric(id)) {
             return subjectRepository.findById(Long.parseLong(id)).orElseThrow();
         } else {
             throw new IllegalArgumentException();

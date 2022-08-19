@@ -35,7 +35,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public GrantedAuthoritiesMapper authoritiesMapper(){
+    public GrantedAuthoritiesMapper authoritiesMapper() {
         SimpleAuthorityMapper authorityMapper = new SimpleAuthorityMapper();
         authorityMapper.setConvertToUpperCase(true);
         authorityMapper.setDefaultAuthority("USER");
@@ -46,20 +46,22 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .antMatchers("/*", "/login*", "/logout*", "/index*", "/h2-console/**", "/register*", "/static/favicon.ico*", "/images/*", "/faculties*", "/faculties/{id:\\d+}*").permitAll()
+                        .antMatchers("/*", "/login*", "/logout*", "/index*", "/h2-console/**",
+                                "/register*", "/static/favicon.ico*", "/images/*", "/faculties*",
+                                "/faculties/{id:\\d+}*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin()
-                        .loginPage("/login")
-                        .usernameParameter("email")
-                        .usernameParameter("username")
-                        .permitAll()
-                        .and()
+                .loginPage("/login")
+                .usernameParameter("email")
+                .usernameParameter("username")
+                .permitAll()
+                .and()
                 .logout()
-                       .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .logoutSuccessUrl("/logout-success").permitAll();
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/logout-success").permitAll();
         // Remove code below after changing DB to MySQL!
         http.csrf().disable().headers().frameOptions().disable();
         return http.build();

@@ -2,20 +2,18 @@ package com.patrycjagalant.admissionscommittee.service.mapper;
 
 import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.entity.Applicant;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
-@Component
 @Slf4j
+@RequiredArgsConstructor
+@Component
 public class ApplicantMapper {
 
     private final UserMapper userMapper;
-
-    public ApplicantMapper(UserMapper userMapper) {
-        this.userMapper = userMapper;
-    }
 
     public ApplicantDto mapToDto(Applicant applicant) {
         log.debug("Applicant entity before mapping WITHOUT RELATIONAL FIELDS (scores and requests) {}", applicant);
@@ -74,6 +72,7 @@ public class ApplicantMapper {
         if (region != null && !region.isBlank())
             applicant.setRegion(region);
     }
+
     public Applicant mapToEntityWithId(ApplicantDto applicantDto) {
         log.debug("Mapping Applicant DTO with ID");
         Applicant applicant = this.mapToEntity(applicantDto);

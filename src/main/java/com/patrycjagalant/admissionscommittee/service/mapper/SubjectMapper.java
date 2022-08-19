@@ -2,17 +2,21 @@ package com.patrycjagalant.admissionscommittee.service.mapper;
 
 import com.patrycjagalant.admissionscommittee.dto.SubjectDto;
 import com.patrycjagalant.admissionscommittee.entity.Subject;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class SubjectMapper {
 
+    private final FacultyMapper facultyMapper;
+
     public SubjectDto mapToDto (Subject subject) {
-        FacultyMapper facultyMapper = new FacultyMapper();
         log.debug("Subject entity before mapping: {}", subject);
          SubjectDto dto = SubjectDto.builder()
                  .id(subject.getId())

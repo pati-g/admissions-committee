@@ -16,8 +16,8 @@
                     <span th:text="${faculty.name}"></span>
                 </div>
                 <div class="col align-right">
-            <a class="btn btn-secondary float-right p-3" th:text="#{view}"
-               th:href="@{/faculties/{id}(id = ${faculty.getId})}">View</a></div>
+                    <a class="btn btn-secondary float-right p-3" th:href="@{/faculties/{id}(id = ${faculty.getId})}"
+                       th:text="#{view}">View</a></div>
             </div>
             <br>
             <h4 th:text="#{applicant.name}">Applicant name</h4>
@@ -26,9 +26,12 @@
                     <span th:text="${applicant.fullName}"></span>
                 </div>
                 <div class="col align-right">
-            <a class="btn btn-secondary float-right p-3" th:text="#{view}"
-               th:href="@{/applicant/{username}(username = ${applicant.getUserDetails.getUsername})}">View</a></div>
-            </div><br>
+                    <a class="btn btn-secondary float-right p-3"
+                       th:href="@{/applicant/{username}(username = ${applicant.getUserDetails.getUsername})}"
+                       th:text="#{view}">View</a>
+                </div>
+            </div>
+            <br>
             <h3 class="py-3 text-center" th:text="#{request.scores}">Applicant's results</h3>
             <div th:if="${scores} == null or ${scores.isEmpty}">
                 <h6 class="text-center">Applicant has not submitted any scores yet.</h6>
@@ -43,24 +46,25 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="score : ${scores}">
-                                <td th:text="${score.subjectName}">Subject name</td>
-                                <td id="result" th:text="${score.result}">Result</td>
-                            </tr>
-                            </tbody>
-                            <tfoot class="table-secondary">
-                            <tr>
-                                <td th:text="#{request.points}">Total points</td>
-                                <td id="total" th:text="${request.points}"></td>
-                            </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                        <tr th:each="score : ${scores}">
+                            <td th:text="${score.subjectName}">Subject name</td>
+                            <td id="result" th:text="${score.result}">Result</td>
+                        </tr>
+                        </tbody>
+                        <tfoot class="table-secondary">
+                        <tr>
+                            <td th:text="#{request.points}">Total points</td>
+                            <td id="total" th:text="${request.points}"></td>
+                        </tr>
+                        </tfoot>
+                    </table>
                 </div>
-                <br><br>
-            <h6 th:text="#{request.verify.if}">Verify if candidate is eligible for enrollment and choose type of enrollment (budget or contract)</h6>
+            </div>
+            <br><br>
+            <h6 th:text="#{request.verify.if}">
+                Verify if candidate is eligible for enrollment and choose type of enrollment (budget or contract)</h6>
 
-<!--            <a class="btn btn-primary" th:href="" th:value="#{statement.generate}"></a>-->
+            <!--            <a class="btn btn-primary" th:href="" th:value="#{statement.generate}"></a>-->
         </div>
     </div>
 </div>

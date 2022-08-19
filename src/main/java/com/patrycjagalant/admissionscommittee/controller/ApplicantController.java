@@ -7,9 +7,13 @@ import com.patrycjagalant.admissionscommittee.exceptions.FileStorageException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.exceptions.ScoreAlreadyInListException;
-import com.patrycjagalant.admissionscommittee.service.*;
+import com.patrycjagalant.admissionscommittee.service.ApplicantService;
+import com.patrycjagalant.admissionscommittee.service.ScoreService;
+import com.patrycjagalant.admissionscommittee.service.SubjectService;
+import com.patrycjagalant.admissionscommittee.service.UserService;
 import com.patrycjagalant.admissionscommittee.utils.validators.FileValidator;
 import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -22,35 +26,27 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
+
 import javax.validation.Valid;
 
+import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
+
 @Slf4j
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/applicant")
 public class ApplicantController {
     private final ApplicantService applicantService;
     private final ScoreService scoreService;
     private final UserService userService;
-    private final FileValidator fileValidator;
     private final SubjectService subjectService;
-
-    public ApplicantController(ApplicantService applicantService,
-                               ScoreService scoreService,
-                               FileValidator fileValidator,
-                               UserService userService, SubjectService subjectService) {
-        this.applicantService = applicantService;
-        this.scoreService = scoreService;
-        this.fileValidator = fileValidator;
-        this.userService = userService;
-        this.subjectService = subjectService;
-    }
 
     @GetMapping("/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
-    public String viewAccountAndProfile(Model model, @PathVariable("username") String username) throws NoSuchApplicantException {
+    public String viewAccountAndProfile(Model model, @PathVariable("username") String username)
+            throws NoSuchApplicantException {
         UserDto userDto = userService.findByUsername(username);
-        if(userDto != null) {
+        if (userDto != null) {
             model.addAttribute(USER_DTO, userDto);
             ApplicantDto applicantDto = applicantService.getByUserId(userDto.getId());
             if (applicantDto != null) {
@@ -64,10 +60,11 @@ public class ApplicantController {
 
     @GetMapping("/{username}/edit")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
-    public String getProfileForm(Model model, @PathVariable("username") String username) throws NoSuchApplicantException {
+    public String getProfileForm(Model model, @PathVariable("username") String username)
+            throws NoSuchApplicantException {
         UserDto userDto = userService.findByUsername(username);
-        if(userDto != null) {
-            if(!model.containsAttribute("username")) {
+        if (userDto != null) {
+            if (!model.containsAttribute("username")) {
                 model.addAttribute("username", userDto.getUsername());
                 ApplicantDto applicantDto = applicantService.getByUserId(userDto.getId());
                 if (applicantDto != null) {
@@ -87,11 +84,13 @@ public class ApplicantController {
                               RedirectAttributes redirectAttributes) throws NoSuchApplicantException {
         UserDto userDto = userService.findByUsername(username);
         if (userDto == null) {
-            redirectAttributes.addFlashAttribute(ERROR, "Couldn't find user with given username. Please try again.");
+            redirectAttributes.addFlashAttribute(ERROR,
+                    "Couldn't find user with given username. Please try again.");
             return APPLICANTS_EDIT_PROFILE;
         }
         if (result.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.register", result);
+            redirectAttributes.addFlashAttribute(
+                    "org.springframework.validation.BindingResult.register", result);
             redirectAttributes.addFlashAttribute(USER_DTO, userDto);
             return APPLICANTS_EDIT_PROFILE;
         }
@@ -104,7 +103,7 @@ public class ApplicantController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String saveCertificate(@ModelAttribute("file") MultipartFile file,
                                   @PathVariable String username, Model model) throws FileStorageException {
-        boolean isValid = fileValidator.validate(file);
+        boolean isValid = FileValidator.validate(file);
         if (!isValid) {
             return APPLICANTS_EDIT_PROFILE;
         }
@@ -115,7 +114,7 @@ public class ApplicantController {
     @GetMapping(value = "/download-certificate/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public ResponseEntity<Resource> downloadCertificate(@PathVariable String username) {
-            return applicantService.downloadFile(username);
+        return applicantService.downloadFile(username);
     }
 
     @PostMapping("/{username}/new-score")
@@ -180,6 +179,7 @@ public class ApplicantController {
         model.addAttribute("applicants", paginated);
         return ALL_APPLICANTS;
     }
+
     private void addApplicantModel(Model model, ApplicantDto applicantDTO) {
         model.addAttribute(APPLICANT_DTO, applicantDTO);
         model.addAttribute(SCORES, applicantDTO.getScores());
