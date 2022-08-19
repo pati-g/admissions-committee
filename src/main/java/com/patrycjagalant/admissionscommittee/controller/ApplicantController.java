@@ -3,10 +3,8 @@ package com.patrycjagalant.admissionscommittee.controller;
 import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.dto.UserDto;
-import com.patrycjagalant.admissionscommittee.exceptions.FileStorageException;
-import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
-import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
-import com.patrycjagalant.admissionscommittee.exceptions.ScoreAlreadyInListException;
+import com.patrycjagalant.admissionscommittee.entity.Role;
+import com.patrycjagalant.admissionscommittee.exceptions.*;
 import com.patrycjagalant.admissionscommittee.service.ApplicantService;
 import com.patrycjagalant.admissionscommittee.service.ScoreService;
 import com.patrycjagalant.admissionscommittee.service.SubjectService;
@@ -29,6 +27,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
 import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 
 @Slf4j
@@ -48,11 +49,8 @@ public class ApplicantController {
         UserDto userDto = userService.findByUsername(username);
         if (userDto != null) {
             model.addAttribute(USER_DTO, userDto);
-            ApplicantDto applicantDto = applicantService.getByUserId(userDto.getId());
-            if (applicantDto != null) {
-                addApplicantModel(model, applicantDto);
-
-            }
+            Optional<ApplicantDto> applicantDto = applicantService.getByUserId(userDto.getId());
+            applicantDto.ifPresent(dto -> addApplicantModel(model, dto));
             return VIEW_PROFILE;
         }
         return REDIRECT_HOME;
@@ -66,9 +64,9 @@ public class ApplicantController {
         if (userDto != null) {
             if (!model.containsAttribute("username")) {
                 model.addAttribute("username", userDto.getUsername());
-                ApplicantDto applicantDto = applicantService.getByUserId(userDto.getId());
-                if (applicantDto != null) {
-                    addApplicantModel(model, applicantDto);
+                Optional<ApplicantDto> applicantDto = applicantService.getByUserId(userDto.getId());
+                if (userDto.getRole().equals(Role.USER)) {
+                    addApplicantModel(model, applicantDto.orElse(new ApplicantDto(userDto, new ArrayList<>(), new ArrayList<>())));
                 }
             }
             return APPLICANTS_EDIT_PROFILE;
@@ -81,7 +79,7 @@ public class ApplicantController {
     public String editProfile(@Valid @ModelAttribute ApplicantDto applicantDTO,
                               BindingResult result,
                               @PathVariable String username,
-                              RedirectAttributes redirectAttributes) throws NoSuchApplicantException {
+                              RedirectAttributes redirectAttributes) throws NoSuchUserException {
         UserDto userDto = userService.findByUsername(username);
         if (userDto == null) {
             redirectAttributes.addFlashAttribute(ERROR,

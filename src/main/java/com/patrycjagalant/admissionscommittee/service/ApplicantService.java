@@ -8,7 +8,9 @@ import com.patrycjagalant.admissionscommittee.entity.User;
 import com.patrycjagalant.admissionscommittee.exceptions.FileStorageException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
+import com.patrycjagalant.admissionscommittee.exceptions.NoSuchUserException;
 import com.patrycjagalant.admissionscommittee.repository.ApplicantRepository;
+import com.patrycjagalant.admissionscommittee.repository.UserRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.ApplicantMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,17 +44,25 @@ import java.util.stream.Collectors;
 @Service
 public class ApplicantService {
     @Value("${app.upload.dir:${user.home}}")
-    public final String filesPathString;
+    public String filesPathString;
     private final ApplicantRepository applicantRepository;
     private final ApplicantMapper applicantMapper;
     private final ScoreService scoreService;
     private final EnrollmentRequestService requestService;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @Transactional
-    public void editApplicant(ApplicantDto applicantdto, Long userID) throws NoSuchApplicantException {
-        Applicant current = applicantRepository.findByUserId(userID).orElseThrow(NoSuchApplicantException::new);
+    public void editApplicant(ApplicantDto applicantdto, Long userID) throws NoSuchUserException {
+        UserDto userDto = userService.findById(userID);
+        if (userDto == null) {
+            throw new NoSuchUserException();
+        }
+        applicantdto.setUserDetails(userDto);
+        Applicant current = applicantRepository.findByUserId(userID).orElse(new Applicant());
         applicantMapper.mapToEntity(applicantdto, current);
+        current.setUser(userRepository.findById(userID).orElseThrow(NoSuchUserException::new));
+        applicantRepository.save(current);
     }
 
     @Transactional
@@ -107,23 +117,25 @@ public class ApplicantService {
         return applicantRepository.save(newApplicant);
     }
 
-    public ApplicantDto getByUserId(Long id) throws NoSuchApplicantException {
-        Applicant applicant = applicantRepository.findByUserId(id).orElse(null);
-        if (applicant == null) {
+    public Optional<ApplicantDto> getByUserId(Long id) throws NoSuchApplicantException {
+        Optional<Applicant> applicant = applicantRepository.findByUserId(id);
+        if (applicant.isEmpty()) {
             log.warn("Applicant with user ID: " + id + "not found.");
-            throw new NoSuchApplicantException("Could not find the requested applicant, please try again.");
         }
-        return getDto(applicant);
+        return Optional.ofNullable(getDto(applicant.orElse(null)));
     }
 
     private ApplicantDto getDto(Applicant applicant) {
-        ApplicantDto applicantDto = applicantMapper.mapToDto(applicant);
-        Long applicantID = applicantDto.getId();
-        if (applicant.getScores() != null) {
-            applicantDto.setScores(scoreService.getAllForApplicantId(applicantID));
-        }
-        if (applicant.getRequests() != null) {
-            applicantDto.setRequests(requestService.getAllForApplicantId(applicantID));
+        ApplicantDto applicantDto = null;
+        if(applicant != null) {
+            applicantDto = applicantMapper.mapToDto(applicant);
+            Long applicantID = applicantDto.getId();
+            if (applicant.getScores() != null) {
+                applicantDto.setScores(scoreService.getAllForApplicantId(applicantID));
+            }
+            if (applicant.getRequests() != null) {
+                applicantDto.setRequests(requestService.getAllForApplicantId(applicantID));
+            }
         }
         return applicantDto;
     }

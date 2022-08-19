@@ -1,6 +1,7 @@
 package com.patrycjagalant.admissionscommittee.service.mapper;
 
 
+import com.patrycjagalant.admissionscommittee.annotations.Mapper;
 import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
+@Mapper
 public class EnrollmentRequestMapper {
     private final ApplicantMapper applicantMapper;
     private final FacultyMapper facultyMapper;

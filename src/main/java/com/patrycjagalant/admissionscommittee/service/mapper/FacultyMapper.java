@@ -1,5 +1,6 @@
 package com.patrycjagalant.admissionscommittee.service.mapper;
 
+import com.patrycjagalant.admissionscommittee.annotations.Mapper;
 import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
 import com.patrycjagalant.admissionscommittee.entity.Faculty;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
+@Mapper
 public class FacultyMapper {
 
     public FacultyDto mapToDto(Faculty faculty) {

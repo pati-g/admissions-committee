@@ -55,7 +55,7 @@
                     </div>
                     <br>
                     <div class="text center">
-                        <a class="btn btn-primary" th:href="@{download-certificate/{id} (id = ${applicantDTO.getUserDetails.getId})}"
+                        <a class="btn btn-primary" th:href="@{download-certificate/{username} (username = ${userDTO.username})}"
                            th:if="${applicantDTO.certificateUrl != null}">
                             <i aria-hidden="true" class="bi bi-download">
                             <span class="text-center m-2"

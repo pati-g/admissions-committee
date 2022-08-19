@@ -1,7 +1,8 @@
 package com.patrycjagalant.admissionscommittee.controller;
 
 import com.patrycjagalant.admissionscommittee.dto.UserDto;
-import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
+import com.patrycjagalant.admissionscommittee.dto.other.UserDtoForEditing;
+import com.patrycjagalant.admissionscommittee.exceptions.NoSuchUserException;
 import com.patrycjagalant.admissionscommittee.exceptions.UserAlreadyExistException;
 import com.patrycjagalant.admissionscommittee.service.UserService;
 import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
@@ -49,10 +50,10 @@ public class UserController {
 
     @RequestMapping(value = "/{username}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
-    public String editAccount(@Valid @ModelAttribute("user") UserDto userDto,
+    public String editAccount(@Valid @ModelAttribute("user") UserDtoForEditing userDto,
                               BindingResult result,
                               @PathVariable("username") String username,
-                              Model model) throws NoSuchApplicantException {
+                              Model model) throws NoSuchUserException, UserAlreadyExistException {
         if (!result.hasErrors() && userDto != null && userDto.getUsername().equalsIgnoreCase(username)) {
             userService.editUser(userDto);
             model.addAttribute(MESSAGE, "Your changes have been submitted");

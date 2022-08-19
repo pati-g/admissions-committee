@@ -65,7 +65,7 @@
             <br>
 
             <form class="text-dark" enctype="multipart/form-data"
-                  th:action="@{/applicant/save-certificate/{id}(id = ${applicantDTO.getId})}" th:method="post">
+                  th:action="@{/applicant/save-certificate/{username}(username = ${username})}" th:method="post">
                 <div class="row">
                     <div class="col form-group mb-3">
                         <label class="form-label" for="certificate"><span class="text-light">

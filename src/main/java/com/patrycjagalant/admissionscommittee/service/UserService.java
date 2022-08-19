@@ -1,12 +1,12 @@
 package com.patrycjagalant.admissionscommittee.service;
 
 import com.patrycjagalant.admissionscommittee.dto.UserDto;
+import com.patrycjagalant.admissionscommittee.dto.other.UserDtoForEditing;
 import com.patrycjagalant.admissionscommittee.entity.User;
-import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
+import com.patrycjagalant.admissionscommittee.exceptions.NoSuchUserException;
 import com.patrycjagalant.admissionscommittee.exceptions.UserAlreadyExistException;
 import com.patrycjagalant.admissionscommittee.repository.UserRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.UserMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 @Slf4j
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Service
 public class UserService implements UserDetailsService {
 
@@ -25,14 +25,26 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper mapper;
 
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+        super();
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.mapper = userMapper;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = this.userRepository.findByUsername(username);
-        if (user == null) {
+        if (username == null || username.isBlank()) {
+            throw new UsernameNotFoundException("Please enter username to log in");
+        }
+        User user;
+        if (username.contains("@")) {
             user = this.userRepository.findByEmail(username);
-            if (user == null) {
-                throw new UsernameNotFoundException("Can't find user: " + username);
-            }
+        } else {
+            user = this.userRepository.findByUsername(username);
+        }
+        if (user == null) {
+            throw new UsernameNotFoundException("Can't find user: " + username);
         }
         return user;
     }
@@ -40,12 +52,21 @@ public class UserService implements UserDetailsService {
     public Long registerUser(UserDto userDto) throws UserAlreadyExistException {
         if (usernameExists(userDto.getUsername())) {
             throw new UserAlreadyExistException("Username: "
-                    + userDto.getEmail() + " is taken");
+                    + userDto.getUsername() + " is taken");
+        }
+        if (userRepository.findByEmail(userDto.getEmail()) != null) {
+            throw new UserAlreadyExistException("User with email: "
+                    + userDto.getEmail() + " already exists");
         }
         String password = userDto.getPassword();
-        String passwordEncoded = passwordEncoder.encode(password);
-        User user = mapper.mapToEntity(userDto, passwordEncoded);
-        return userRepository.save(user).getId();
+        User newuser = User.builder()
+                .email(userDto.getEmail())
+                .username(userDto.getUsername())
+                .password(passwordEncoder.encode(password))
+                .role(userDto.getRole())
+                .isEnabled(true)
+                .build();
+        return userRepository.save(newuser).getId();
     }
 
     @Transactional
@@ -82,14 +103,18 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void editUser(UserDto userDto) throws NoSuchApplicantException {
+    public void editUser(UserDtoForEditing userDto) throws UserAlreadyExistException, NoSuchUserException {
         String password = userDto.getPassword();
-        if (password != null) {
+        if (password != null && !password.isBlank()) {
             userDto.setPassword(passwordEncoder.encode(password));
         }
         User user = userRepository.findByUsername(userDto.getUsername());
         if (user == null) {
-            throw new NoSuchApplicantException();
+            throw new NoSuchUserException();
+        }
+        if (!user.getEmail().equalsIgnoreCase(userDto.getEmail()) && userRepository.findByEmail(userDto.getEmail()) != null) {
+            throw new UserAlreadyExistException("User with email: "
+                    + userDto.getEmail() + " already exists");
         }
         mapper.mapToEntity(userDto, user);
         userRepository.save(user);

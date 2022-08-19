@@ -81,7 +81,7 @@ public class FacultyController {
             long id = Long.parseLong(idString);
             EnrollmentRequestDto requestDto = new EnrollmentRequestDto();
             try {
-                requestDto.setApplicant(applicantService.getByUserId(user.getId()));
+                requestDto.setApplicant(applicantService.getByUserId(user.getId()).orElseThrow(NoSuchApplicantException::new));
                 requestDto.setFaculty(facultyService.getById(id));
                 requestDto.setRegistrationDate(LocalDateTime.now());
                 facultyService.addNewRequest(requestDto);

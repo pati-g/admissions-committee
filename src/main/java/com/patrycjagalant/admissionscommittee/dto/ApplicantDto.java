@@ -37,8 +37,6 @@ public class ApplicantDto {
     @Size(min = 2, max = 255, message = "Name should be between 2-255 characters long")
     private String educationalInstitution;
 
-    private String email;
-
     private UserDto userDetails;
 
     private List<ScoreDto> scores;
@@ -46,4 +44,10 @@ public class ApplicantDto {
     private List<EnrollmentRequestDto> requests;
 
     private String certificateUrl;
+
+    public ApplicantDto(UserDto userDetails, List<ScoreDto> scores, List<EnrollmentRequestDto> requests) {
+        this.userDetails = userDetails;
+        this.scores = scores;
+        this.requests = requests;
+    }
 }

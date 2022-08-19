@@ -42,12 +42,13 @@ public class SecurityConfig {
         return authorityMapper;
     }
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
                         .antMatchers("/*", "/login*", "/logout*", "/index*", "/h2-console/**",
-                                "/register*", "/static/favicon.ico*", "/images/*", "/faculties*",
+                                "/user/register*", "/static/favicon.ico*", "/images/*", "/faculties*",
                                 "/faculties/{id:\\d+}*").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -55,6 +56,7 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .usernameParameter("email")
                 .usernameParameter("username")
+                .passwordParameter("password")
                 .permitAll()
                 .and()
                 .logout()

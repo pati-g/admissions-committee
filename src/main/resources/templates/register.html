@@ -10,7 +10,7 @@
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
             <h1 class="py-3 text-center" th:text="#{register.form}">Registration form</h1>
-            <form class="text-dark" method="post" th:action="@{/register}" th:object="${user}">
+            <form class="text-dark" method="post" th:action="@{/user/register}" th:object="${user}">
                 <div class="alert alert-danger py-0" th:if="${#fields.hasErrors('*')}">
                     <p th:text="#{error.message}">Please correct errors listed below</p>
                 </div>

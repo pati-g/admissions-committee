@@ -41,6 +41,8 @@ INSERT INTO Users (id, username, email, password) VALUES (800, 'eight', 'nr_eigh
 INSERT INTO Users (id, username, email, password) VALUES (900, 'nine', 'nr_nine@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
 INSERT INTO Users (id, username, email, password) VALUES (1000, 'ten', 'nr_ten@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
 INSERT INTO Users (id, username, email, password, role) VALUES (1100, 'admin', 'admin@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg', 'ADMIN');
+INSERT INTO Users (id, username, email, password) VALUES (110, 'eleven', 'eleven@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+
 --APPLICANTS
 INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID, certificate) VALUES (11, 'Adam', 'Smith', 'Gdansk', 'Pomorskie', 'UG', 100, 'LDk8hYMV');
 INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (12, 'Pola', 'Jones', 'Warsaw', 'Mazowiecki', 'UW', 200);

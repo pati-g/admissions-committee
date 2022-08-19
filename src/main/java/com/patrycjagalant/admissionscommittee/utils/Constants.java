@@ -25,4 +25,7 @@ public class Constants {
     public static final String REQUESTS = "requests";
     public static final String ERROR = "error";
     public static final String MESSAGE = "message";
+
+    public static final String EMAIL_PATTERN =
+            "^(?=.{1,64}@)[\\p{L}\\d_-]+(\\.[\\p{L}\\d_-]++)*+@[^-][\\p{L}\\d-]+(\\.[\\p{L}\\d-]++)*(\\.\\p{L}{2,})$";
 }

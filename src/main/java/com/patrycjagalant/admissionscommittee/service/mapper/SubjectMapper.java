@@ -1,17 +1,17 @@
 package com.patrycjagalant.admissionscommittee.service.mapper;
 
+import com.patrycjagalant.admissionscommittee.annotations.Mapper;
 import com.patrycjagalant.admissionscommittee.dto.SubjectDto;
 import com.patrycjagalant.admissionscommittee.entity.Subject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
+@Mapper
 public class SubjectMapper {
 
     private final FacultyMapper facultyMapper;

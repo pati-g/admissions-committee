@@ -1,5 +1,6 @@
 package com.patrycjagalant.admissionscommittee.service.mapper;
 
+import com.patrycjagalant.admissionscommittee.annotations.Mapper;
 import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.entity.Applicant;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
-@Component
+@Mapper
 public class ApplicantMapper {
 
     private final UserMapper userMapper;
