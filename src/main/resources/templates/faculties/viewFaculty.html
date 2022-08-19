@@ -36,21 +36,16 @@
                         <label for="total" th:text="#{faculty.total}">Total places</label>
                     </div>
                 </div>
-                <br><br>
-                <div class="text-center">
-                    <a class="btn btn-success"
-                       onClick="return confirm(th:text='#{confirm.apply}')"
-                       role="button" sec:authorize="hasRole('ROLE_USER')"
-                       th:href="@{/applicant/new-request}"
-                       th:method="post" th:text="#{apply}">Apply</a>
-                </div>
-            </form>
 
             <h2 class="py-3 text-center" th:text="#{relevant.subjects}">Relevant subjects</h2>
             <div class="text-center">
                 <table class="table table-hover table-light table-responsive">
                     <tbody class="align-middle">
-                    <div th:if="${subjects != null}">
+                    <div th:if="${subjects == null} or ${subjects.isEmpty}">
+                    <h6 class="text-center" th:text="#{faculty.no.subjects}">
+                        No relevant subjects have been added yet.</h6>
+                    </div>
+                        <div th:if="${subjects != null}">
                         <th:block th:each="subject:${subjects}">
                             <tr>
                                 <td class="text-center" th:text="${subject.name}"></td>
@@ -64,6 +59,71 @@
                     </tbody>
                 </table>
             </div>
+
+            <div sec:authorize="hasRole('ROLE_ADMIN')">
+                <h2 class="py-3 text-center" th:text="#{requests.list}">List of enrollment requests</h2>
+                <p class="text-center text-light" th:if="${requests.isEmpty}" th:text="#{requests.list.is.empty}"></p>
+                <div th:if="${!requests.isEmpty}">
+                    <table class="table table-hover table-light table-responsive">
+                        <thead class="table-secondary text-center fw-bold">
+                        <th th:text="#{applicant.name}">Applicant's Name</th>
+                        <th th:href="#{request.points}">Total points</th>
+                        <th th:text="#{request.date}">Registration date</th>
+                        <th th:text="#{request.status}">Current status</th>
+                        <td th:text="#{request.delete}">Delete request</td>
+                        <td sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{statement.preview}">Preview statement</td>
+                        </thead>
+                        <br>
+                        <tbody>
+                        <th:block th:each="request : ${requests}">
+                            <tr>
+                                <div th:if="${request != null}">
+                                    <td>
+                                        <a th:href="@{/applicant/{username}(username =
+                                        ${request.getApplicant.getUserDetails.getUsername})}"
+                                           th:text="${request.applicant.getFullName}">Applicant name</a></td>
+                                    <td class="text-center" th:text="${request.points}"></td>
+                                    <td class="text-center" th:text="${request.registrationDate}"></td>
+                                    <td class="align-middle text-center" th:switch="${request.status.name}">
+                                <span class="bg-warning rounded-pill p-2" th:case="'PENDING'"
+                                      th:text="#{pending}">Pending</span>
+                                        <span class="bg-success rounded-pill p-2" th:case="'BUDGET'"
+                                              th:text="#{budget}">Accepted  for budget place</span>
+                                        <span class="bg-success rounded-pill p-2" th:case="'CONTRACT'"
+                                              th:text="#{contract}">Accepted for contract place</span>
+                                        <span class="bg-danger rounded-pill p-2" th:case="'REJECTED'"
+                                              th:text="#{rejected}">Rejected</span>
+                                    </td>
+                                    <td class="align-middle text-center px-3">
+                                        <a class="btn btn-outline-danger"
+                                           onClick="return confirm(th:text='#{confirm.delete}')"
+                                           role="button"
+                                           th:href="@{/request/{id}/delete (id=${request.id})}">
+                                            <i class="bi bi-trash"></i></a>
+                                    </td>
+                                    <td class="align-middle text-center"><a class="btn btn-outline-success"
+                                                                            role="button"
+                                                                            sec:authorize="hasRole('ROLE_ADMIN')"
+                                                                            th:href="@{/request/{id}/statement
+                                                                        (id = ${request.id})}"
+                                                                            th:text="#{preview}">Preview</a>
+                                    </td>
+                                </div>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+                <br><br>
+                <div class="text-center">
+                    <a class="btn btn-success"
+                       onClick="return confirm(th:text='#{confirm.apply}')"
+                       role="button" sec:authorize="hasRole('ROLE_USER')"
+                       th:href="@{/faculties/{id}/new-request (id = ${facultyDTO.getId})}"
+                       th:method="post" th:text="#{apply}">Apply</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>

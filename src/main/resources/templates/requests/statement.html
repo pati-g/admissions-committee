@@ -33,8 +33,8 @@
             </div>
             <br>
             <h3 class="py-3 text-center" th:text="#{request.scores}">Applicant's results</h3>
-            <div th:if="${scores} == null or ${scores.isEmpty}">
-                <h6 class="text-center">Applicant has not submitted any scores yet.</h6>
+            <div th:if="${scores == null} or ${scores.isEmpty}">
+                <h6 class="text-center" th:text="#{scores.list.is.empty}">Applicant has not submitted any scores yet.</h6>
             </div>
             <div th:if="${scores != null}">
                 <div class="py-3 table-responsive">

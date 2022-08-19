@@ -6,6 +6,7 @@ import com.patrycjagalant.admissionscommittee.dto.SubjectDto;
 import com.patrycjagalant.admissionscommittee.entity.User;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
+import com.patrycjagalant.admissionscommittee.exceptions.RequestAlreadySubmittedException;
 import com.patrycjagalant.admissionscommittee.service.ApplicantService;
 import com.patrycjagalant.admissionscommittee.service.FacultyService;
 import com.patrycjagalant.admissionscommittee.service.SubjectService;
@@ -65,6 +66,7 @@ public class FacultyController {
                 FacultyDto facultyDTO = facultyService.getById(id);
                 model.addAttribute(FACULTY_DTO, facultyDTO);
                 model.addAttribute("subjects", facultyDTO.getSubjects());
+                model.addAttribute("requests", facultyDTO.getRequests());
                 return "faculties/viewFaculty";
             } catch (NoSuchFacultyException e) {
                 model.addAttribute("error", "Incorrect faculty ID, please try again.");
@@ -92,7 +94,8 @@ public class FacultyController {
             } catch (NoSuchFacultyException facExc) {
                 log.warn("Faculty not found");
                 model.addAttribute(ERROR, "Could not find requested faculty, please try again");
-            }
+            } catch (RequestAlreadySubmittedException e) {
+                model.addAttribute(ERROR, "Enrollment request for this applicant and faculty already exists.");            }
         } else {
             model.addAttribute(ERROR, "Could not find requested faculty, please try again");
         }

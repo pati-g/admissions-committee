@@ -8,6 +8,7 @@ import com.patrycjagalant.admissionscommittee.entity.Faculty;
 import com.patrycjagalant.admissionscommittee.entity.Subject;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
+import com.patrycjagalant.admissionscommittee.exceptions.RequestAlreadySubmittedException;
 import com.patrycjagalant.admissionscommittee.repository.FacultyRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.EnrollmentRequestMapper;
 import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
@@ -92,11 +93,18 @@ public class FacultyService {
 
     @Transactional
     public void addNewRequest(EnrollmentRequestDto enrollmentRequestDTO)
-            throws NoSuchApplicantException, NoSuchFacultyException {
+            throws NoSuchApplicantException, NoSuchFacultyException, RequestAlreadySubmittedException {
         ApplicantDto applicantDto = enrollmentRequestDTO.getApplicant();
+        FacultyDto facultyDto = enrollmentRequestDTO.getFaculty();
+        if(applicantDto.getRequests()
+                .stream()
+                .map(EnrollmentRequestDto::getFaculty)
+                .anyMatch(requestFaculty->requestFaculty.equals(facultyDto))) {
+            log.warn("Applicant: " + applicantDto.getFullName() + " has already submitted a request for faculty: " + facultyDto.getName());
+            throw new RequestAlreadySubmittedException();
+        }
         EnrollmentRequest request = requestMapper.mapToEntity(enrollmentRequestDTO);
         applicantService.addRequest(applicantDto, request);
-        FacultyDto facultyDto = enrollmentRequestDTO.getFaculty();
         Faculty faculty = facultyRepository.findById(facultyDto.getId()).orElseThrow(NoSuchFacultyException::new);
         faculty.getRequests().add(request);
         requestService.saveRequest(enrollmentRequestDTO);

@@ -42,6 +42,10 @@
             <!--EDIT + ADD SUBJECTS-->
             <h2 class="py-3 text-center" th:text="#{relevant.subjects}">Relevant subjects</h2>
             <div class="text-center">
+                <div th:if="${subjects == null} or ${subjects.isEmpty}">
+                    <h6 class="text-center" th:text="#{faculty.no.subjects}">
+                        No relevant subjects have been added yet.</h6>
+                </div>
                 <table class="table table-hover table-light table-responsive">
                     <tbody class="align-middle">
                     <div th:if="${subjects != null}">
@@ -76,6 +80,12 @@
                 <br>
                 <button class="btn btn-success" type="submit"><i class="bi bi-plus"></i> Add</button>
             </form>
+            <br>
+            <div class="text-center">
+                <a class="btn btn-primary" role="button"
+                   th:href="@{/faculties/{id}(id = ${facultyDTO.getId})}"
+                   th:text="#{go.to.view}">Go to the view page</a>
+            </div>
         </div>
     </div>
 </div>

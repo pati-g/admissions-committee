@@ -29,7 +29,9 @@ public class FacultyDto {
     @Max(value = 1000, message = "Value can't be more than 1 000")
     private Integer totalPlaces;
 
+    @EqualsAndHashCode.Exclude
     private List<EnrollmentRequestDto> requests;
 
+    @EqualsAndHashCode.Exclude
     private Set<SubjectDto> subjects;
 }

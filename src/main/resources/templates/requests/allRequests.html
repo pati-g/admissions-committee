@@ -71,13 +71,13 @@
                         <td th:text="${request.faculty}">Faculty name</td>
                         <td th:text="${request.points}">Points</td>
                         <td class="align-middle text-center" th:switch="${request.status.name}">
-                            <span class="bg-warning rounded-pill p-2" th:case="'P'"
+                            <span class="bg-warning rounded-pill p-2" th:case="'PENDING'"
                                   th:text="#{pending}">Pending</span>
-                            <span class="bg-success rounded-pill p-2" th:case="'B'"
+                            <span class="bg-success rounded-pill p-2" th:case="'BUDGET'"
                                   th:text="#{budget}">Accepted  for budget place</span>
-                            <span class="bg-success rounded-pill p-2" th:case="'C'"
+                            <span class="bg-success rounded-pill p-2" th:case="'CONTRACT'"
                                   th:text="#{contract}">Accepted for contract place</span>
-                            <span class="bg-danger rounded-pill p-2" th:case="'R'"
+                            <span class="bg-danger rounded-pill p-2" th:case="'REJECTED'"
                                   th:text="#{rejected}">Rejected</span>
                         </td>
                         <td><a class="btn btn-outline-primary"
@@ -103,7 +103,7 @@
                         <a aria-label="Previous"
                            class="page-link"
                            th:href="@{/request/all(size=${requests.size},
-                           sort=${sort}, sortBy=${sortBy}
+                           sort=${sort}, sortBy=${sortBy},
                            page=${currentPage-1 > totalPages ? totalPages-1 : currentPage-1})}">
                             <span aria-hidden="true">&laquo;</span>
                             <span class="sr-only" th:text="#{previous}">Previous</span>
@@ -118,7 +118,7 @@
                         <a aria-label="Next"
                            class="page-link" th:disabled="${currentPage <= totalPages}"
                            th:href="@{/request/all(size=${requests.size},
-                           sort=${sort}, sortBy=${sortBy}
+                           sort=${sort}, sortBy=${sortBy},
                            page=${currentPage+1 > totalPages ? totalPages : currentPage+1})}">
                             <span class="sr-only" th:text="#{next}">Next</span>
                             <span aria-hidden="true">&raquo;</span>

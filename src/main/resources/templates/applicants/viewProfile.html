@@ -21,6 +21,11 @@
                     <label for="email" th:text="#{email}">E-mail</label>
                 </div>
             </form>
+            <div class="text-center">
+                <a class="btn btn-primary" role="button"
+                   th:href="@{/user/{username}/edit(username = ${userDTO.getUsername})}"
+                   th:text="#{edit.account}">Edit account</a>
+            </div>
             <br><br>
             <div th:if="${applicantDTO != null}">
                 <form class="text-dark" method="get" th:object="${applicantDTO}">
@@ -55,7 +60,8 @@
                     </div>
                     <br>
                     <div class="text center">
-                        <a class="btn btn-primary" th:href="@{download-certificate/{username} (username = ${userDTO.username})}"
+                        <a class="btn btn-primary" th:href="@{download-certificate/{username}
+                        (username = ${userDTO.username})}"
                            th:if="${applicantDTO.certificateUrl != null}">
                             <i aria-hidden="true" class="bi bi-download">
                             <span class="text-center m-2"
@@ -64,7 +70,11 @@
 
                 </form>
                 <!--List of applicant's scores-->
-                <div th:if="${!applicantDTO.scores.isEmpty}">
+                <div th:if="${applicantDTO.scores == null} or ${applicantDTO.scores.isEmpty}">
+                    <h6 class="text-center" th:text="#{scores.list.is.empty}">
+                        The list of scores is empty.</h6>
+                </div>
+                <div th:if="${!applicantDTO.scores.isEmpty} and ${applicantDTO.scores != null}">
                     <h3 class="py-3 text-center" th:text="#{scores}">Scores</h3>
                     <div class="py-3 table-responsive">
                         <table class="table table-hover table-light">
@@ -84,7 +94,11 @@
                     </div>
                 </div>
                 <!--List of applicant's requests and current status -->
-                <div th:if="${!applicantDTO.requests.isEmpty}">
+                <div th:if="${applicantDTO.requests == null} or ${applicantDTO.requests.isEmpty}">
+                    <h6 class="text-center" th:text="#{requests.list.is.empty}">
+                        The list of enrollment requests is empty.</h6>
+                </div>
+                <div th:if="${!applicantDTO.requests.isEmpty} and ${applicantDTO.requests != null}">
                     <h3 class="py-3 text-center" th:text="#{requests.list}">Faculties' application requests</h3>
                     <div class="py-3 table-responsive">
                         <table class="table table-hover table-light">
@@ -103,16 +117,16 @@
                             <tr th:each="request : ${requests}">
                                 <td><a th:href="@{/faculties/{id}(id = ${request.getFaculty.getId})}"
                                        th:text="${request.faculty.getName}">Faculty name</a></td>
-                                <td th:text="${request.points}">Sum of points</td>
+                                <td class="text-center" th:text="${request.points}">Sum of points</td>
                                 <td th:text="${request.registrationDate}">Date of request submission</td>
                                 <td class="align-middle text-center" th:switch="${request.status.name}">
-                            <span class="bg-warning rounded-pill p-2" th:case="'P'"
+                            <span class="bg-warning rounded-pill p-2" th:case="'PENDING'"
                                   th:text="#{pending}">Pending</span>
-                                    <span class="bg-success rounded-pill p-2" th:case="'B'"
+                                    <span class="bg-success rounded-pill p-2" th:case="'BUDGET'"
                                           th:text="#{budget}">Accepted  for budget place</span>
-                                    <span class="bg-success rounded-pill p-2" th:case="'C'"
+                                    <span class="bg-success rounded-pill p-2" th:case="'CONTRACT'"
                                           th:text="#{contract}">Accepted for contract place</span>
-                                    <span class="bg-danger rounded-pill p-2" th:case="'R'"
+                                    <span class="bg-danger rounded-pill p-2" th:case="'REJECTED'"
                                           th:text="#{rejected}">Rejected</span>
                                 </td>
                                 <td><a class="btn btn-success" role="button" sec:authorize="hasRole('ROLE_ADMIN')"
@@ -124,12 +138,11 @@
                         </table>
                     </div>
                 </div>
+                <div class="text-center">
+                    <a class="btn btn-primary" role="button"
+                       th:href="@{/applicant/{username}/edit(username = ${userDTO.getUsername})}"
+                       th:text="#{edit.profile}">Edit profile</a>
             </div>
-            <!--Edit profile button-->
-            <div class="text-center">
-                <a class="btn btn-primary" role="button"
-                   th:href="@{/applicant/{username}/edit(username = ${userDTO.getUsername})}"
-                   th:text="#{edit.profile}">Edit profile</a>
             </div>
         </div>
     </div>

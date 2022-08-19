@@ -42,6 +42,27 @@ INSERT INTO Users (id, username, email, password) VALUES (900, 'nine', 'nr_nine@
 INSERT INTO Users (id, username, email, password) VALUES (1000, 'ten', 'nr_ten@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
 INSERT INTO Users (id, username, email, password, role) VALUES (1100, 'admin', 'admin@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg', 'ADMIN');
 INSERT INTO Users (id, username, email, password) VALUES (110, 'eleven', 'eleven@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1100, '1100', '1100@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1200, '1200', '1200@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1300, '1300', '1300@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1400, '1400', '1400@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1500, '1500', '1500@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1600, '1600', '1600@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1700, '1700', '1700@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1800, '1800', '1800@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1900, '1900', '1900@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1110, '1110', '1110@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1210, '1210', '1210@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');INSERT INTO Users (id, username, email, password) VALUES (100, 'one', 'nr_one@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1220, '1220', '1220@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1310, '1310', '1310@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1410, '1410', '1410@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1510, '1510', '1510@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1610, '1610', '1610@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1710, '1710', '1710@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1810, '1810', '1810@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1910, '1910', '1910@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1111, '1111', '1111@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
+INSERT INTO Users (id, username, email, password) VALUES (1121, '1121', '1121@test.com', '$argon2id$v=19$m=4096,t=3,p=1$LKuNxYF+oFtsqnzIQZ6DHw$nuybRVf4FXV77hO4AlAygnhEg4v/b4NenV0fWF7kPHg');
 
 --APPLICANTS
 INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID, certificate) VALUES (11, 'Adam', 'Smith', 'Gdansk', 'Pomorskie', 'UG', 100, 'LDk8hYMV');
@@ -54,6 +75,27 @@ INSERT INTO Applicants (id, first_name, last_name, city, region, educational_ins
 INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (18, 'Iga', 'Swiatek', 'Warsaw', 'Mazowieckie', 'PG', 800);
 INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (19, 'Feliks', 'Goodboy', 'Gdansk', 'Pomorskie', 'PG', 900);
 INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (20, 'Doctor', 'Tenth', 'Gallifrey', 'Universe', 'UG', 1000);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID, certificate) VALUES (11, 'Adam', 'Smith', 'Gdansk', 'Pomorskie', 'UG', 100, 'LDk8hYMV');
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (12, 'Pola', 'Jones', 'Warsaw', 'Mazowiecki', 'UW', 200);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (13, 'Joe', 'Poe', 'Gdansk', 'Pomorskie', 'PG', 300);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (14, 'Donna', 'Noble', 'London', 'UK', 'UG', 400);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (15, 'Rose', 'Tyler', 'Gdansk', 'Pomorskie', 'UG', 500);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (16, 'Rory', 'Williams', 'Warsaw', 'Mazowieckie', 'PW', 600);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (17, 'John', 'Moriarty', 'Krakow', 'Małopolskie', 'UAM', 700);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (18, 'Iga', 'Swiatek', 'Warsaw', 'Mazowieckie', 'PG', 800);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (19, 'Feliks', 'Goodboy', 'Gdansk', 'Pomorskie', 'PG', 900);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (20, 'Doctor', 'Tenth', 'Gallifrey', 'Universe', 'UG', 1000);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID, certificate) VALUES (11, 'Adam', 'Smith', 'Gdansk', 'Pomorskie', 'UG', 100, 'LDk8hYMV');
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (12, 'Pola', 'Jones', 'Warsaw', 'Mazowiecki', 'UW', 200);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (13, 'Joe', 'Poe', 'Gdansk', 'Pomorskie', 'PG', 300);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (14, 'Donna', 'Noble', 'London', 'UK', 'UG', 400);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (15, 'Rose', 'Tyler', 'Gdansk', 'Pomorskie', 'UG', 500);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (16, 'Rory', 'Williams', 'Warsaw', 'Mazowieckie', 'PW', 600);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (17, 'John', 'Moriarty', 'Krakow', 'Małopolskie', 'UAM', 700);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (18, 'Iga', 'Swiatek', 'Warsaw', 'Mazowieckie', 'PG', 800);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (19, 'Feliks', 'Goodboy', 'Gdansk', 'Pomorskie', 'PG', 900);
+INSERT INTO Applicants (id, first_name, last_name, city, region, educational_institution, user_ID) VALUES (20, 'Doctor', 'Tenth', 'Gallifrey', 'Universe', 'UG', 1000);
+
 --SCORES
 INSERT INTO Scores (applicant_id, subject_name, result) VALUES (11, 'Maths', 89);
 INSERT INTO Scores (applicant_id, subject_name, result) VALUES (11, 'English', 67);
