@@ -3,8 +3,10 @@ package com.patrycjagalant.admissionscommittee.service;
 import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
 import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
+import com.patrycjagalant.admissionscommittee.dto.SubjectDto;
 import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
 import com.patrycjagalant.admissionscommittee.entity.Faculty;
+import com.patrycjagalant.admissionscommittee.entity.Status;
 import com.patrycjagalant.admissionscommittee.entity.Subject;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
@@ -15,13 +17,11 @@ import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
 import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -100,7 +100,8 @@ public class FacultyService {
                 .stream()
                 .map(EnrollmentRequestDto::getFaculty)
                 .anyMatch(requestFaculty->requestFaculty.equals(facultyDto))) {
-            log.warn("Applicant: " + applicantDto.getFullName() + " has already submitted a request for faculty: " + facultyDto.getName());
+            log.warn("Applicant: " + applicantDto.getFullName() + " has already submitted a request for faculty: "
+                    + facultyDto.getName());
             throw new RequestAlreadySubmittedException();
         }
         EnrollmentRequest request = requestMapper.mapToEntity(enrollmentRequestDTO);
@@ -149,4 +150,24 @@ public class FacultyService {
             throw new IllegalArgumentException();
         }
     }
+
+    @Transactional
+    public void calculateEligibility(Long id) throws NoSuchFacultyException {
+        FacultyDto facultyDto = this.getById(id);
+        int total = facultyDto.getTotalPlaces();
+        int budget = facultyDto.getBudgetPlaces();
+        List<EnrollmentRequestDto> allRequests = requestService.getAllForFacultyId(id);
+        allRequests.forEach(request-> requestService.updatePoints(request, request.getId(),
+                facultyDto.getSubjects().stream().map(SubjectDto::getName).collect(Collectors.toSet())));
+        List<EnrollmentRequestDto> allSorted = allRequests.stream().sorted(Comparator.comparing(EnrollmentRequestDto::getPoints).reversed())
+                .collect(Collectors.toList());
+        List<EnrollmentRequestDto> eligibleRequests = allSorted.subList(0, total);
+        List<EnrollmentRequestDto> eligibleForBudget = eligibleRequests.subList(0, budget);
+        List<EnrollmentRequestDto> eligibleForContract = eligibleRequests.subList(budget, eligibleRequests.size());
+        eligibleForBudget.forEach(request -> requestService.editStatus(Status.BUDGET, request.getId()));
+        eligibleForContract.forEach(request -> requestService.editStatus(Status.CONTRACT, request.getId()));
+        allSorted.removeAll(eligibleRequests);
+        allSorted.forEach(request->  requestService.editStatus(Status.REJECTED, request.getId()));
+    }
+
 }

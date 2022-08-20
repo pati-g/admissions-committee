@@ -61,10 +61,28 @@
                 </div>
             </div>
             <br><br>
-            <h6 th:text="#{request.verify.if}">
-                Verify if candidate is eligible for enrollment and choose type of enrollment (budget or contract)</h6>
-
-            <!--            <a class="btn btn-primary" th:href="" th:value="#{statement.generate}"></a>-->
+            <div th:if="${request.tempStatus} != null">
+            <h6 th:text="#{request.suggested.status}">
+                Suggested enrollment status based on candidate's score: </h6>
+            <p class="align-middle text-center" th:switch="${request.tempStatus.name}">
+                <span class="bg-success rounded-pill p-2" th:case="'BUDGET'"
+                      th:text="#{budget}">Accepted  for budget place</span>
+                <span class="bg-success rounded-pill p-2" th:case="'CONTRACT'"
+                      th:text="#{contract}">Accepted for contract place</span>
+                <span class="bg-danger rounded-pill p-2" th:case="'REJECTED'"
+                      th:text="#{rejected}">Rejected</span>
+            </p>
+            </div><br>
+                <form th:action="@{/request/{id}/submit-statement(id=${request.getId})}">
+                        <label for="status" th:text="#{confirm.status}">Confirm applicant's status:</label>
+                        <select aria-label="Select subject from list" class="form-select" id="status"
+                        th:field="${request.status}" name="status">
+                    <option th:each="status:${T(com.patrycjagalant.admissionscommittee.entity.Status).values()}"
+                            th:text="${status}"
+                            th:value="${status}"></option>
+                </select>
+            <input class="btn btn-primary" type="submit" th:value="#{statement.submit}">
+            </form>
         </div>
     </div>
 </div>

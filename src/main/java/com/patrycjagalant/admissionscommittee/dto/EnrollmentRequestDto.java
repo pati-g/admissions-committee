@@ -35,4 +35,6 @@ public class EnrollmentRequestDto {
 
     @NotBlank
     private Status status = Status.PENDING;
+
+    private Status tempStatus = Status.PENDING;
 }

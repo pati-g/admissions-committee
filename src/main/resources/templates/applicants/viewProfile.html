@@ -109,7 +109,7 @@
                                 <th th:text="#{request.date}">Requested on</th>
                                 <th th:text="#{request.status}">Current status</th>
                                 <th sec:authorize="hasRole('ROLE_ADMIN')"
-                                    th:text="#{request.statement}">Generate statement
+                                    th:text="#{statement.preview}">Preview statement
                                 </th>
                             </tr>
                             </thead>
@@ -131,7 +131,7 @@
                                 </td>
                                 <td><a class="btn btn-success" role="button" sec:authorize="hasRole('ROLE_ADMIN')"
                                        th:href="@{/request/{id}/statement(id = ${request.id})}"
-                                       th:text="#{request.statement}">Generate statement</a>
+                                       th:text="#{statement.preview}">Preview statement</a>
                                 </td>
                             </tr>
                             </tbody>

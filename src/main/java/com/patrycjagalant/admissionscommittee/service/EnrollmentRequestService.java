@@ -3,19 +3,16 @@ package com.patrycjagalant.admissionscommittee.service;
 import com.patrycjagalant.admissionscommittee.dto.*;
 import com.patrycjagalant.admissionscommittee.dto.other.RequestWithNamesDto;
 import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
+import com.patrycjagalant.admissionscommittee.entity.Status;
 import com.patrycjagalant.admissionscommittee.entity.Subject;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchRequestException;
 import com.patrycjagalant.admissionscommittee.repository.EnrollmentRequestRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.EnrollmentRequestMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -106,7 +103,7 @@ public class EnrollmentRequestService {
     public void updatePoints(EnrollmentRequestDto requestDto, Long id, Set<String> relevantSubjects) {
         ApplicantDto applicantDto = requestDto.getApplicant();
         List<ScoreDto> applicantScores = applicantDto.getScores();
-        if (applicantScores == null || applicantScores.isEmpty()) {
+        if (applicantScores == null) {
             throw new RuntimeException();
         }
         Integer averageResult = getAverageResult(relevantSubjects, applicantScores);
@@ -128,5 +125,24 @@ public class EnrollmentRequestService {
     public List<EnrollmentRequestDto> getAllForFacultyId(Long id) {
         List<EnrollmentRequest> requests = enrollmentRequestRepository.findByFacultyId(id);
         return requests.stream().map(mapper::mapToDto).collect(Collectors.toList());
+    }
+
+    public List<EnrollmentRequestDto> getEligibleRequestsForFaculty(Pageable pageable, Long facultyId) {
+        Page<EnrollmentRequest> requestsForFaculty = enrollmentRequestRepository
+                .findByFacultyId(facultyId, pageable);
+        return mapper.mapToDto(requestsForFaculty.getContent());
+    }
+@Transactional
+    public void editStatus(Status status, long requestId) {
+        EnrollmentRequest request = enrollmentRequestRepository.findById(requestId).orElseThrow();
+        request.setTempStatus(status);
+        enrollmentRequestRepository.save(request);
+    }
+
+    @Transactional
+    public void submitStatement(long id, Status status) {
+        EnrollmentRequest request = enrollmentRequestRepository.findById(id).orElseThrow();
+        request.setStatus(status);
+        enrollmentRequestRepository.save(request);
     }
 }

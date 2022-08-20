@@ -43,4 +43,8 @@ public class EnrollmentRequest {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status = Status.PENDING;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "temp_status")
+    private Status tempStatus = Status.PENDING;
 }

@@ -102,6 +102,19 @@ public class FacultyController {
         return REDIRECT_FACULTIES;
     }
 
+    @RequestMapping(value = "/process-requests/{id}", method = {RequestMethod.GET, RequestMethod.POST})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public String processRequests(@PathVariable String id,
+                                  Model model) throws NoSuchFacultyException {
+        if (!ParamValidator.isNumeric(id)) {
+            model.addAttribute(ERROR, "Something went wrong, please try again");
+        } else {
+            facultyService.calculateEligibility(Long.parseLong(id));
+            model.addAttribute(MESSAGE, "Success!");
+        }
+        return REDIRECT_FACULTIES + "/" + id;
+    }
+
     // Manage faculties:
     @GetMapping("/new")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -148,7 +161,7 @@ public class FacultyController {
             return REDIRECT_NEW_FACULTY;
         }
         facultyService.editFaculty(facultyDTO, id);
-        return REDIRECT_FACULTIES;
+        return REDIRECT_FACULTIES + "/" + id;
     }
 
     @RequestMapping(value = "/delete/{id}", method = {RequestMethod.DELETE, RequestMethod.POST})

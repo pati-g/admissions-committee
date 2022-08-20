@@ -5,6 +5,7 @@ import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
 import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.dto.other.RequestWithNamesDto;
+import com.patrycjagalant.admissionscommittee.entity.Status;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchRequestException;
 import com.patrycjagalant.admissionscommittee.service.EnrollmentRequestService;
 import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
@@ -81,15 +82,16 @@ public class RequestController {
         }
     }
 
-    @PostMapping("/{id}/submit-statement")
+    @RequestMapping(value = "/{id}/submit-statement", method = {RequestMethod.PUT, RequestMethod.GET})
     public String submitStatement(@PathVariable String id,
-                                  Model model) throws NoSuchRequestException {
+                                  @RequestParam Status status,
+                                  Model model) {
         if (!ParamValidator.isNumeric(id)) {
             model.addAttribute(ERROR, "Incorrect request ID, please try again");
             return "requests/allRequests";
         } else {
-            requestService.deleteRequest(Long.parseLong(id));
-            return REDIRECT_EDIT_APPLICANT;
+            requestService.submitStatement(Long.parseLong(id), status);
+            return "redirect:/request/" + id + "/statement";
         }
     }
 }

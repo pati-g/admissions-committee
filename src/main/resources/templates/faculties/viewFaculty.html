@@ -124,6 +124,10 @@
                        th:method="post" th:text="#{apply}">Apply</a>
                 </div>
             </form>
+            <a class="btn btn-success" sec:authorize="hasRole('ROLE_ADMIN')"
+               th:href="@{/faculties/process-requests/{id}(id = ${facultyDTO.getId})}"
+               th:method="post" th:text="#{process.requests}">Process requests</a>
+            <!--               onClick="return confirm(th:text='#{message.request.processing}')"-->
         </div>
     </div>
 </div>

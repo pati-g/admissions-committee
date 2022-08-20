@@ -39,6 +39,7 @@ public class EnrollmentRequestMapper {
                 .points(enrollmentRequest.getPoints())
                 .registrationDate(enrollmentRequest.getRegistrationDate() != null ? enrollmentRequest.getRegistrationDate() : null)
                 .status(enrollmentRequest.getStatus())
+                .tempStatus(enrollmentRequest.getTempStatus())
                 .applicant(applicantDto)
                 .faculty(facultyDto).build();
     }
@@ -54,6 +55,7 @@ public class EnrollmentRequestMapper {
                 .points(enrollmentRequestDTO.getPoints())
                 .registrationDate(enrollmentRequestDTO.getRegistrationDate())
                 .status(enrollmentRequestDTO.getStatus())
+                .tempStatus(enrollmentRequestDTO.getTempStatus())
                 .applicant(applicantMapper.mapToEntityWithId(enrollmentRequestDTO.getApplicant()))
                 .faculty(facultyMapper.mapToEntityWithId(enrollmentRequestDTO.getFaculty())).build();
     }
@@ -72,6 +74,9 @@ public class EnrollmentRequestMapper {
         }
         if (enrollmentRequestDTO.getPoints() != null) {
             enrollmentRequest.setPoints(enrollmentRequestDTO.getPoints());
+        }
+        if(!enrollmentRequestDTO.getTempStatus().equals(Status.PENDING)) {
+            enrollmentRequest.setTempStatus(enrollmentRequestDTO.getTempStatus());
         }
     }
 
