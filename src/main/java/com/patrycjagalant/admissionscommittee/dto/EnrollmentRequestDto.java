@@ -2,12 +2,10 @@ package com.patrycjagalant.admissionscommittee.dto;
 
 import com.patrycjagalant.admissionscommittee.entity.Status;
 import lombok.*;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,7 +24,7 @@ public class EnrollmentRequestDto {
 
     @NotBlank
     @EqualsAndHashCode.Exclude
-    private LocalDateTime registrationDate;
+    private String registrationDate;
 
     @NotNull(message = "Please provide a valid number of points (only integers are allowed)")
     @Min(value = 0, message = "Minimum points value is 0")

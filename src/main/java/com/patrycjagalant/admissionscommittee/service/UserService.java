@@ -70,8 +70,8 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public boolean changeBlockedStatus(Long id) {
-        User user = userRepository.getReferenceById(id);
+    public boolean changeBlockedStatus(String username) {
+        User user = userRepository.findByUsername(username);
         user.setBlocked(!user.isBlocked());
         userRepository.save(user);
         return user.isBlocked();
@@ -79,13 +79,6 @@ public class UserService implements UserDetailsService {
 
     private boolean usernameExists(String username) {
         return userRepository.findByUsername(username) != null;
-    }
-
-    public UserDto findByEmail(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null)
-            return null;
-        return mapper.mapToDto(user);
     }
 
     public UserDto findByUsername(String username) {

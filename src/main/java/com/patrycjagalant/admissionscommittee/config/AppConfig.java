@@ -33,5 +33,4 @@ public class AppConfig {
     public static PasswordEncoder passwordEncoder() {
         return new Argon2PasswordEncoder();
     }
-
 }

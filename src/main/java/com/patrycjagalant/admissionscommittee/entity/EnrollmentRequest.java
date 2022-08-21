@@ -1,7 +1,7 @@
 package com.patrycjagalant.admissionscommittee.entity;
 
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -33,8 +33,8 @@ public class EnrollmentRequest {
     @ToString.Exclude
     private Faculty faculty;
 
-    @CreationTimestamp
     @Column(name = "requested_on")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private LocalDateTime registrationDate;
 
     @Column(name = "points", columnDefinition = "integer default -1")

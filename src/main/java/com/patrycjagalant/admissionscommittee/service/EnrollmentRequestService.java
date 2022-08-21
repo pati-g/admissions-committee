@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,8 +28,9 @@ public class EnrollmentRequestService {
     private final EnrollmentRequestRepository enrollmentRequestRepository;
     private final EnrollmentRequestMapper mapper;
 
-    public void saveRequest(EnrollmentRequestDto requestDto) {
+    public void saveRequest(EnrollmentRequestDto requestDto, LocalDateTime dateTime) {
         EnrollmentRequest request = mapper.mapToEntity(requestDto);
+        request.setRegistrationDate(dateTime);
         Set<String> subjects = requestDto.getFaculty().getSubjects().stream()
                 .map(SubjectDto::getName).collect(Collectors.toSet());
         EnrollmentRequest savedRequest = enrollmentRequestRepository.save(request);
@@ -45,7 +49,10 @@ public class EnrollmentRequestService {
     // Read requests for one applicant
     public List<EnrollmentRequestDto> getAllForApplicantId(Long applicantId) {
         List<EnrollmentRequest> requests = enrollmentRequestRepository.findByApplicantId(applicantId);
-        return requests.stream().map(mapper::mapToDto).collect(Collectors.toList());
+        return requests.stream().map(mapper::mapToDto)
+                .sorted(Comparator.comparing(EnrollmentRequestDto::getRegistrationDate)
+                        .thenComparing(EnrollmentRequestDto::getPoints).reversed())
+                .collect(Collectors.toList());
     }
 
     public List<ScoreDto> getRelevantScoresForApplicant(ApplicantDto applicantDto, FacultyDto facultyDto) {
@@ -85,13 +92,6 @@ public class EnrollmentRequestService {
                 PageRequest.of(page - 1, size, Sort.by(sortDirection, sortBy)), requestsTotal);
     }
 
-    @Transactional
-    public void editRequest(EnrollmentRequestDto requestDTO, Long id) {
-        EnrollmentRequest request = enrollmentRequestRepository.getReferenceById(id);
-        mapper.mapToEntity(request, requestDTO);
-        enrollmentRequestRepository.save(request);
-    }
-
     public void deleteRequest(Long id) throws NoSuchRequestException {
         if (enrollmentRequestRepository.findById(id).isPresent()) {
             enrollmentRequestRepository.deleteById(id);
@@ -124,13 +124,9 @@ public class EnrollmentRequestService {
 
     public List<EnrollmentRequestDto> getAllForFacultyId(Long id) {
         List<EnrollmentRequest> requests = enrollmentRequestRepository.findByFacultyId(id);
-        return requests.stream().map(mapper::mapToDto).collect(Collectors.toList());
-    }
-
-    public List<EnrollmentRequestDto> getEligibleRequestsForFaculty(Pageable pageable, Long facultyId) {
-        Page<EnrollmentRequest> requestsForFaculty = enrollmentRequestRepository
-                .findByFacultyId(facultyId, pageable);
-        return mapper.mapToDto(requestsForFaculty.getContent());
+        return requests.stream().map(mapper::mapToDto)
+                .sorted(Comparator.comparing(EnrollmentRequestDto::getPoints).reversed())
+                .collect(Collectors.toList());
     }
 @Transactional
     public void editStatus(Status status, long requestId) {

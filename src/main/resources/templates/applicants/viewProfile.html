@@ -9,6 +9,12 @@
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
             <h1 class="py-3 text-center" th:text="#{view.profile}">View profile</h1>
+            <div class ="p-3" sec:authorize="hasRole('ROLE_ADMIN')">
+                <span th:text="#{current.account.status}">Current account status: </span>
+                <span class="mx-3 fw-bold" th:text="${userDTO.isBlocked} ? #{blocked} : #{active}"></span>
+                <a class="btn btn-outline-light p-2" th:href="@{/user/{id}/block (id = ${userDTO.getId})}"
+                   th:text="${userDTO.isBlocked} ? #{unblock} : #{block}">Block/unblock</a>
+            </div>
             <form class="text-dark" method="get" th:object="${userDTO}">
                 <div class="form-floating mb-3">
                     <input class="form-control" disabled id="username" readonly th:value="*{username}"

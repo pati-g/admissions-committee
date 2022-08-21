@@ -85,7 +85,6 @@ public class FacultyController {
             try {
                 requestDto.setApplicant(applicantService.getByUserId(user.getId()).orElseThrow(NoSuchApplicantException::new));
                 requestDto.setFaculty(facultyService.getById(id));
-                requestDto.setRegistrationDate(LocalDateTime.now());
                 facultyService.addNewRequest(requestDto);
                 return "redirect:/applicant/" + user.getUsername();
             } catch (NoSuchApplicantException appExc) {

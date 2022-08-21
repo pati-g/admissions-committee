@@ -16,6 +16,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +43,7 @@ public class EnrollmentRequestMapper {
         return EnrollmentRequestDto.builder()
                 .id(enrollmentRequest.getId())
                 .points(enrollmentRequest.getPoints())
-                .registrationDate(enrollmentRequest.getRegistrationDate() != null ? enrollmentRequest.getRegistrationDate() : null)
+                .registrationDate(enrollmentRequest.getRegistrationDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")))
                 .status(enrollmentRequest.getStatus())
                 .tempStatus(enrollmentRequest.getTempStatus())
                 .applicant(applicantDto)
@@ -53,7 +59,6 @@ public class EnrollmentRequestMapper {
         log.debug("EnrollmentRequest Dto before mapping: {}", enrollmentRequestDTO);
         return EnrollmentRequest.builder()
                 .points(enrollmentRequestDTO.getPoints())
-                .registrationDate(enrollmentRequestDTO.getRegistrationDate())
                 .status(enrollmentRequestDTO.getStatus())
                 .tempStatus(enrollmentRequestDTO.getTempStatus())
                 .applicant(applicantMapper.mapToEntityWithId(enrollmentRequestDTO.getApplicant()))

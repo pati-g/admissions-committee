@@ -56,7 +56,7 @@ CREATE TABLE Enrollment_Requests (
 ID bigint PRIMARY KEY AUTO_INCREMENT,
 applicant_ID bigint NOT NULL,
 faculty_ID bigint NOT NULL,
-requested_on timestamp,
+requested_on timestamp DEFAULT CURRENT_TIMESTAMP,
 points int DEFAULT -1,
 status varchar(10) DEFAULT 'PENDING',
 temp_status varchar(10) DEFAULT 'PENDING',

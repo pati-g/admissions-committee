@@ -9,7 +9,6 @@
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
             <h1 class="py-3 text-center" th:text="#{edit.profile}">Edit profile</h1>
-            <br>
             <form class="text-dark" th:action="@{/applicant/{username}/edit(username = ${username})}"
                   th:method="put" th:object="${applicantDTO}">
                 <div class="row">

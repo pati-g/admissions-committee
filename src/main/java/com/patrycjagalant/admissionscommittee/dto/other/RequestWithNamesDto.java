@@ -2,6 +2,7 @@ package com.patrycjagalant.admissionscommittee.dto.other;
 
 import com.patrycjagalant.admissionscommittee.entity.Status;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +20,7 @@ public class RequestWithNamesDto {
     private String faculty;
 
     @EqualsAndHashCode.Exclude
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime date;
 
     private Integer points;

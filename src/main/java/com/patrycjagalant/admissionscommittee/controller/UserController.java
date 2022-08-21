@@ -5,9 +5,8 @@ import com.patrycjagalant.admissionscommittee.dto.other.UserDtoForEditing;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchUserException;
 import com.patrycjagalant.admissionscommittee.exceptions.UserAlreadyExistException;
 import com.patrycjagalant.admissionscommittee.service.UserService;
-import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
-import groovy.util.logging.Slf4j;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -85,20 +84,18 @@ public class UserController {
         return REDIRECT_HOME;
     }
 
-    @PutMapping("/{id}/block")
+    @RequestMapping(value = "/{username}/block", method={RequestMethod.GET, RequestMethod.PUT})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String changeApplicantBlockedStatus(@PathVariable String id, Model model) {
-        String msg = "Incorrect ID: " + id;
-        if (ParamValidator.isNumeric(id)) {
-            boolean isBlocked = userService.changeBlockedStatus(Long.parseLong(id));
+    public String changeApplicantBlockedStatus(@PathVariable String username, Model model) {
+        String msg;
+            boolean isBlocked = userService.changeBlockedStatus(username);
             if (isBlocked) {
                 msg = "Applicant has been blocked";
             } else {
                 msg = "Applicant has been unblocked";
             }
-        }
         model.addAttribute(MESSAGE, msg);
-        return REDIRECT_APPLICANT_ALL;
+        return "redirect:/applicant/" + username;
     }
 
 }

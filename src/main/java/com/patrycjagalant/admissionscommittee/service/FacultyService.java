@@ -17,10 +17,12 @@ import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
 import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.asm.Advice;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -108,7 +110,7 @@ public class FacultyService {
         applicantService.addRequest(applicantDto, request);
         Faculty faculty = facultyRepository.findById(facultyDto.getId()).orElseThrow(NoSuchFacultyException::new);
         faculty.getRequests().add(request);
-        requestService.saveRequest(enrollmentRequestDTO);
+        requestService.saveRequest(enrollmentRequestDTO, LocalDateTime.now());
     }
 
     @Transactional
