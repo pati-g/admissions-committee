@@ -39,7 +39,7 @@ public class UserMapper {
         log.debug("User entity: {} and DTO: {} before mapping", user, userDto);
         String email = userDto.getEmail();
         String password = userDto.getPassword();
-        if (!email.isBlank()) {
+        if (email != null && !email.isBlank()) {
             user.setEmail(email);
         }
         if (password != null && !password.isBlank()) {

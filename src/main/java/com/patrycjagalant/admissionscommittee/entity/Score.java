@@ -13,11 +13,11 @@ import javax.persistence.*;
 @Builder
 @Table(name = "scores", indexes = {@Index(name = "applicant_ID", columnList = "applicant_ID")})
 public class Score {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "applicant_ID")

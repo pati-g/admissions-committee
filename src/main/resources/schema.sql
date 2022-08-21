@@ -1,7 +1,7 @@
 --DROP DATABASE IF EXISTS admissions_mgmt;
 --CREATE DATABASE admissions_mgmt;
 --USE admissions_mgmt;
-DROP TABLE IF EXISTS Users, Applicants, Faculties, Scores, Registrations, Statements;
+DROP TABLE IF EXISTS Users, Applicants, Faculties, Scores, Enrollment_Requests, Subjects, Faculties_Subjects, Statements;
 CREATE TABLE Users (
 ID bigint PRIMARY KEY AUTO_INCREMENT,
 username varchar(50) NOT NULL UNIQUE,

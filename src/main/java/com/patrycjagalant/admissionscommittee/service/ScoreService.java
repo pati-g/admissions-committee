@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,19 +38,6 @@ public class ScoreService {
             throw new ScoreAlreadyInListException();
         }
         newScore.setApplicant(applicant);
-    }
-
-    public void addListOfScores(List<ScoreDto> scoreDtos) {
-        List<Score> scores = new ArrayList<>();
-        for (ScoreDto scoreDTO : scoreDtos) {
-            scores.add(mapper.mapToEntity(scoreDTO));
-        }
-        scoreRepository.saveAll(scores);
-    }
-
-    public ScoreDto getScoreById(Long id) {
-        Score score = scoreRepository.getReferenceById(id);
-        return mapper.mapToDto(score);
     }
 
     public List<ScoreDto> getAllForApplicantId(Long applicantID) {

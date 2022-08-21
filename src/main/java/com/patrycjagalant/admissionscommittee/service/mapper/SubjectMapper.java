@@ -27,13 +27,6 @@ public class SubjectMapper {
          return dto;
     }
 
-    public Subject mapToEntity (SubjectDto subjectDto) {
-        log.debug("Subject DTO before mapping: {}", subjectDto);
-        return Subject.builder()
-                .name(subjectDto.getName())
-                .build();
-    }
-
     public Set<SubjectDto> mapToDto (Set<Subject> subjects) {
         log.debug("Mapping a set of subjects to DTO");
         return subjects.stream().map(this::mapToDto).collect(Collectors.toSet());

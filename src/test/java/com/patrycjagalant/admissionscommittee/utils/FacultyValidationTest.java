@@ -1,4 +1,4 @@
-package com.patrycjagalant.admissionscommittee.service;
+package com.patrycjagalant.admissionscommittee.utils;
 
 //
 //@RunWith(SpringRunner.class)

@@ -42,10 +42,15 @@ public class FacultyMapper {
         Integer budget = facultyDTO.getBudgetPlaces();
         Integer total = facultyDTO.getTotalPlaces();
 
-        if (name != null && !name.isEmpty())
+        if (name != null && !name.isEmpty()) {
             faculty.setName(name);
-        faculty.setBudgetPlaces(budget);
-        faculty.setTotalPlaces(total);
+        }
+        if (budget != null) {
+            faculty.setBudgetPlaces(budget);
+        }
+        if (total != null) {
+            faculty.setTotalPlaces(total);
+        }
     }
 
     public Faculty mapToEntityWithId(FacultyDto facultyDto) {

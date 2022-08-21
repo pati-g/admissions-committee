@@ -13,7 +13,6 @@ import javax.validation.constraints.*;
 @Builder
 public class ScoreDto {
 
-
     private long id;
 
     @NotNull

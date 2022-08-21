@@ -81,6 +81,7 @@ public class FacultyService {
         }
     }
 
+    @Transactional
     public FacultyDto addFaculty(FacultyDto facultyDTO) {
         Faculty faculty = facultyMapper.mapToEntity(facultyDTO);
         return facultyMapper.mapToDto(facultyRepository.save(faculty));
