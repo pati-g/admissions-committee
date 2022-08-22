@@ -4,8 +4,6 @@ import com.patrycjagalant.admissionscommittee.annotations.Mapper;
 import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
 import com.patrycjagalant.admissionscommittee.entity.Faculty;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

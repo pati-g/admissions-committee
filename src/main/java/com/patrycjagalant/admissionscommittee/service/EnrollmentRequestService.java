@@ -10,7 +10,10 @@ import com.patrycjagalant.admissionscommittee.repository.EnrollmentRequestReposi
 import com.patrycjagalant.admissionscommittee.service.mapper.EnrollmentRequestMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 public class EnrollmentRequestService {
 
+    public static final String COULD_NOT_FIND_REQUEST = "Could not find enrollment request with ID: ";
     private final EnrollmentRequestRepository enrollmentRequestRepository;
     private final EnrollmentRequestMapper mapper;
 
@@ -92,23 +96,24 @@ public class EnrollmentRequestService {
                 PageRequest.of(page - 1, size, Sort.by(sortDirection, sortBy)), requestsTotal);
     }
 
-    public void deleteRequest(Long id) throws NoSuchRequestException {
+    public void deleteRequest(Long id) {
         if (enrollmentRequestRepository.findById(id).isPresent()) {
             enrollmentRequestRepository.deleteById(id);
         } else {
-            throw new NoSuchRequestException("Request not found, please try again.");
+            throw new NoSuchRequestException(COULD_NOT_FIND_REQUEST + id);
         }
     }
 
     public void updatePoints(EnrollmentRequestDto requestDto, Long id, Set<String> relevantSubjects) {
         ApplicantDto applicantDto = requestDto.getApplicant();
         List<ScoreDto> applicantScores = applicantDto.getScores();
-        if (applicantScores == null) {
-            throw new RuntimeException();
+        Integer averageResult = 0;
+        if (applicantScores != null && !applicantScores.isEmpty()) {
+        averageResult = getAverageResult(relevantSubjects, applicantScores);
         }
-        Integer averageResult = getAverageResult(relevantSubjects, applicantScores);
         requestDto.setPoints(averageResult);
-        EnrollmentRequest request = enrollmentRequestRepository.findById(id).orElseThrow();
+        EnrollmentRequest request = enrollmentRequestRepository.findById(id)
+                .orElseThrow(() -> new NoSuchRequestException(COULD_NOT_FIND_REQUEST + id));
         request.setPoints(averageResult);
         enrollmentRequestRepository.save(request);
     }
@@ -128,16 +133,20 @@ public class EnrollmentRequestService {
                 .sorted(Comparator.comparing(EnrollmentRequestDto::getPoints).reversed())
                 .collect(Collectors.toList());
     }
-@Transactional
+
+    @Transactional
     public void editStatus(Status status, long requestId) {
-        EnrollmentRequest request = enrollmentRequestRepository.findById(requestId).orElseThrow();
+        EnrollmentRequest request = enrollmentRequestRepository.findById(requestId)
+                .orElseThrow(() -> new NoSuchRequestException
+                        (COULD_NOT_FIND_REQUEST + requestId));
         request.setTempStatus(status);
         enrollmentRequestRepository.save(request);
     }
 
     @Transactional
     public void submitStatement(long id, Status status) {
-        EnrollmentRequest request = enrollmentRequestRepository.findById(id).orElseThrow();
+        EnrollmentRequest request = enrollmentRequestRepository.findById(id)
+                .orElseThrow(() -> new NoSuchRequestException(COULD_NOT_FIND_REQUEST + id));
         request.setStatus(status);
         enrollmentRequestRepository.save(request);
     }

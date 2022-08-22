@@ -1,13 +1,14 @@
 package com.patrycjagalant.admissionscommittee.service;
 
 import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
+import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.dto.UserDto;
 import com.patrycjagalant.admissionscommittee.entity.Applicant;
 import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
+import com.patrycjagalant.admissionscommittee.entity.Score;
 import com.patrycjagalant.admissionscommittee.entity.User;
 import com.patrycjagalant.admissionscommittee.exceptions.FileStorageException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
-import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchUserException;
 import com.patrycjagalant.admissionscommittee.repository.ApplicantRepository;
 import com.patrycjagalant.admissionscommittee.repository.UserRepository;
@@ -43,39 +44,39 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class ApplicantService {
-    @Value("${app.upload.dir:${user.home}}")
-    public String filesPathString;
     private final ApplicantRepository applicantRepository;
     private final ApplicantMapper applicantMapper;
     private final ScoreService scoreService;
     private final EnrollmentRequestService requestService;
     private final UserService userService;
     private final UserRepository userRepository;
+    @Value("${app.upload.dir:${user.home}}")
+    public String filesPathString;
 
     @Transactional
-    public void editApplicant(ApplicantDto applicantdto, Long userID) throws NoSuchUserException {
+    public void editApplicant(ApplicantDto applicantdto, Long userID) {
         UserDto userDto = userService.findById(userID);
-        if (userDto == null) {
-            throw new NoSuchUserException();
-        }
         applicantdto.setUserDetails(userDto);
         Applicant current = applicantRepository.findByUserId(userID).orElse(new Applicant());
         applicantMapper.mapToEntity(applicantdto, current);
-        current.setUser(userRepository.findById(userID).orElseThrow(NoSuchUserException::new));
+        current.setUser(userRepository.findById(userID)
+                .orElseThrow( () -> new NoSuchUserException("User could not be found.")));
         applicantRepository.save(current);
     }
 
     @Transactional
-    public void saveFile(MultipartFile file, String username) throws FileStorageException {
+    public void saveFile(MultipartFile file, String username) {
         if (file == null) {
+            log.warn("Error during uploading file - file is null");
             throw new FileStorageException("Error during uploading file");
         }
         Path uploadPath = Paths.get(filesPathString);
         if (!Files.exists(uploadPath)) {
             try {
                 Files.createDirectories(uploadPath);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (IOException exception) {
+                log.warn("Unable to create filesystem directory", exception);
+                throw new FileStorageException("Error during uploading file");
             }
         }
         UserDto userDto = userService.findByUsername(username);
@@ -90,6 +91,7 @@ public class ApplicantService {
             String pathString = filePath.toString();
             applicant.setCertificateUrl(pathString);
         } catch (IOException ioe) {
+            log.warn("Error while trying to get input stream of file: " + fileName, ioe);
             throw new FileStorageException("Could not save file: " + fileName);
         }
     }
@@ -99,14 +101,16 @@ public class ApplicantService {
         Optional<Applicant> applicantOptional = applicantRepository.findByUserId(userDto.getId());
         if (applicantOptional.isEmpty()) {
             log.warn("Applicant with username: " + username + " not found");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not find applicant with username: " + username + ", please try again");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Could not find applicant with username: "
+                    + username + ", please try again");
         }
         Applicant applicant = applicantOptional.get();
         FileSystemResource resource = new FileSystemResource(applicant.getCertificateUrl());
         MediaType mediaType = MediaTypeFactory.getMediaType(resource).orElse(MediaType.APPLICATION_OCTET_STREAM);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(mediaType);
-        ContentDisposition disposition = ContentDisposition.attachment().filename(Objects.requireNonNull(resource.getFilename())).build();
+        ContentDisposition disposition = ContentDisposition.attachment()
+                .filename(Objects.requireNonNull(resource.getFilename())).build();
         headers.setContentDisposition(disposition);
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
@@ -117,7 +121,7 @@ public class ApplicantService {
         return applicantRepository.save(newApplicant);
     }
 
-    public Optional<ApplicantDto> getByUserId(Long id) throws NoSuchApplicantException {
+    public Optional<ApplicantDto> getByUserId(Long id) {
         Optional<Applicant> applicant = applicantRepository.findByUserId(id);
         if (applicant.isEmpty()) {
             log.warn("Applicant with user ID: " + id + "not found.");
@@ -127,7 +131,7 @@ public class ApplicantService {
 
     private ApplicantDto getDto(Applicant applicant) {
         ApplicantDto applicantDto = null;
-        if(applicant != null) {
+        if (applicant != null) {
             applicantDto = applicantMapper.mapToDto(applicant);
             Long applicantID = applicantDto.getId();
             if (applicant.getScores() != null) {
@@ -160,20 +164,28 @@ public class ApplicantService {
                 PageRequest.of(page - 1, size, Sort.by(sortDirection, sortBy)), applicantsTotal);
     }
 
-    public void deleteApplicant(Long id) throws NoSuchFacultyException {
-        if (applicantRepository.findById(id).isPresent()) {
-            applicantRepository.deleteById(id);
-        } else {
-            throw new NoSuchFacultyException();
-        }
+    public void safeDeleteApplicant(Long id) {
+        Applicant applicant = applicantRepository.findById(id)
+                .orElseThrow(() -> new NoSuchApplicantException("Applicant with id: " + id + " not found."));
+        applicant.getUser().setEnabled(false);
     }
 
+//    public void deleteApplicantPermanently(Long id) {
+//        Applicant applicant = applicantRepository.findById(id)
+//                .orElseThrow(() -> new NoSuchApplicantException("Applicant with id: " + id + " not found."));
+//        User user = applicant.getUser();
+//        List<Score> scores = applicant.getScores();
+//        List<EnrollmentRequest> requests = applicant.getRequests();
+//        // Delete all above before deleting applicant
+//        applicantRepository.deleteById(id);
+//    }
+
     @Transactional
-    public void addRequest(ApplicantDto applicantDto, EnrollmentRequest request) throws NoSuchApplicantException {
+    public void addRequest(ApplicantDto applicantDto, EnrollmentRequest request) {
         Applicant applicant = applicantRepository
                 .findById(applicantDto.getId())
-                .orElseThrow(NoSuchApplicantException::new);
-
+                .orElseThrow(() -> new NoSuchApplicantException
+                        ("Applicant could not be found, please check if ID is correct."));
         applicant.getRequests().add(request);
     }
 }

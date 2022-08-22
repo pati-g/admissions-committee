@@ -5,7 +5,6 @@ import com.patrycjagalant.admissionscommittee.dto.UserDto;
 import com.patrycjagalant.admissionscommittee.dto.other.UserDtoForEditing;
 import com.patrycjagalant.admissionscommittee.entity.User;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 @Mapper

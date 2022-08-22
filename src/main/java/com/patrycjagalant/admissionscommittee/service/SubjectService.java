@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.patrycjagalant.admissionscommittee.utils.Constants.COULD_NOT_FIND_SUBJECT;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -40,15 +42,17 @@ public class SubjectService {
 
     public Subject getById(String id) {
         if (ParamValidator.isNumeric(id)) {
-            return subjectRepository.findById(Long.parseLong(id)).orElseThrow();
+            return subjectRepository.findById(Long.parseLong(id))
+                    .orElseThrow(() -> new IllegalArgumentException(COULD_NOT_FIND_SUBJECT+ id));
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(COULD_NOT_FIND_SUBJECT + id);
         }
     }
 
     public void deleteSubject(Long id) {
         // Check if subject belongs to any faculty - if so, remove connections before deleting
-        Subject subject = subjectRepository.findById(id).orElseThrow();
+        Subject subject = subjectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(COULD_NOT_FIND_SUBJECT + id));
         List<Faculty> faculties = subject.getFaculties();
         if (!faculties.isEmpty()) {
             faculties.clear();

@@ -62,29 +62,33 @@ public class FacultyController {
     public String viewFaculty(Model model, @PathVariable("id") String idString) {
         if (ParamValidator.isNumeric(idString)) {
             long id = Long.parseLong(idString);
-            try {
-                FacultyDto facultyDTO = facultyService.getById(id);
-                model.addAttribute(FACULTY_DTO, facultyDTO);
-                model.addAttribute("subjects", facultyDTO.getSubjects());
-                model.addAttribute("requests", facultyDTO.getRequests());
+//            try {
+                FacultyDto facultyDto = facultyService.getById(id);
+                model.addAttribute(FACULTY_DTO, facultyDto);
+                model.addAttribute("subjects", facultyDto.getSubjects());
+                model.addAttribute("requests", facultyDto.getRequests());
                 return "faculties/viewFaculty";
-            } catch (NoSuchFacultyException e) {
-                model.addAttribute("error", "Incorrect faculty ID, please try again.");
-                log.warn("Exception thrown: NoSuchFacultyException, message: " + e.getMessage());
-                return REDIRECT_FACULTIES;
-            }
+//            } catch (NoSuchFacultyException e) {
+//                model.addAttribute("error", "Incorrect faculty ID, please try again.");
+//                log.warn("Exception thrown: NoSuchFacultyException, message: " + e.getMessage());
+//                return REDIRECT_FACULTIES;
+//            }
         }
+        log.warn("Failed to load FacultyDto, requested ID is not numerical: " + idString);
         return REDIRECT_FACULTIES;
     }
 
     @RequestMapping(value = "/{id}/new-request", method = {RequestMethod.POST, RequestMethod.GET})
     public String newRequest(@PathVariable("id") String idString, @AuthenticationPrincipal User user, Model model) {
         if (ParamValidator.isNumeric(idString)) {
-            long id = Long.parseLong(idString);
+            long facultyId = Long.parseLong(idString);
             EnrollmentRequestDto requestDto = new EnrollmentRequestDto();
             try {
-                requestDto.setApplicant(applicantService.getByUserId(user.getId()).orElseThrow(NoSuchApplicantException::new));
-                requestDto.setFaculty(facultyService.getById(id));
+                Long userId = user.getId();
+                requestDto.setApplicant(applicantService.getByUserId(userId)
+                        .orElseThrow(() -> new NoSuchApplicantException("Could not find applicant with user ID: "
+                                + userId)));
+                requestDto.setFaculty(facultyService.getById(facultyId));
                 facultyService.addNewRequest(requestDto);
                 return "redirect:/applicant/" + user.getUsername();
             } catch (NoSuchApplicantException appExc) {
@@ -94,8 +98,10 @@ public class FacultyController {
                 log.warn("Faculty not found");
                 model.addAttribute(ERROR, "Could not find requested faculty, please try again");
             } catch (RequestAlreadySubmittedException e) {
-                model.addAttribute(ERROR, "Enrollment request for this applicant and faculty already exists.");            }
+                log.warn("Enrollment request already in system");
+                model.addAttribute(ERROR, "This enrollment request already exists.");            }
         } else {
+            log.warn("Faculty not found");
             model.addAttribute(ERROR, "Could not find requested faculty, please try again");
         }
         return REDIRECT_FACULTIES;
@@ -106,7 +112,8 @@ public class FacultyController {
     public String processRequests(@PathVariable String id,
                                   Model model) throws NoSuchFacultyException {
         if (!ParamValidator.isNumeric(id)) {
-            model.addAttribute(ERROR, "Something went wrong, please try again");
+            log.warn("Error while parsing ID, incorrect type: " + id);
+            model.addAttribute(ERROR, "Could not find enrollment request with ID: " + id);
         } else {
             facultyService.calculateEligibility(Long.parseLong(id));
             model.addAttribute(MESSAGE, "Success!");
@@ -124,7 +131,7 @@ public class FacultyController {
 
     @GetMapping("/{id}/edit")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String getEditFacultyForm(Model model, @PathVariable("id") String idString) throws NoSuchFacultyException {
+    public String getEditFacultyForm(Model model, @PathVariable("id") String idString) {
         if (ParamValidator.isNumeric(idString)) {
             long id = Long.parseLong(idString);
             FacultyDto facultyDTO = facultyService.getById(id);
@@ -155,7 +162,7 @@ public class FacultyController {
     @RequestMapping(value = "/{id}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String editFaculty(@Valid @ModelAttribute FacultyDto facultyDTO, BindingResult result,
-                              @PathVariable Long id) throws NoSuchFacultyException {
+                              @PathVariable Long id) {
         if (result.hasErrors()) {
             return REDIRECT_NEW_FACULTY;
         }
@@ -165,7 +172,7 @@ public class FacultyController {
 
     @RequestMapping(value = "/delete/{id}", method = {RequestMethod.DELETE, RequestMethod.POST})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String deleteFaculty(@PathVariable String id) throws NoSuchFacultyException {
+    public String deleteFaculty(@PathVariable String id)  {
         //Check if faculty is connected to any request - if so, delete is not possible until requests are handled
         if (ParamValidator.isNumeric(id)) {
             long idNumber = Long.parseLong(id);

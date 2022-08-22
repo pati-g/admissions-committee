@@ -1,9 +1,6 @@
 package com.patrycjagalant.admissionscommittee.exceptions;
 
-public class NoSuchApplicantException extends Exception{
-    public NoSuchApplicantException(){
-        super();
-    }
+public class NoSuchApplicantException extends RuntimeException{
     public NoSuchApplicantException(String message) {
         super(message);
     }

@@ -3,6 +3,7 @@ package com.patrycjagalant.admissionscommittee.service;
 import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.entity.Applicant;
 import com.patrycjagalant.admissionscommittee.entity.Score;
+import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.ScoreAlreadyInListException;
 import com.patrycjagalant.admissionscommittee.repository.ApplicantRepository;
 import com.patrycjagalant.admissionscommittee.repository.ScoreRepository;
@@ -30,7 +31,9 @@ public class ScoreService {
     }
 
     private void setApplicantToScoreEntity(ScoreDto scoreDTO, Score newScore) throws ScoreAlreadyInListException {
-        Applicant applicant = applicantRepository.findById(scoreDTO.getApplicantId()).orElseThrow();
+        Long applicantId = scoreDTO.getApplicantId();
+        Applicant applicant = applicantRepository.findById(applicantId)
+                .orElseThrow(() -> new NoSuchApplicantException("Could not find applicant with ID: " + applicantId));
         List<String> applicantScores = applicant.getScores().stream()
                 .map(Score::getSubjectName)
                 .collect(Collectors.toList());

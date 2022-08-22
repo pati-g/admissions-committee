@@ -1,7 +1,8 @@
 package com.patrycjagalant.admissionscommittee.exceptions;
 
-public class FileStorageException extends Exception {
-    public FileStorageException(String s) {
+public class FileStorageException extends RuntimeException {
+    public FileStorageException(String message) {
+        super(message);
 
     }
 }

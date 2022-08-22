@@ -8,8 +8,8 @@ import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
 import com.patrycjagalant.admissionscommittee.entity.Faculty;
 import com.patrycjagalant.admissionscommittee.entity.Status;
 import com.patrycjagalant.admissionscommittee.entity.Subject;
-import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
+import com.patrycjagalant.admissionscommittee.exceptions.NoSuchSubjectException;
 import com.patrycjagalant.admissionscommittee.exceptions.RequestAlreadySubmittedException;
 import com.patrycjagalant.admissionscommittee.repository.FacultyRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.EnrollmentRequestMapper;
@@ -60,8 +60,8 @@ public class FacultyService {
         return facultyMapper.mapToDto(faculty);
     }
 
-    public FacultyDto getById(Long id) throws NoSuchFacultyException {
-        Faculty faculty = facultyRepository.findById(id).orElseThrow(NoSuchFacultyException::new);
+    public FacultyDto getById(Long id) {
+        Faculty faculty = facultyRepository.findById(id).orElseThrow(() -> new NoSuchFacultyException(getMessageFacultyNotFound(id)));
         FacultyDto dto = facultyMapper.mapToDto(faculty);
         if (faculty.getSubjects() != null) {
             dto.setSubjects(subjectService.getAllForFaculty(faculty.getId()));
@@ -72,12 +72,19 @@ public class FacultyService {
         return dto;
     }
 
+    private String getMessageFacultyNotFound(Long id) {
+        return "Faculty with ID: " + id + " could not be found.";
+    }
+    private String getMessageIdNotNumerical(String id) {
+        return "Incorrect ID format: " + id + ", please make sure ID is numerical.";
+    }
+
     // Accessible only to admin:
-    public void deleteFaculty(Long id) throws NoSuchFacultyException {
+    public void deleteFaculty(Long id) {
         if (facultyRepository.findById(id).isPresent()) {
             facultyRepository.deleteById(id);
         } else {
-            throw new NoSuchFacultyException("Couldn't find faculty with id: " + id);
+            throw new NoSuchFacultyException(getMessageFacultyNotFound(id));
         }
     }
 
@@ -88,15 +95,16 @@ public class FacultyService {
     }
 
     @Transactional
-    public Faculty editFaculty(FacultyDto facultyDTO, Long id) throws NoSuchFacultyException {
-        Faculty currentFaculty = facultyRepository.findById(id).orElseThrow(NoSuchFacultyException::new);
+    public Faculty editFaculty(FacultyDto facultyDTO, Long id) {
+        Faculty currentFaculty = facultyRepository.findById(id)
+                .orElseThrow(() -> new NoSuchFacultyException(getMessageFacultyNotFound(id)));
         facultyMapper.mapToEntity(currentFaculty, facultyDTO);
         return currentFaculty;
     }
 
     @Transactional
     public void addNewRequest(EnrollmentRequestDto enrollmentRequestDTO)
-            throws NoSuchApplicantException, NoSuchFacultyException, RequestAlreadySubmittedException {
+           throws RequestAlreadySubmittedException {
         ApplicantDto applicantDto = enrollmentRequestDTO.getApplicant();
         FacultyDto facultyDto = enrollmentRequestDTO.getFaculty();
         if(applicantDto.getRequests()
@@ -109,23 +117,21 @@ public class FacultyService {
         }
         EnrollmentRequest request = requestMapper.mapToEntity(enrollmentRequestDTO);
         applicantService.addRequest(applicantDto, request);
-        Faculty faculty = facultyRepository.findById(facultyDto.getId()).orElseThrow(NoSuchFacultyException::new);
+        Faculty faculty = facultyRepository.findById(facultyDto.getId())
+                .orElseThrow(() -> new NoSuchFacultyException("Faculty could not be found"));
         faculty.getRequests().add(request);
         requestService.saveRequest(enrollmentRequestDTO, LocalDateTime.now());
     }
 
     @Transactional
     public void addSubjectToList(String facultyId, String subjectId) {
-        if (ParamValidator.isNumeric(facultyId) && ParamValidator.isNumeric(subjectId)) {
-            Subject subjectToBeAdded = subjectService.getById(subjectId);
-            Long id = Long.parseLong(facultyId);
-            Faculty faculty = facultyRepository.findById(id).orElseThrow();
-            Set<Subject> subjects = faculty.getSubjects();
-            subjects.add(subjectToBeAdded);
-            updateApplicantPointsForRequests(id, subjects);
-        } else {
-            throw new IllegalArgumentException();
-        }
+        verifyIsIdNumerical(facultyId, subjectId);
+        Subject subjectToBeAdded = subjectService.getById(subjectId);
+        Long id = Long.parseLong(facultyId);
+        Faculty faculty = facultyRepository.findById(id).orElseThrow();
+        Set<Subject> subjects = faculty.getSubjects();
+        subjects.add(subjectToBeAdded);
+        updateApplicantPointsForRequests(id, subjects);
     }
 
     private void updateApplicantPointsForRequests(Long id, Set<Subject> subjects) {
@@ -142,27 +148,35 @@ public class FacultyService {
 
     @Transactional
     public void deleteSubjectFromList(String facultyId, String subjectId) {
-        if (ParamValidator.isNumeric(facultyId) && ParamValidator.isNumeric(subjectId)) {
-            Subject subject = subjectService.getById(subjectId);
-            Long id = Long.parseLong(facultyId);
-            Faculty faculty = facultyRepository.findById(Long.parseLong(facultyId)).orElseThrow();
-            Set<Subject> subjects = faculty.getSubjects();
-            subjects.remove(subject);
-            updateApplicantPointsForRequests(id, subjects);
-        } else {
-            throw new IllegalArgumentException();
+        verifyIsIdNumerical(facultyId, subjectId);
+
+        Subject subject = subjectService.getById(subjectId);
+        Long id = Long.parseLong(facultyId);
+        Faculty faculty = facultyRepository.findById(Long.parseLong(facultyId)).orElseThrow();
+        Set<Subject> subjects = faculty.getSubjects();
+        subjects.remove(subject);
+        updateApplicantPointsForRequests(id, subjects);
+    }
+
+    private void verifyIsIdNumerical(String facultyId, String subjectId) {
+        if(!ParamValidator.isNumeric(facultyId)) {
+            throw new NoSuchFacultyException(getMessageIdNotNumerical(facultyId));
+        } else if (!ParamValidator.isNumeric(subjectId)) {
+            throw new NoSuchSubjectException(getMessageIdNotNumerical(subjectId));
         }
     }
 
     @Transactional
-    public void calculateEligibility(Long id) throws NoSuchFacultyException {
+    public void calculateEligibility(Long id) {
         FacultyDto facultyDto = this.getById(id);
         int total = facultyDto.getTotalPlaces();
         int budget = facultyDto.getBudgetPlaces();
         List<EnrollmentRequestDto> allRequests = requestService.getAllForFacultyId(id);
         allRequests.forEach(request-> requestService.updatePoints(request, request.getId(),
                 facultyDto.getSubjects().stream().map(SubjectDto::getName).collect(Collectors.toSet())));
-        List<EnrollmentRequestDto> allSorted = allRequests.stream().sorted(Comparator.comparing(EnrollmentRequestDto::getPoints).reversed())
+        List<EnrollmentRequestDto> allSorted = allRequests
+                .stream()
+                .sorted(Comparator.comparing(EnrollmentRequestDto::getPoints).reversed())
                 .collect(Collectors.toList());
         List<EnrollmentRequestDto> eligibleRequests = allSorted.subList(0, total);
         List<EnrollmentRequestDto> eligibleForBudget = eligibleRequests.subList(0, budget);

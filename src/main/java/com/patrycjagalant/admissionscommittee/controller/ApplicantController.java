@@ -44,8 +44,7 @@ public class ApplicantController {
 
     @GetMapping("/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
-    public String viewAccountAndProfile(Model model, @PathVariable("username") String username)
-            throws NoSuchApplicantException {
+    public String viewAccountAndProfile(Model model, @PathVariable("username") String username) {
         UserDto userDto = userService.findByUsername(username);
         if (userDto != null) {
             model.addAttribute(USER_DTO, userDto);
@@ -58,15 +57,15 @@ public class ApplicantController {
 
     @GetMapping("/{username}/edit")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
-    public String getProfileForm(Model model, @PathVariable("username") String username)
-            throws NoSuchApplicantException {
+    public String getProfileForm(Model model, @PathVariable("username") String username) {
         UserDto userDto = userService.findByUsername(username);
         if (userDto != null) {
             if (!model.containsAttribute("username")) {
                 model.addAttribute("username", userDto.getUsername());
                 Optional<ApplicantDto> applicantDto = applicantService.getByUserId(userDto.getId());
                 if (userDto.getRole().equals(Role.USER)) {
-                    addApplicantModel(model, applicantDto.orElse(new ApplicantDto(userDto, new ArrayList<>(), new ArrayList<>())));
+                    addApplicantModel(model, applicantDto
+                            .orElse(new ApplicantDto(userDto, new ArrayList<>(), new ArrayList<>())));
                 }
             }
             return APPLICANTS_EDIT_PROFILE;
@@ -79,7 +78,7 @@ public class ApplicantController {
     public String editProfile(@Valid @ModelAttribute ApplicantDto applicantDTO,
                               BindingResult result,
                               @PathVariable String username,
-                              RedirectAttributes redirectAttributes) throws NoSuchUserException {
+                              RedirectAttributes redirectAttributes) {
         UserDto userDto = userService.findByUsername(username);
         if (userDto == null) {
             redirectAttributes.addFlashAttribute(ERROR,
@@ -100,7 +99,7 @@ public class ApplicantController {
     @PostMapping("/save-certificate/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String saveCertificate(@ModelAttribute("file") MultipartFile file,
-                                  @PathVariable String username, Model model) throws FileStorageException {
+                                  @PathVariable String username, Model model) {
         boolean isValid = FileValidator.validate(file);
         if (!isValid) {
             return APPLICANTS_EDIT_PROFILE;
@@ -159,10 +158,10 @@ public class ApplicantController {
 
     @RequestMapping(value = "/{id}/delete", method = {RequestMethod.DELETE, RequestMethod.POST})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String deleteApplicant(@PathVariable String id, Model model) throws NoSuchFacultyException {
+    public String deleteApplicant(@PathVariable String id, Model model) {
         if (id.matches("(\\d)+")) {
             long idNumber = Long.parseLong(id);
-            applicantService.deleteApplicant(idNumber);
+            applicantService.safeDeleteApplicant(idNumber);
             model.addAttribute(MESSAGE, "Applicant " + idNumber + " has been deleted");
         } else {
             model.addAttribute("error", "Incorrect ID: " + id);

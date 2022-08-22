@@ -9,6 +9,9 @@
 <div layout:fragment="content">
     <div class="row h-100 justify-content-center align-items-center">
         <div class="col-10 col-md-8 col-lg-6">
+            <div class="alert alert-danger py-0" th:if="${errormsg} != null">
+                <p th:text="${error.message}">Error message</p>
+            </div>
             <h1 class="py-3 text-center" th:text="#{register.form}">Registration form</h1>
             <form class="text-dark" method="post" th:action="@{/user/register}" th:object="${user}">
                 <div class="alert alert-danger py-0" th:if="${#fields.hasErrors('*')}">
@@ -75,7 +78,7 @@
                     }
                 }
                 </script>
-                <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <div class="text-center"><input class="btn btn-primary" th:value="#{register}" type="submit"></div>
             </form>
         </div>

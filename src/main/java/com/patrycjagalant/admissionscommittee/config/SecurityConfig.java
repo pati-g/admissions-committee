@@ -64,8 +64,7 @@ public class SecurityConfig {
                 .clearAuthentication(true)
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/logout-success").permitAll();
-        // Remove code below after changing DB to MySQL!
-        http.csrf().disable().headers().frameOptions().disable();
+//        http.csrf().disable().headers().frameOptions().disable();
         return http.build();
     }
 }

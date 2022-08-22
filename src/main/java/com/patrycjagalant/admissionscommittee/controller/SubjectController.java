@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import static com.patrycjagalant.admissionscommittee.utils.Constants.REDIRECT_FACULTIES;
+import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 
 @RequiredArgsConstructor
 @Controller
@@ -25,9 +25,14 @@ public class SubjectController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String addSubject(@RequestParam String subjectName, Model model) {
         if (ParamValidator.isNameInvalid(subjectName)) {
+            log.warn("Invalid subject name: " + subjectName
+                    + ", must be between 2-150 characters long, only letters, spaces and '-' allowed");
+            model.addAttribute(ERROR, "Subject name must be between 2-150 characters long, " +
+                    "only letters, spaces and '-' allowed");
             return "/";
         }
         subjectService.addNewSubject(subjectName);
+        model.addAttribute(MESSAGE, "Subject: " + subjectName + " has been submitted");
         return REDIRECT_FACULTIES;
     }
 

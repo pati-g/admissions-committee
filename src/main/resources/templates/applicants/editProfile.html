@@ -77,12 +77,11 @@
             </form>
             <!--List of applicant's scores-->
             <h2 class="py-3 text-center" th:text="#{scores}">Scores</h2>
-            <p class="text-center text-light" th:if="${requests.isEmpty}" th:text="#{scores.list.is.empty}"></p>
             <div th:if="${requests == null} or ${requests.isEmpty}">
                 <h6 class="text-center" th:text="#{scores.list.is.empty}">
                     The list of scores is empty.</h6>
             </div>
-            <div th:if="${!scores.isEmpty}">
+            <div th:if="${scores != null && !scores.isEmpty}">
                 <table class="table table-hover table-light table-responsive">
                     <thead class="table-secondary fw-bold">
                     <th class="text-center" th:text="#{score.subject}">Subject Name</th>
@@ -150,12 +149,11 @@
 
             <!--List of applicant's requests and current status -->
             <h2 class="py-3 text-center" th:text="#{requests.list}">List of enrollment requests</h2>
-            <p class="text-center text-light" th:if="${requests.isEmpty}" th:text="#{requests.list.is.empty}"></p>
             <div th:if="${requests == null} or ${requests.isEmpty}">
                 <h6 class="text-center" th:text="#{requests.list.is.empty}">
                     The list of enrollment requests is empty.</h6>
             </div>
-            <div th:if="${!requests.isEmpty}">
+            <div th:if="${requests != null && !requests.isEmpty}">
                 <table class="table table-hover table-light table-responsive">
                     <thead class="table-secondary text-center fw-bold">
                     <th th:text="#{faculty.name}">Faculty Name</th>
@@ -205,7 +203,7 @@
             </div>
             <div class="text-center">
                 <a class="btn btn-primary" role="button"
-                   th:href="@{/applicant/{username}(username = ${userDTO.getUsername})}"
+                   th:href="@{/applicant/{username} (username = ${username})}"
                    th:text="#{go.to.view}">Go to the view page</a>
         </div>
     </div>

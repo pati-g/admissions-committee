@@ -2,6 +2,7 @@ package com.patrycjagalant.admissionscommittee.dto.other;
 
 import com.patrycjagalant.admissionscommittee.annotations.EmptyOrValid;
 import com.patrycjagalant.admissionscommittee.annotations.PasswordMatcher;
+import com.patrycjagalant.admissionscommittee.annotations.ValidEmail;
 import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
 
@@ -17,6 +18,7 @@ public class UserDtoForEditing {
     private String username;
 
     @EmptyOrValid
+    @ValidEmail
     private String email;
 
     @EmptyOrValid
