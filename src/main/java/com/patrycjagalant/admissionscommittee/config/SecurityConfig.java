@@ -64,7 +64,6 @@ public class SecurityConfig {
                 .clearAuthentication(true)
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/logout-success").permitAll();
-//        http.csrf().disable().headers().frameOptions().disable();
         return http.build();
     }
 }

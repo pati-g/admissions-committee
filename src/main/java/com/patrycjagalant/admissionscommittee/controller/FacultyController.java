@@ -62,17 +62,17 @@ public class FacultyController {
     public String viewFaculty(Model model, @PathVariable("id") String idString) {
         if (ParamValidator.isNumeric(idString)) {
             long id = Long.parseLong(idString);
-//            try {
+            try {
                 FacultyDto facultyDto = facultyService.getById(id);
                 model.addAttribute(FACULTY_DTO, facultyDto);
                 model.addAttribute("subjects", facultyDto.getSubjects());
                 model.addAttribute("requests", facultyDto.getRequests());
                 return "faculties/viewFaculty";
-//            } catch (NoSuchFacultyException e) {
-//                model.addAttribute("error", "Incorrect faculty ID, please try again.");
-//                log.warn("Exception thrown: NoSuchFacultyException, message: " + e.getMessage());
-//                return REDIRECT_FACULTIES;
-//            }
+            } catch (NoSuchFacultyException e) {
+                model.addAttribute("error", "Incorrect faculty ID, please try again.");
+                log.warn("Exception thrown: NoSuchFacultyException, message: " + e.getMessage());
+                return REDIRECT_FACULTIES;
+            }
         }
         log.warn("Failed to load FacultyDto, requested ID is not numerical: " + idString);
         return REDIRECT_FACULTIES;

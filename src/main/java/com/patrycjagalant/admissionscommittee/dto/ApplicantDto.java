@@ -17,24 +17,24 @@ public class ApplicantDto {
 
     private String fullName;
 
-    @NotBlank(message = "Please enter first name")
-    @Size(min = 2, max = 255, message = "Name should be between 2-255 characters long")
+    @NotBlank(message = "{validation.firstname.not.blank}")
+    @Size(min = 2, max = 255, message = "{validation.fname.size}")
     private String firstName;
 
-    @NotBlank(message = "Please enter last name")
-    @Size(min = 2, max = 255, message = "Name should be between 2-255 characters long")
+    @NotBlank(message = "{validation.lastname.not.blank}")
+    @Size(min = 2, max = 255, message = "{validation.lname.size}")
     private String lastName;
 
-    @NotBlank(message = "Please enter city name")
-    @Size(min = 2, max = 255, message = "Name should be between 2-255 characters long")
+    @NotBlank(message = "{validation.city.not.blank}")
+    @Size(min = 2, max = 255, message = "{validation.city.size}")
     private String city;
 
-    @NotBlank(message = "Please enter region name")
-    @Size(min = 2, max = 255, message = "Name should be between 2-255 characters long")
+    @NotBlank(message = "{validation.region.not.blank}")
+    @Size(min = 2, max = 255, message = "{validation.region.size}")
     private String region;
 
-    @NotBlank(message = "Please enter the name of educational institution")
-    @Size(min = 2, max = 255, message = "Name should be between 2-255 characters long")
+    @NotBlank(message = "{validation.edu.not.blank}")
+    @Size(min = 2, max = 255, message = "{validation.edu.size}")
     private String educationalInstitution;
 
     private UserDto userDetails;

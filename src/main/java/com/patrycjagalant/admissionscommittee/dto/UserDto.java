@@ -21,23 +21,22 @@ public class UserDto {
     @EqualsAndHashCode.Exclude
     private Long id;
 
-    @NotBlank(message = "Please provide username")
-    @Size(min = 2, max = 50, message = "Username should be between 2-50 characters long")
+    @NotBlank(message = "{validation.username.not.blank}")
+    @Size(min = 2, max = 50, message = "{validation.username.size}")
     @Pattern(regexp = "^[\\p{L}\\d_.-]{2,}$",
-            message = "Username can consist only of letters (upper- and lowercase), " +
-                    "numbers and '_', '-', '.' characters.")
+            message = "{validation.username.pattern}")
     private String username;
 
-    @NotNull
-    @ValidEmail(message = "Please provide a valid e-mail address")
+    @NotNull(message = "{validation.email}")
+    @ValidEmail(message = "{validation.email}")
     private String email;
 
-    @NotBlank(message = "Please enter password")
+    @NotBlank(message = "{validation.password.not.blank}")
     @ToStringExclude
-    @Size(min = 8, max = 127, message = "Password should be between 8-127 characters long")
+    @Size(min = 8, max = 127, message = "{validation.password.size}")
     private String password;
 
-    @NotBlank(message = "Please re-enter password")
+    @NotBlank(message = "{validation.password.repeat}")
     @ToStringExclude
     @Size(min = 8, max = 127)
     private String matchingPassword;

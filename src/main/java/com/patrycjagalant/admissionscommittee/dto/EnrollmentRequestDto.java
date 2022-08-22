@@ -26,9 +26,9 @@ public class EnrollmentRequestDto {
     @EqualsAndHashCode.Exclude
     private String registrationDate;
 
-    @NotNull(message = "Please provide a valid number of points (only integers are allowed)")
-    @Min(value = 0, message = "Minimum points value is 0")
-    @Max(value = 100, message = "Maximum points value is 100")
+    @NotNull(message = "{validation.points.not.null}")
+    @Min(value = 0, message = "{validation.points.min}")
+    @Max(value = 100, message = "{validation.points.max}")
     private Integer points = -1;
 
     @NotBlank

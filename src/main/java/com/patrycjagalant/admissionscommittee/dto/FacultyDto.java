@@ -15,18 +15,18 @@ public class FacultyDto {
     @EqualsAndHashCode.Exclude
     private Long id;
 
-    @NotBlank(message = "Please enter faculty name")
-    @Size(min = 2, max = 150, message = "Name should be between 2-150 characters long")
+    @NotBlank(message = "{validation.faculty.name.not.blank}")
+    @Size(min = 2, max = 150, message = "{validation.faculty.name.size}")
     private String name;
 
-    @NotNull(message = "Please enter the number of budget places")
-    @Min(value = 0, message = "Value can't be less than 0")
-    @Max(value = 1000, message = "Value can't be more than 1 000")
+    @NotNull(message = "{validation.faculty.budget.not.blank}")
+    @Min(value = 0, message = "{validation.faculty.min}")
+    @Max(value = 1000, message = "{validation.faculty.max}")
     private Integer budgetPlaces;
 
-    @NotNull(message = "Please enter the total number of places")
-    @Min(value = 0, message = "Value can't be less than 0")
-    @Max(value = 1000, message = "Value can't be more than 1 000")
+    @NotNull(message = "{validation.faculty.total.not.blank}")
+    @Min(value = 0, message = "{validation.faculty.min}")
+    @Max(value = 1000, message = "{validation.faculty.max}")
     private Integer totalPlaces;
 
     @EqualsAndHashCode.Exclude

@@ -15,8 +15,8 @@ public class SubjectDto {
     @EqualsAndHashCode.Exclude
     private long id;
 
-    @NotBlank(message = "Please enter subject name")
-    @Size(min = 2, max = 150, message = "Name should be between 2-150 characters long")
+    @NotBlank(message = "{validation.subject.name.not.blank}")
+    @Size(min = 2, max = 150, message = "{validation.subject.name.size}")
     private String name;
 
     @NotBlank

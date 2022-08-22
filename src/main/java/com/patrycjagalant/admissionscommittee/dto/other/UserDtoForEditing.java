@@ -17,15 +17,15 @@ public class UserDtoForEditing {
 
     private String username;
 
-    @EmptyOrValid
-    @ValidEmail
+    @EmptyOrValid(message = "{validation.email.not.blank}")
+    @ValidEmail(message = "{validation.email}")
     private String email;
 
-    @EmptyOrValid
+    @EmptyOrValid(message = "{validation.password.not.blank}")
     @ToStringExclude
     private String password;
 
-    @EmptyOrValid
+    @EmptyOrValid(message = "{validation.password.repeat}")
     @ToStringExclude
     private String matchingPassword;
 }
