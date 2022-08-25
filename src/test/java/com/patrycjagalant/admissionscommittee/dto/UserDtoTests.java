@@ -31,12 +31,33 @@ class UserDtoTests {
     }
 
     @Test
-    void whenFieldIsDifferentInstancesDontMatch() {
+    void whenFieldIsDifferent_ThenInstancesDontMatch() {
         assertThat(userDto).isNotEqualTo(new UserDto(null, "test", "test@user.com",
                 "12345678", "12345678", false, true, Role.USER, null))
                 .isNotEqualTo(new UserDto(null, "test_username", "test@user.com",
                 "12345678", "12345678", true, true, Role.USER, null))
                 .isNotEqualTo(new UserDto(null, "test_username", "test2@user.com",
                 "12345678", "12345678", false, true, Role.USER, null));
+    }
+
+    @Test
+    void whenSetFieldValue_ThenDtoValeIsChangedCorrectly() {
+        userDto.setUsername("new-name");
+        userDto.setEmail("new.email@user.com");
+        userDto.setPassword("0987654321");
+        userDto.setMatchingPassword("0987654321");
+        userDto.setBlocked(true);
+        userDto.setEnabled(false);
+        userDto.setRole(Role.ADMIN);
+        userDto.setApplicant(new ApplicantDto());
+
+        assertThat(userDto.getRole()).isEqualTo(Role.ADMIN);
+        assertThat(userDto.getEmail()).isEqualTo("new.email@user.com");
+        assertThat(userDto.getUsername()).isEqualTo("new-name");
+        assertThat(userDto.getPassword()).isEqualTo("0987654321");
+        assertThat(userDto.getMatchingPassword()).isEqualTo("0987654321");
+        assertThat(userDto.isBlocked()).isTrue();
+        assertThat(userDto.isEnabled()).isFalse();
+        assertThat(userDto.getApplicant()).isNotNull();
     }
 }

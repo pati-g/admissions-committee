@@ -13,6 +13,7 @@ import java.util.List;
 public class SubjectDto {
 
     @EqualsAndHashCode.Exclude
+    @Setter(AccessLevel.NONE)
     private long id;
 
     @NotBlank(message = "{validation.subject.name.not.blank}")

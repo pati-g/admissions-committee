@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 public class EnrollmentRequestDto {
 
     @EqualsAndHashCode.Exclude
+    @Setter(AccessLevel.NONE)
     private long id;
 
     @NotBlank

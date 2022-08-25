@@ -93,7 +93,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void editUser(UserDtoForEditing userDto) throws UserAlreadyExistException {
+    public User editUser(UserDtoForEditing userDto) throws UserAlreadyExistException {
         String password = userDto.getPassword();
         if (password != null && !password.isBlank()) {
             userDto.setPassword(passwordEncoder.encode(password));
@@ -108,6 +108,6 @@ public class UserService implements UserDetailsService {
                     + userDto.getEmail() + " already exists");
         }
         mapper.mapToEntity(userDto, user);
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 }

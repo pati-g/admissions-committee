@@ -15,10 +15,11 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @Data
 @Builder
-@PasswordMatcher
+@PasswordMatcher(message = "{validation.password.match}")
 public class UserDto {
 
     @EqualsAndHashCode.Exclude
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @NotBlank(message = "{validation.username.not.blank}")

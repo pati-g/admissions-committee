@@ -27,6 +27,9 @@ public class PasswordMatcherValidator implements ConstraintValidator<PasswordMat
             UserDtoForEditing user = (UserDtoForEditing) obj;
             String password = user.getPassword();
             String matchingPassword = user.getMatchingPassword();
+            if (password == null || matchingPassword == null) {
+                return true;
+            }
             isValid = password.equals(matchingPassword);
 
         }

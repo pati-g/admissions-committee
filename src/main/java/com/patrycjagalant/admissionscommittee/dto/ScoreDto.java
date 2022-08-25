@@ -1,9 +1,6 @@
 package com.patrycjagalant.admissionscommittee.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.*;
 
@@ -13,6 +10,8 @@ import javax.validation.constraints.*;
 @Builder
 public class ScoreDto {
 
+    @Setter(AccessLevel.NONE)
+    @EqualsAndHashCode.Exclude
     private long id;
 
     @NotNull
@@ -26,9 +25,4 @@ public class ScoreDto {
     @Min(value = 0, message = "{validation.subject.result.min}")
     @Max(value = 100, message = "{validation.subject.result.max}")
     private Integer result;
-
-    public ScoreDto(Long applicantId) {
-        this.applicantId = applicantId;
-    }
-
 }

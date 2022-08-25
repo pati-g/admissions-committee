@@ -19,6 +19,6 @@ public class FileValidator {
         return contentType.equalsIgnoreCase("image/png")
                 || contentType.equalsIgnoreCase("image/jpg")
                 || contentType.equalsIgnoreCase("image/jpeg")
-                || contentType.equalsIgnoreCase("pdf");
+                || contentType.equalsIgnoreCase("application/pdf");
     }
 }

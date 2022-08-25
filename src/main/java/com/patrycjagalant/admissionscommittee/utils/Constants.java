@@ -6,6 +6,7 @@ import lombok.experimental.UtilityClass;
 public class Constants {
     // Template paths
     public static final String EDIT_ACCOUNT = "editAccount";
+    public static final String ALL_REQUESTS = "requests/allRequests";
     public static final String REGISTER = "register";
     public static final String VIEW_PROFILE = "applicants/viewProfile";
     public static final String FACULTIES = "faculties/allFaculties";

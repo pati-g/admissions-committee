@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 @UtilityClass
 public class ParamValidator {
 
-    public static boolean isNumeric(String strNum) {
-        Pattern pattern = Pattern.compile("-?\\d+(\\d+)?");
+    public static boolean isIntegerOrLong(String strNum) {
+        Pattern pattern = Pattern.compile("-?\\d+");
         if (strNum == null) {
             return false;
         }
@@ -16,7 +16,7 @@ public class ParamValidator {
     }
 
     public static boolean isNameInvalid(String name) {
-        Pattern pattern = Pattern.compile("^[ \\p{L}\\d-]{2,150}$");
+        Pattern pattern = Pattern.compile("^[ \\p{L}-]{2,150}$");
         if (name == null) {
             return true;
         }

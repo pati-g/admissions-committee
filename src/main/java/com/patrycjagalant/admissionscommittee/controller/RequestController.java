@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -29,19 +30,22 @@ public class RequestController {
 
     public static final String INCORRECT_REQUEST = "Incorrect request ID, please try again";
     public static final String INCORRECT_REQUEST_ID = "Incorrect request ID: ";
+    public static final String REDIRECT_ALL_REQUESTS = "redirect:/request/all";
     private final EnrollmentRequestService requestService;
 
     @RequestMapping(value = "/{id}/delete", method = {RequestMethod.DELETE, RequestMethod.POST})
     public String deleteRequest(@PathVariable String id,
-                                Model model) {
-        if (!ParamValidator.isNumeric(id)) {
+                                RedirectAttributes model) {
+        if (!ParamValidator.isIntegerOrLong(id)) {
             log.warn(INCORRECT_REQUEST_ID + id);
             model.addAttribute(ERROR, INCORRECT_REQUEST);
-            return APPLICANTS_EDIT_PROFILE;
         } else {
             requestService.deleteRequest(Long.parseLong(id));
-            return REDIRECT_EDIT_APPLICANT;
+            if (model.containsAttribute("username")) {
+                return REDIRECT_EDIT_APPLICANT;
+            }
         }
+        return REDIRECT_ALL_REQUESTS;
     }
 
     @GetMapping("/all")
@@ -50,8 +54,8 @@ public class RequestController {
                                  @RequestParam(defaultValue = "5") String size,
                                  @RequestParam(defaultValue = "registrationDate") String sortBy,
                                  Sort.Direction sort, Model model) {
-        int pageNumber = ParamValidator.isNumeric(page) ? Math.max(Integer.parseInt(page), 1) : 1;
-        int sizeNumber = ParamValidator.isNumeric(size) ? Math.max(Integer.parseInt(size), 0) : 5;
+        int pageNumber = ParamValidator.isIntegerOrLong(page) ? Math.max(Integer.parseInt(page), 1) : 1;
+        int sizeNumber = ParamValidator.isIntegerOrLong(size) ? Math.max(Integer.parseInt(size), 0) : 5;
         Page<RequestWithNamesDto> requests = requestService.getAll(pageNumber, sizeNumber, sort, sortBy);
         model.addAttribute("sort", sort);
         model.addAttribute("sortBy", sortBy);
@@ -63,17 +67,17 @@ public class RequestController {
         model.addAttribute("totalPages", paginated.getTotalPages());
         model.addAttribute("totalItems", paginated.getTotalElements());
         model.addAttribute("requests", paginated);
-        return "requests/allRequests";
+        return ALL_REQUESTS;
     }
 
     @GetMapping("/{id}/statement")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getStatementForm(@PathVariable String id,
                                    Model model) {
-        if (!ParamValidator.isNumeric(id)) {
+        if (!ParamValidator.isIntegerOrLong(id)) {
             log.warn(INCORRECT_REQUEST_ID + id);
             model.addAttribute(ERROR, INCORRECT_REQUEST);
-            return APPLICANTS_EDIT_PROFILE;
+            return ALL_REQUESTS;
         } else {
             EnrollmentRequestDto dto = requestService.getRequestById(Long.parseLong(id));
             ApplicantDto applicantDto = dto.getApplicant();
@@ -91,7 +95,7 @@ public class RequestController {
     public String submitStatement(@PathVariable String id,
                                   @RequestParam Status status,
                                   Model model) {
-        if (!ParamValidator.isNumeric(id)) {
+        if (!ParamValidator.isIntegerOrLong(id)) {
             log.warn(INCORRECT_REQUEST_ID + id);
             model.addAttribute(ERROR, INCORRECT_REQUEST);
             return "requests/allRequests";

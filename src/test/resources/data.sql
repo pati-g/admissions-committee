@@ -1,8 +1,8 @@
 --FACULTIES
 INSERT INTO Faculties (id, name, budget_places, total_places) VALUES (100, 'Psychology', 50, 150);
-INSERT INTO Faculties (id, name, budget_places, total_places) VALUES (200, 'Programming', 3, 9);
+INSERT INTO Faculties (id, name, budget_places, total_places) VALUES (200, 'Programming', 3, 8);
 INSERT INTO Faculties (id, name, budget_places, total_places) VALUES (300, 'Child development', 60, 90);
-INSERT INTO Faculties (id, name, budget_places, total_places) VALUES (400, 'Applied mathematics', 30, 70);
+INSERT INTO Faculties (id, name, budget_places, total_places) VALUES (400, 'Applied mathematics', 5, 15);
 INSERT INTO Faculties (id, name, budget_places, total_places) VALUES (500, 'Biology', 35, 85);
 INSERT INTO Faculties (id, name, budget_places, total_places) VALUES (600, 'Biochemistry', 20, 30);
 INSERT INTO Faculties (id, name, budget_places, total_places) VALUES (700, 'Modern Medicine', 7, 33);
@@ -145,7 +145,7 @@ INSERT INTO Scores (applicant_id, subject_name, result) VALUES (30, 'Polish', 65
 INSERT INTO Scores (applicant_id, subject_name, result) VALUES (30, 'Physics', 54);
 
 --REQUESTS
-INSERT INTO Enrollment_Requests (applicant_id, faculty_id, points) VALUES (13, 100, 50);
+INSERT INTO Enrollment_Requests (id, applicant_id, faculty_id, points) VALUES (1010, 13, 100, 50);
 INSERT INTO Enrollment_Requests (applicant_id, faculty_id, points) VALUES (13, 200, 60);
 INSERT INTO Enrollment_Requests (applicant_id, faculty_id, points) VALUES (13, 300, 70);
 INSERT INTO Enrollment_Requests (applicant_id, faculty_id, points) VALUES (13, 400, 80);

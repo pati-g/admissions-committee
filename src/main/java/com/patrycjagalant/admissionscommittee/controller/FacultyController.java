@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 
 import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 
@@ -42,8 +41,8 @@ public class FacultyController {
                                   @RequestParam(defaultValue = "5") String size,
                                   @RequestParam(defaultValue = "id") String sortBy,
                                   Sort.Direction sort, Model model) {
-        int pageNumber = ParamValidator.isNumeric(page) ? Math.max(Integer.parseInt(page), 1) : 1;
-        int sizeNumber = ParamValidator.isNumeric(size) ? Math.max(Integer.parseInt(size), 0) : 5;
+        int pageNumber = ParamValidator.isIntegerOrLong(page) ? Math.max(Integer.parseInt(page), 1) : 1;
+        int sizeNumber = ParamValidator.isIntegerOrLong(size) ? Math.max(Integer.parseInt(size), 0) : 5;
         Page<FacultyDto> facultyDTOPage = facultyService.getAllFaculties(pageNumber, sizeNumber, sort, sortBy);
         model.addAttribute("sort", sort);
         model.addAttribute("sortBy", sortBy);
@@ -60,7 +59,7 @@ public class FacultyController {
 
     @GetMapping("/{id}")
     public String viewFaculty(Model model, @PathVariable("id") String idString) {
-        if (ParamValidator.isNumeric(idString)) {
+        if (ParamValidator.isIntegerOrLong(idString)) {
             long id = Long.parseLong(idString);
             try {
                 FacultyDto facultyDto = facultyService.getById(id);
@@ -80,10 +79,10 @@ public class FacultyController {
 
     @RequestMapping(value = "/{id}/new-request", method = {RequestMethod.POST, RequestMethod.GET})
     public String newRequest(@PathVariable("id") String idString, @AuthenticationPrincipal User user, Model model) {
-        if (ParamValidator.isNumeric(idString)) {
+        if (ParamValidator.isIntegerOrLong(idString)) {
             long facultyId = Long.parseLong(idString);
-            EnrollmentRequestDto requestDto = new EnrollmentRequestDto();
             try {
+                EnrollmentRequestDto requestDto = new EnrollmentRequestDto();
                 Long userId = user.getId();
                 requestDto.setApplicant(applicantService.getByUserId(userId)
                         .orElseThrow(() -> new NoSuchApplicantException("Could not find applicant with user ID: "
@@ -111,9 +110,9 @@ public class FacultyController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String processRequests(@PathVariable String id,
                                   Model model) throws NoSuchFacultyException {
-        if (!ParamValidator.isNumeric(id)) {
+        if (!ParamValidator.isIntegerOrLong(id)) {
             log.warn("Error while parsing ID, incorrect type: " + id);
-            model.addAttribute(ERROR, "Could not find enrollment request with ID: " + id);
+            model.addAttribute(ERROR, "Could not find faculty with ID: " + id);
         } else {
             facultyService.calculateEligibility(Long.parseLong(id));
             model.addAttribute(MESSAGE, "Success!");
@@ -132,7 +131,7 @@ public class FacultyController {
     @GetMapping("/{id}/edit")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getEditFacultyForm(Model model, @PathVariable("id") String idString) {
-        if (ParamValidator.isNumeric(idString)) {
+        if (ParamValidator.isIntegerOrLong(idString)) {
             long id = Long.parseLong(idString);
             FacultyDto facultyDTO = facultyService.getById(id);
             model.addAttribute(FACULTY_DTO, facultyDTO);
@@ -174,7 +173,7 @@ public class FacultyController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteFaculty(@PathVariable String id)  {
         //Check if faculty is connected to any request - if so, delete is not possible until requests are handled
-        if (ParamValidator.isNumeric(id)) {
+        if (ParamValidator.isIntegerOrLong(id)) {
             long idNumber = Long.parseLong(id);
             facultyService.deleteFaculty(idNumber);
 
@@ -185,8 +184,8 @@ public class FacultyController {
     // Manage subjects
     @PostMapping("/{facultyId}/add-subject")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String addSubjectToList(@RequestParam String chosenSubject, @PathVariable String facultyId, Model model) {
-        facultyService.addSubjectToList(facultyId, chosenSubject);
+    public String addSubjectToList(@RequestParam("chosenSubject") String subjectId, @PathVariable String facultyId, Model model) {
+        facultyService.addSubjectToList(facultyId, subjectId);
 
         return getRedirectUrl(facultyId);
     }

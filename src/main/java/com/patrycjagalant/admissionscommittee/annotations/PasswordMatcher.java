@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = PasswordMatcherValidator.class)
 @Documented
 public @interface PasswordMatcher {
-    String message() default "Passwords don''t match";
+    String message() default "";
 
     Class<?>[] groups() default {};
 

@@ -16,8 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -32,21 +30,14 @@ public class EnrollmentRequestService {
     private final EnrollmentRequestRepository enrollmentRequestRepository;
     private final EnrollmentRequestMapper mapper;
 
-    public void saveRequest(EnrollmentRequestDto requestDto, LocalDateTime dateTime) {
-        EnrollmentRequest request = mapper.mapToEntity(requestDto);
-        request.setRegistrationDate(dateTime);
-        Set<String> subjects = requestDto.getFaculty().getSubjects().stream()
-                .map(SubjectDto::getName).collect(Collectors.toSet());
-        EnrollmentRequest savedRequest = enrollmentRequestRepository.save(request);
-        updatePoints(requestDto, savedRequest.getId(), subjects);
-    }
-
     // Read request by id
     public EnrollmentRequestDto getRequestById(Long id) {
         EnrollmentRequest request = enrollmentRequestRepository.getReferenceById(id);
         Set<Subject> subjects = request.getFaculty().getSubjects();
         EnrollmentRequestDto requestDto = mapper.mapToDto(request);
-        updatePoints(requestDto, id, subjects.stream().map(Subject::getName).collect(Collectors.toSet()));
+        if (subjects != null) {
+            updatePoints(requestDto, id, subjects.stream().map(Subject::getName).collect(Collectors.toSet()));
+        }
         return requestDto;
     }
 

@@ -12,6 +12,7 @@ import java.util.Set;
 @Builder
 public class FacultyDto {
 
+    @Setter(AccessLevel.NONE)
     @EqualsAndHashCode.Exclude
     private Long id;
 

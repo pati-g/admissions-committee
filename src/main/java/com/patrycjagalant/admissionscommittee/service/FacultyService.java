@@ -11,13 +11,13 @@ import com.patrycjagalant.admissionscommittee.entity.Subject;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchFacultyException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchSubjectException;
 import com.patrycjagalant.admissionscommittee.exceptions.RequestAlreadySubmittedException;
+import com.patrycjagalant.admissionscommittee.repository.EnrollmentRequestRepository;
 import com.patrycjagalant.admissionscommittee.repository.FacultyRepository;
 import com.patrycjagalant.admissionscommittee.service.mapper.EnrollmentRequestMapper;
 import com.patrycjagalant.admissionscommittee.service.mapper.FacultyMapper;
 import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.asm.Advice;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
@@ -33,12 +33,12 @@ import java.util.stream.Collectors;
 @Service
 public class FacultyService {
     private final FacultyRepository facultyRepository;
-
     private final FacultyMapper facultyMapper;
     private final ApplicantService applicantService;
     private final EnrollmentRequestMapper requestMapper;
     private final EnrollmentRequestService requestService;
     private final SubjectService subjectService;
+    private final EnrollmentRequestRepository requestRepository;
 
     public Page<FacultyDto> getAllFaculties(int page, int size, Sort.Direction sort, String sortBy) {
         long facultiesTotal = facultyRepository.count();
@@ -53,11 +53,6 @@ public class FacultyService {
         List<FacultyDto> facultyDtos = facultyMapper.mapToDto(facultyPage.getContent());
         return new PageImpl<>(facultyDtos,
                 PageRequest.of(page - 1, size, Sort.by(sortDirection, sortBy)), facultiesTotal);
-    }
-
-    public FacultyDto findByName(String name) {
-        Faculty faculty = facultyRepository.findByName(name);
-        return facultyMapper.mapToDto(faculty);
     }
 
     public FacultyDto getById(Long id) {
@@ -99,7 +94,7 @@ public class FacultyService {
         Faculty currentFaculty = facultyRepository.findById(id)
                 .orElseThrow(() -> new NoSuchFacultyException(getMessageFacultyNotFound(id)));
         facultyMapper.mapToEntity(currentFaculty, facultyDTO);
-        return currentFaculty;
+        return facultyRepository.save(currentFaculty);
     }
 
     @Transactional
@@ -116,11 +111,12 @@ public class FacultyService {
             throw new RequestAlreadySubmittedException();
         }
         EnrollmentRequest request = requestMapper.mapToEntity(enrollmentRequestDTO);
+        requestRepository.save(request);
         applicantService.addRequest(applicantDto, request);
         Faculty faculty = facultyRepository.findById(facultyDto.getId())
                 .orElseThrow(() -> new NoSuchFacultyException("Faculty could not be found"));
         faculty.getRequests().add(request);
-        requestService.saveRequest(enrollmentRequestDTO, LocalDateTime.now());
+        request.setRegistrationDate(LocalDateTime.now());
     }
 
     @Transactional
@@ -159,9 +155,9 @@ public class FacultyService {
     }
 
     private void verifyIsIdNumerical(String facultyId, String subjectId) {
-        if(!ParamValidator.isNumeric(facultyId)) {
+        if(!ParamValidator.isIntegerOrLong(facultyId)) {
             throw new NoSuchFacultyException(getMessageIdNotNumerical(facultyId));
-        } else if (!ParamValidator.isNumeric(subjectId)) {
+        } else if (!ParamValidator.isIntegerOrLong(subjectId)) {
             throw new NoSuchSubjectException(getMessageIdNotNumerical(subjectId));
         }
     }
@@ -178,13 +174,20 @@ public class FacultyService {
                 .stream()
                 .sorted(Comparator.comparing(EnrollmentRequestDto::getPoints).reversed())
                 .collect(Collectors.toList());
-        List<EnrollmentRequestDto> eligibleRequests = allSorted.subList(0, total);
-        List<EnrollmentRequestDto> eligibleForBudget = eligibleRequests.subList(0, budget);
-        List<EnrollmentRequestDto> eligibleForContract = eligibleRequests.subList(budget, eligibleRequests.size());
-        eligibleForBudget.forEach(request -> requestService.editStatus(Status.BUDGET, request.getId()));
-        eligibleForContract.forEach(request -> requestService.editStatus(Status.CONTRACT, request.getId()));
-        allSorted.removeAll(eligibleRequests);
-        allSorted.forEach(request->  requestService.editStatus(Status.REJECTED, request.getId()));
+        int nrOfRequests = allSorted.size();
+        List<EnrollmentRequestDto> eligibleRequests = allSorted.subList(0, Math.min(total, nrOfRequests));
+            List<EnrollmentRequestDto> eligibleForBudget = eligibleRequests.subList(0, Math.min(budget, nrOfRequests));
+            if (nrOfRequests > budget) {
+                List<EnrollmentRequestDto> eligibleForContract = eligibleRequests.subList(budget, eligibleRequests.size());
+                eligibleForBudget.forEach(request -> requestService.editStatus(Status.BUDGET, request.getId()));
+                eligibleForContract.forEach(request -> requestService.editStatus(Status.CONTRACT, request.getId()));
+                allSorted.removeAll(eligibleRequests);
+                if(!allSorted.isEmpty()) {
+                    allSorted.forEach(request -> requestService.editStatus(Status.REJECTED, request.getId()));
+                }
+            } else {
+            allSorted.forEach(request -> requestService.editStatus(Status.BUDGET, request.getId()));
+        }
     }
 
 }

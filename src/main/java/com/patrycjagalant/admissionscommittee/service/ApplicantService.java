@@ -1,12 +1,9 @@
 package com.patrycjagalant.admissionscommittee.service;
 
 import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
-import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
 import com.patrycjagalant.admissionscommittee.dto.UserDto;
 import com.patrycjagalant.admissionscommittee.entity.Applicant;
 import com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest;
-import com.patrycjagalant.admissionscommittee.entity.Score;
-import com.patrycjagalant.admissionscommittee.entity.User;
 import com.patrycjagalant.admissionscommittee.exceptions.FileStorageException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchApplicantException;
 import com.patrycjagalant.admissionscommittee.exceptions.NoSuchUserException;
@@ -50,18 +47,19 @@ public class ApplicantService {
     private final EnrollmentRequestService requestService;
     private final UserService userService;
     private final UserRepository userRepository;
+
     @Value("${app.upload.dir:${user.home}}")
-    public String filesPathString;
+    private String filesPathString;
 
     @Transactional
-    public void editApplicant(ApplicantDto applicantdto, Long userID) {
+    public Applicant addNewOrEditApplicant(ApplicantDto applicantdto, Long userID) {
         UserDto userDto = userService.findById(userID);
         applicantdto.setUserDetails(userDto);
         Applicant current = applicantRepository.findByUserId(userID).orElse(new Applicant());
-        applicantMapper.mapToEntity(applicantdto, current);
+        Applicant updated = applicantMapper.mapToEntity(applicantdto, current);
         current.setUser(userRepository.findById(userID)
                 .orElseThrow( () -> new NoSuchUserException("User could not be found.")));
-        applicantRepository.save(current);
+        return applicantRepository.save(updated);
     }
 
     @Transactional
@@ -115,12 +113,6 @@ public class ApplicantService {
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
-    public Applicant addApplicant(ApplicantDto applicantDTO, User loggedUser) {
-        Applicant newApplicant = applicantMapper.mapToEntity(applicantDTO);
-        newApplicant.setUser(loggedUser);
-        return applicantRepository.save(newApplicant);
-    }
-
     public Optional<ApplicantDto> getByUserId(Long id) {
         Optional<Applicant> applicant = applicantRepository.findByUserId(id);
         if (applicant.isEmpty()) {
@@ -163,7 +155,7 @@ public class ApplicantService {
         return new PageImpl<>(applicantDtos,
                 PageRequest.of(page - 1, size, Sort.by(sortDirection, sortBy)), applicantsTotal);
     }
-
+    @Transactional
     public void safeDeleteApplicant(Long id) {
         Applicant applicant = applicantRepository.findById(id)
                 .orElseThrow(() -> new NoSuchApplicantException("Applicant with id: " + id + " not found."));

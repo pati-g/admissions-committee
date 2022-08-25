@@ -58,26 +58,6 @@ public class EnrollmentRequestMapper {
                 .faculty(facultyMapper.mapToEntityWithId(enrollmentRequestDTO.getFaculty())).build();
     }
 
-    public void mapToEntity(EnrollmentRequest enrollmentRequest, EnrollmentRequestDto enrollmentRequestDTO) {
-        log.debug("EnrollmentRequest entity: {} and Dto: {} before mapping", enrollmentRequest, enrollmentRequestDTO);
-        Status status = enrollmentRequestDTO.getStatus();
-        if (status != null) {
-            enrollmentRequest.setStatus(status);
-        }
-        if (enrollmentRequestDTO.getApplicant() != null) {
-            enrollmentRequest.setApplicant(applicantMapper.mapToEntity(enrollmentRequestDTO.getApplicant()));
-        }
-        if (enrollmentRequestDTO.getFaculty() != null) {
-            enrollmentRequest.setFaculty(facultyMapper.mapToEntity(enrollmentRequestDTO.getFaculty()));
-        }
-        if (enrollmentRequestDTO.getPoints() != null) {
-            enrollmentRequest.setPoints(enrollmentRequestDTO.getPoints());
-        }
-        if(!enrollmentRequestDTO.getTempStatus().equals(Status.PENDING)) {
-            enrollmentRequest.setTempStatus(enrollmentRequestDTO.getTempStatus());
-        }
-    }
-
     public RequestWithNamesDto mapToDtoWithNames(EnrollmentRequest request) {
         Applicant applicant = request.getApplicant();
         Faculty faculty = request.getFaculty();

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class RequestWithNamesDto {
 
     @EqualsAndHashCode.Exclude
+    @Setter(AccessLevel.NONE)
     private long id;
 
     private String applicant;

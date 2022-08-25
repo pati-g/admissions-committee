@@ -26,8 +26,8 @@ public class UserEditValidator implements ConstraintValidator<EmptyOrValid, Obje
             return true;
         }
 
-        if(field.contains("@") && isEmailValid(field)) {
-            return true;
+        if(field.contains("@")) {
+            return isEmailValid(field);
         } else {
             return isPasswordValid(field);
         }

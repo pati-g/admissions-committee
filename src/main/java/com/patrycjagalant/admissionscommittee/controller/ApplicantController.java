@@ -65,7 +65,11 @@ public class ApplicantController {
                 Optional<ApplicantDto> applicantDto = applicantService.getByUserId(userDto.getId());
                 if (userDto.getRole().equals(Role.USER)) {
                     addApplicantModel(model, applicantDto
-                            .orElse(new ApplicantDto(userDto, new ArrayList<>(), new ArrayList<>())));
+                            .orElse(ApplicantDto.builder()
+                                    .userDetails(userDto)
+                                    .requests(new ArrayList<>())
+                                    .scores(new ArrayList<>())
+                                    .build()));
                 }
             }
             return APPLICANTS_EDIT_PROFILE;
@@ -91,7 +95,7 @@ public class ApplicantController {
             redirectAttributes.addFlashAttribute(USER_DTO, userDto);
             return APPLICANTS_EDIT_PROFILE;
         }
-        applicantService.editApplicant(applicantDTO, userDto.getId());
+        applicantService.addNewOrEditApplicant(applicantDTO, userDto.getId());
         redirectAttributes.addFlashAttribute(MESSAGE, "Your changes have been submitted");
         return REDIRECT_EDIT_APPLICANT;
     }
@@ -134,7 +138,7 @@ public class ApplicantController {
                             @PathVariable String username,
                             @PathVariable String id,
                             Model model) throws ScoreAlreadyInListException {
-        if (result.hasErrors() || !ParamValidator.isNumeric(id)) {
+        if (result.hasErrors() || !ParamValidator.isIntegerOrLong(id)) {
             model.addAttribute(ERROR, "Something went wrong, please try again");
         } else {
             scoreService.editScore(scoreDto, Long.parseLong(id));
@@ -148,8 +152,8 @@ public class ApplicantController {
                                    @RequestParam(defaultValue = "5") String size,
                                    @RequestParam(defaultValue = "lastName") String sortBy,
                                    Sort.Direction sort, Model model) {
-        int pageNumber = ParamValidator.isNumeric(page) ? Math.max(Integer.parseInt(page), 1) : 1;
-        int sizeNumber = ParamValidator.isNumeric(size) ? Math.max(Integer.parseInt(size), 0) : 5;
+        int pageNumber = ParamValidator.isIntegerOrLong(page) ? Math.max(Integer.parseInt(page), 1) : 1;
+        int sizeNumber = ParamValidator.isIntegerOrLong(size) ? Math.max(Integer.parseInt(size), 0) : 5;
         Page<ApplicantDto> applicantDTOPage = applicantService.getAllApplicants(pageNumber, sizeNumber, sort, sortBy);
         model.addAttribute("sort", sort);
         model.addAttribute("sortBy", sortBy);
@@ -181,7 +185,7 @@ public class ApplicantController {
         model.addAttribute(APPLICANT_DTO, applicantDTO);
         model.addAttribute(SCORES, applicantDTO.getScores());
         model.addAttribute(REQUESTS, applicantDTO.getRequests());
-        model.addAttribute("newScore", new ScoreDto(applicantDTO.getId()));
+        model.addAttribute("newScore", ScoreDto.builder().applicantId(applicantDTO.getId()).build());
         model.addAttribute("allSubjects", subjectService.getAll());
     }
 

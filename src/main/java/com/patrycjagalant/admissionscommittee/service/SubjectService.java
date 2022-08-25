@@ -41,7 +41,7 @@ public class SubjectService {
     }
 
     public Subject getById(String id) {
-        if (ParamValidator.isNumeric(id)) {
+        if (ParamValidator.isIntegerOrLong(id)) {
             return subjectRepository.findById(Long.parseLong(id))
                     .orElseThrow(() -> new IllegalArgumentException(COULD_NOT_FIND_SUBJECT+ id));
         } else {

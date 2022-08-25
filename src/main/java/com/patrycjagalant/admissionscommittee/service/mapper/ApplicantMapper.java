@@ -54,7 +54,7 @@ public class ApplicantMapper {
         return applicant;
     }
 
-    public void mapToEntity(ApplicantDto applicantDto, Applicant applicant) {
+    public Applicant mapToEntity(ApplicantDto applicantDto, Applicant applicant) {
         log.debug("Applicant entity: {} and DTO: {} before mapping", applicant, applicantDto);
         String city = applicantDto.getCity();
         String institution = applicantDto.getEducationalInstitution();
@@ -62,16 +62,22 @@ public class ApplicantMapper {
         String lastname = applicantDto.getLastName();
         String region = applicantDto.getRegion();
 
-        if (city != null && !city.isBlank())
+        if (city != null && !city.isBlank()) {
             applicant.setCity(city);
-        if (institution != null && !institution.isBlank())
+        }
+        if (institution != null && !institution.isBlank()) {
             applicant.setEducationalInstitution(institution);
-        if (firstname != null && !firstname.isBlank())
+        }
+        if (firstname != null && !firstname.isBlank()) {
             applicant.setFirstName(firstname);
-        if (lastname != null && !lastname.isBlank())
+        }
+        if (lastname != null && !lastname.isBlank()) {
             applicant.setLastName(lastname);
-        if (region != null && !region.isBlank())
+        }
+        if (region != null && !region.isBlank()) {
             applicant.setRegion(region);
+        }
+        return applicant;
     }
 
     public Applicant mapToEntityWithId(ApplicantDto applicantDto) {

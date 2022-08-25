@@ -13,8 +13,10 @@ import java.util.List;
 public class ApplicantDto {
 
     @EqualsAndHashCode.Exclude
+    @Setter(AccessLevel.NONE)
     private long id;
 
+    @EqualsAndHashCode.Exclude
     private String fullName;
 
     @NotBlank(message = "{validation.firstname.not.blank}")
@@ -44,10 +46,4 @@ public class ApplicantDto {
     private List<EnrollmentRequestDto> requests;
 
     private String certificateUrl;
-
-    public ApplicantDto(UserDto userDetails, List<ScoreDto> scores, List<EnrollmentRequestDto> requests) {
-        this.userDetails = userDetails;
-        this.scores = scores;
-        this.requests = requests;
-    }
 }
