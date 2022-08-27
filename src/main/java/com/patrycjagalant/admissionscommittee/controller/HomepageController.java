@@ -7,8 +7,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import static com.patrycjagalant.admissionscommittee.utils.Constants.REGISTER;
 
+/**
+ * A controller class implementation from the MVC Pattern for general client-side operations,
+ * such as opening home page, logging in etc.
+ *
+ * @author Patrycja Galant
+ */
+
 @Controller
 public class HomepageController {
+
 
     @GetMapping(value = {"/", "/index"})
     public String homePage(Model model) {
@@ -25,6 +33,12 @@ public class HomepageController {
         return "logout";
     }
 
+    /**
+     * A controller method for GET requests for viewing the registration page.
+     * Adds a new {@link UserDto} instance to the returned model,
+     * to enable further registration of a new user into database.
+     * @return the template name for registration page
+     */
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         if (!model.containsAttribute("user")) {

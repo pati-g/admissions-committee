@@ -1,7 +1,8 @@
 package com.patrycjagalant.admissionscommittee.dto.other;
 
-import com.patrycjagalant.admissionscommittee.annotations.EmptyOrValid;
+import com.patrycjagalant.admissionscommittee.annotations.ValidPassword;
 import com.patrycjagalant.admissionscommittee.annotations.PasswordMatcher;
+import com.patrycjagalant.admissionscommittee.annotations.ValidEmail;
 import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
 
@@ -16,16 +17,17 @@ public class UserDtoForEditing {
     @Setter(AccessLevel.NONE)
     private Long id;
 
+    @Setter(AccessLevel.NONE)
     private String username;
 
-    @EmptyOrValid(message = "{validation.email.not.blank}")
+    @ValidEmail
     private String email;
 
-    @EmptyOrValid(message = "{validation.password.not.blank}")
+    @ValidPassword(message = "{validation.password.not.blank}")
     @ToStringExclude
     private String password;
 
-    @EmptyOrValid(message = "{validation.password.repeat}")
+    @ValidPassword(message = "{validation.password.repeat}")
     @ToStringExclude
     private String matchingPassword;
 }

@@ -18,6 +18,12 @@ import javax.validation.Valid;
 
 import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 
+/**
+ * A controller class implementation from the MVC Pattern for the
+ * <br> {@link com.patrycjagalant.admissionscommittee.entity.User} model objects.
+ *
+ * @author Patrycja Galant
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Controller
@@ -26,6 +32,16 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * A controller method for POST requests for creating a new user in the database.
+     * If the received {@link UserDto} instance is valid and no exceptions occurred,
+     * it will be saved in the database.
+     * Else, an error message will be returned to the client.
+     * @param userDto a UserDto model attribute sent from the view with the user's input
+     * @param result a BindingResult from the UserDto validation, includes all errors that
+     *               may have occurred during validation
+     * @param redirectAttributes for supplying message attributes to the view
+     */
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("user") UserDto userDto, BindingResult result,
                                RedirectAttributes redirectAttributes) {
@@ -51,6 +67,17 @@ public class UserController {
         return REGISTER;
     }
 
+    /**
+     * A controller method for PUT requests for editing user details.
+     * If the received {@link UserDto} instance is valid and no exceptions occurred,
+     * changes will be saved in the database.
+     * Else, an error message will be returned to the client.
+     * @param userDto a UserDto model attribute from the view with the user's input
+     * @param result a BindingResult from the UserDto validation, includes all errors that
+     *               may have occurred during validation
+     * @param username the requested user's unique username
+     * @param redirectAttributes for supplying message attributes to the view
+     */
     @RequestMapping(value = "/{username}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String editAccount(@Valid @ModelAttribute("user") UserDtoForEditing userDto,
@@ -73,7 +100,13 @@ public class UserController {
         }
         return REDIRECT_EDIT_ACCOUNT;
     }
-
+    /**
+     * A controller method for GET requests for viewing a page with the requested user's details.
+     * Adds a {@link UserDto} instance of the requested user, retrieved from the database based on
+     * the username provided.
+     * @param model for supplying a UserDto attribute to the view
+     * @param username the requested user's unique username
+     */
     @GetMapping("/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String viewAccount(Model model, @PathVariable("username") String username) {
@@ -81,7 +114,14 @@ public class UserController {
             model.addAttribute(USER_DTO, userDto);
             return VIEW_PROFILE;
     }
-
+    /**
+     * A controller method for GET requests for viewing a form to edit
+     * the requested user's details.
+     * Adds a {@link UserDto} instance of the requested user, retrieved from the database based on
+     * the username provided.
+     * @param model for supplying a UserDto attribute to the view
+     * @param username the requested user's unique username
+     */
     @GetMapping("/{username}/edit")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String getAccountForm(Model model, @PathVariable("username") String username) {
@@ -92,6 +132,12 @@ public class UserController {
         return EDIT_ACCOUNT;
     }
 
+    /**
+     * A controller method for PUT requests for blocking or unblocking the requested user.
+     * @param username the requested user's unique username
+     * @param model for supplying a message attribute to the view
+     *
+     */
     @RequestMapping(value = "/{username}/block", method={RequestMethod.GET, RequestMethod.PUT})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String changeApplicantBlockedStatus(@PathVariable String username, Model model) {

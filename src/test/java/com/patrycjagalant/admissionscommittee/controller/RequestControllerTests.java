@@ -7,9 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.patrycjagalant.admissionscommittee.controller.RequestController.INCORRECT_REQUEST;
-import static com.patrycjagalant.admissionscommittee.utils.Constants.ALL_REQUESTS;
-import static com.patrycjagalant.admissionscommittee.utils.Constants.ERROR;
+import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

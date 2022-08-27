@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -45,6 +46,8 @@ class EnrollmentRequestIntegrationTests {
     private RequestController requestController;
     @Mock
     private Model model;
+    @Mock
+    private RedirectAttributes redirectAttributes;
     @Autowired
     private SubjectService subjectService;
 
@@ -56,7 +59,7 @@ class EnrollmentRequestIntegrationTests {
         User user = userRepository.findById(userId).orElseThrow();
         ApplicantDto applicantBefore = applicantService.getByUserId(userId).orElseThrow();
         assertThat(applicantBefore.getRequests()).isEmpty();
-        facultyController.newRequest(facultyId, user, model);
+        facultyController.newRequest(facultyId, user, redirectAttributes);
         List<EnrollmentRequestDto> request = facultyService.getById(200L).getRequests().stream()
                 .filter(requestDto ->
                         requestDto.getApplicant().getId() == (applicantBefore.getId()))
@@ -73,7 +76,7 @@ class EnrollmentRequestIntegrationTests {
         String facultyId = "200";
         Long userId = 1111L; // admin ID
         User user = userRepository.findById(userId).orElseThrow();
-        String returnUrl = facultyController.newRequest(facultyId, user, model);
+        String returnUrl = facultyController.newRequest(facultyId, user, redirectAttributes);
         assertThat(returnUrl).isEqualTo(REDIRECT_FACULTIES);
     }
 
@@ -83,8 +86,8 @@ class EnrollmentRequestIntegrationTests {
         String facultyId = "100";
         Long userId = 100L;
         User user = userRepository.findById(userId).orElseThrow();
-        facultyController.newRequest(facultyId, user, model); // add non-existing request
-        String returnUrl = facultyController.newRequest(facultyId, user, model); //try to add 2nd time
+        facultyController.newRequest(facultyId, user, redirectAttributes); // add non-existing request
+        String returnUrl = facultyController.newRequest(facultyId, user, redirectAttributes); //try to add 2nd time
         assertThat(returnUrl).isEqualTo(REDIRECT_FACULTIES);
     }
 
@@ -157,9 +160,9 @@ class EnrollmentRequestIntegrationTests {
     @Transactional
     @WithMockUser(roles = "ADMIN")
     void whenProcessRequestAndAuthorized_thenCorrectRequestStatus() {
-        facultyController.processRequests("200", model); // requests > total places
-        facultyController.processRequests("400", model); // total > requests > budget
-        facultyController.processRequests("100", model); // requests < budget
+        facultyController.processRequests("200", redirectAttributes); // requests > total places
+        facultyController.processRequests("400", redirectAttributes); // total > requests > budget
+        facultyController.processRequests("100", redirectAttributes); // requests < budget
         List<EnrollmentRequestDto> requestsLessThanBudget = facultyService.getById(100L).getRequests();
         List<EnrollmentRequestDto> requestsLessThanTotal = facultyService.getById(400L).getRequests();
         List<EnrollmentRequestDto> requestsMoreThanTotal = facultyService.getById(200L).getRequests();

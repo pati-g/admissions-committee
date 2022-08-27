@@ -3,15 +3,23 @@ package com.patrycjagalant.admissionscommittee.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import java.util.Collections;
 
+/**
+ * A configuration class that enables switching the application's default favicon
+ * to the custom one, provided that it is stored in the application's
+ * {@code resources/static} folder and has a name {@code favicon.ico}.
+ *
+ * @author Patrycja Galant
+ * @see <a href="https://en.wikipedia.org/wiki/Favicon">Favicon - Wikipedia</a>
+ */
+
 @Configuration
-public class AppConfig {
+public class FaviconConfig {
+
     @Bean
     public SimpleUrlHandlerMapping customFaviconHandlerMapping() {
         SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
@@ -29,8 +37,4 @@ public class AppConfig {
         return requestHandler;
     }
 
-    @Bean
-    public static PasswordEncoder passwordEncoder() {
-        return new Argon2PasswordEncoder();
-    }
 }

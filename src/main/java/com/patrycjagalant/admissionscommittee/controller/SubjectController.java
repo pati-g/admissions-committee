@@ -1,5 +1,6 @@
 package com.patrycjagalant.admissionscommittee.controller;
 
+import com.patrycjagalant.admissionscommittee.dto.UserDto;
 import com.patrycjagalant.admissionscommittee.service.SubjectService;
 import com.patrycjagalant.admissionscommittee.utils.validators.ParamValidator;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 
+/**
+ * A controller class implementation from the MVC Pattern for the
+ * <br> {@link com.patrycjagalant.admissionscommittee.entity.Subject} model objects.
+ *
+ * @author Patrycja Galant
+ */
 @RequiredArgsConstructor
 @Controller
 @Slf4j
@@ -21,6 +28,14 @@ public class SubjectController {
 
     private final SubjectService subjectService;
 
+    /**
+     * A controller method for POST requests for creating a new subject in the database.
+     * If the received subject name is valid and no exceptions occurred,
+     * it will be saved in the database.
+     * Else, an error message will be returned to the client.
+     * @param subjectName a parameter of type {@link String} with the requested name for the subject
+     * @param model for supplying message attributes to the view
+     */
     @PostMapping("/add")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String addSubject(@RequestParam String subjectName, Model model) {

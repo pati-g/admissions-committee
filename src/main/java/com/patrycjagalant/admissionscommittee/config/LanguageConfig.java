@@ -15,6 +15,15 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.Locale;
 import java.util.function.BiFunction;
 
+/**
+ * A configuration class that implements a {@link WebMvcConfigurer} interface.
+ * It is used to customize the default configuration to enable the application's
+ * internationalization through locale language switch interface.
+ *
+ * @author Patrycja Galant
+ * @see WebMvcConfigurer
+ */
+
 @Configuration
 public class LanguageConfig implements WebMvcConfigurer {
 
@@ -47,15 +56,23 @@ public class LanguageConfig implements WebMvcConfigurer {
         LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
         localValidatorFactoryBean.setValidationMessageSource(messageSource());
         return localValidatorFactoryBean;
-
     }
-
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
     }
 
+    /**
+     * A method that allows for an easy modification of one or more parameters,
+     * without affecting the remaining ones.<br>
+     * Implemented based on a <a href="https://stackoverflow.com/a/68212965/19720323">
+     * solution from Stack Overflow</a>
+     *
+     * @return a bi-function that takes the current URI address,
+     * searches for the requested parameter name and replaces its value with
+     * the provided one if it exists, or adds it to the query parameters if not.
+     */
     @Bean
     public BiFunction<String, String, String> replaceOrAddParam() {
         return (paramName, newValue) -> ServletUriComponentsBuilder

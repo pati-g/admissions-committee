@@ -1,6 +1,7 @@
 package com.patrycjagalant.admissionscommittee.controller;
 
 import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
+import com.patrycjagalant.admissionscommittee.entity.Applicant;
 import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
 import com.patrycjagalant.admissionscommittee.dto.UserDto;
 import com.patrycjagalant.admissionscommittee.entity.Role;
@@ -32,6 +33,13 @@ import java.util.Optional;
 
 import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 
+/**
+ * A controller class implementation from the MVC Pattern for the
+ * {@link Applicant} model objects.
+ *
+ * @author Patrycja Galant
+ */
+
 @Slf4j
 @RequiredArgsConstructor
 @Controller
@@ -42,6 +50,13 @@ public class ApplicantController {
     private final UserService userService;
     private final SubjectService subjectService;
 
+    /**
+     * A controller method for GET requests for viewing user's account details (from User model)
+     * and profile details (from Applicant model, if it exists).
+     *
+     * @param username a {@link String} representing the requested applicant's username
+     * @param model for supplying attributes to the view
+     */
     @GetMapping("/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String viewAccountAndProfile(Model model, @PathVariable("username") String username) {
@@ -54,7 +69,14 @@ public class ApplicantController {
         }
         return REDIRECT_HOME;
     }
-
+    /**
+     * A controller method for GET requests for viewing a form to edit applicant's profile details.
+     * If the user does not have a record created in the Applicant Repository yet AND does not have an ADMIN role,
+     * a new instance of ApplicantDto is created with user's UserDto attached to it.
+     *
+     * @param username a {@link String} representing the requested applicant's username
+     * @param model for supplying attributes to the view
+     */
     @GetMapping("/{username}/edit")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String getProfileForm(Model model, @PathVariable("username") String username) {
@@ -77,6 +99,16 @@ public class ApplicantController {
         return REDIRECT_HOME;
     }
 
+    /**
+     * A controller method for POST and PUT requests for editing applicant's profile details or for submitting
+     * a new applicant, if the user hasn't had a profile created yet.
+     *
+     * @param applicantDTO an {@link ApplicantDto} object with applicant's details
+     * to be inserted or replaced in database
+     * @param result a {@link BindingResult} with the object's validation result
+     * @param username a {@link String} representing the requested applicant's username
+     * @param redirectAttributes for supplying attributes to the view
+     */
     @RequestMapping(value = "/{username}/edit", method = {RequestMethod.PUT, RequestMethod.POST})
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String editProfile(@Valid @ModelAttribute ApplicantDto applicantDTO,
@@ -100,6 +132,13 @@ public class ApplicantController {
         return REDIRECT_EDIT_APPLICANT;
     }
 
+    /**
+     * A controller method for POST requests for uploading a file with the applicant's certificate.
+     *
+     * @param file an {@link MultipartFile} object with applicant's certificate
+     * @param username a {@link String} representing the requested applicant's username
+     * @param model for supplying attributes to the view
+     */
     @PostMapping("/save-certificate/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String saveCertificate(@ModelAttribute("file") MultipartFile file,
@@ -112,12 +151,25 @@ public class ApplicantController {
         return REDIRECT_EDIT_APPLICANT;
     }
 
+    /**
+     * A controller method for GET requests for downloading a file with the applicant's certificate.
+     *
+     * @param username a {@link String} representing the requested applicant's username
+     */
     @GetMapping(value = "/download-certificate/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public ResponseEntity<Resource> downloadCertificate(@PathVariable String username) {
         return applicantService.downloadFile(username);
     }
 
+    /**
+     * A controller method for POST requests for saving a new score record for the applicant.
+     *
+     * @param newScore an {@link ScoreDto} object with the applicant's new score
+     * @param result a {@link BindingResult} with the object's validation result
+     * @param username a {@link String} representing the requested applicant's username
+     * @param model for supplying attributes to the view
+     */
     @PostMapping("/{username}/new-score")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String addNewScore(@Valid @ModelAttribute("newScore") ScoreDto newScore,
@@ -131,6 +183,15 @@ public class ApplicantController {
         return REDIRECT_EDIT_APPLICANT;
     }
 
+    /**
+     * A controller method for PUT requests for editing a score record of the applicant.
+     *
+     * @param scoreDto an {@link ScoreDto} object with the applicant's new score
+     * @param result a {@link BindingResult} with the object's validation result
+     * @param username a {@link String} representing the applicant's username
+     * @param id a {@link String} representing the edited score's ID number
+     * @param model for supplying attributes to the view
+     */
     @RequestMapping(value = "/{username}/edit-score/{id}", method = {RequestMethod.PUT, RequestMethod.POST})
     @PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
     public String editScore(@Valid @ModelAttribute("score") ScoreDto scoreDto,
@@ -146,6 +207,15 @@ public class ApplicantController {
         return REDIRECT_EDIT_APPLICANT;
     }
 
+    /**
+     * A controller method for GET requests for viewing a paginated list of Faculties.
+     *
+     * @param page a {@link String} representing the current page number
+     * @param size a {@link String} representing the number of instances per page
+     * @param sortBy a {@link String} representing the object's field, by which the list is sorted
+     * @param sort a {@link Sort.Direction} for sorting order (ascending or descending)
+     * @param model for supplying attributes to the view
+     */
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getAllApplicants(@RequestParam(defaultValue = "1") String page,
@@ -159,16 +229,23 @@ public class ApplicantController {
         model.addAttribute("sortBy", sortBy);
         return addPaginationModel(pageNumber, applicantDTOPage, model);
     }
-
+    /**
+     * A controller method for DELETE requests for deleting the applicant from the database.
+     * If the received Applicant's ID is correct, the Applicant has been found in the database,
+     * and it can be deleted, the request will be processed.
+     * Else, an error message will be returned to the client.
+     * @param id a {@link String} representing the Applicant's ID number in the database
+     * @param redirectAttributes for supplying message attributes to the view
+     */
     @RequestMapping(value = "/{id}/delete", method = {RequestMethod.DELETE, RequestMethod.POST})
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public String deleteApplicant(@PathVariable String id, Model model) {
+    public String deleteApplicant(@PathVariable String id, RedirectAttributes redirectAttributes) {
         if (id.matches("(\\d)+")) {
             long idNumber = Long.parseLong(id);
             applicantService.safeDeleteApplicant(idNumber);
-            model.addAttribute(MESSAGE, "Applicant " + idNumber + " has been deleted");
+            redirectAttributes.addAttribute(MESSAGE, "Applicant " + idNumber + " has been deleted");
         } else {
-            model.addAttribute("error", "Incorrect ID: " + id);
+            redirectAttributes.addAttribute("error", "Incorrect ID: " + id);
         }
         return REDIRECT_APPLICANT_ALL;
     }

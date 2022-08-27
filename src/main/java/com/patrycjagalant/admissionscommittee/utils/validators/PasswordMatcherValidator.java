@@ -6,7 +6,18 @@ import com.patrycjagalant.admissionscommittee.dto.other.UserDtoForEditing;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
+/**
+ * The validated object must be of type {@link UserDtoForEditing}
+ * and must have fields: {@code password} and {@code matchingPassword}.
+ * The validator checks if values from both fields are equal
+ * (using {@code s1.equals(s2)} method from {@link String} class)
+ * <p>
+ * {@code null} elements are considered valid.
+ *
+ * @author Patrycja Galant
+ * @see UserDtoForEditing
+ * @see String
+ */
 public class PasswordMatcherValidator implements ConstraintValidator<PasswordMatcher, Object> {
 
     private String message;
@@ -16,6 +27,9 @@ public class PasswordMatcherValidator implements ConstraintValidator<PasswordMat
         this.message = constraintAnnotation.message();
     }
 
+    /**
+     * @return a result of String comparison between object fields {@code password} and {@code matchingPassword}
+     */
     @Override
     public boolean isValid(Object obj, ConstraintValidatorContext context) {
         boolean isValid = false;

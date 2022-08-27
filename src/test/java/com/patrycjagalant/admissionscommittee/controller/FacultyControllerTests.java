@@ -18,7 +18,9 @@ import org.springframework.ui.Model;
 import static com.patrycjagalant.admissionscommittee.utils.Constants.FACULTY_DTO;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -99,4 +101,12 @@ class FacultyControllerTests {
                 .andExpect(model().attribute(FACULTY_DTO, new FacultyDto()));
     }
 
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void whenAddSubjectAndAuthorized_thenOK() throws Exception {
+        this.mockMvc.perform(post("/subjects/add").with(csrf())
+                        .param("subjectName", "Technology"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection());
+    }
 }

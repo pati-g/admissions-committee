@@ -1,9 +1,6 @@
 package com.patrycjagalant.admissionscommittee.controller;
 
-import com.patrycjagalant.admissionscommittee.dto.ApplicantDto;
-import com.patrycjagalant.admissionscommittee.dto.EnrollmentRequestDto;
-import com.patrycjagalant.admissionscommittee.dto.FacultyDto;
-import com.patrycjagalant.admissionscommittee.dto.ScoreDto;
+import com.patrycjagalant.admissionscommittee.dto.*;
 import com.patrycjagalant.admissionscommittee.dto.other.RequestWithNamesDto;
 import com.patrycjagalant.admissionscommittee.entity.Status;
 import com.patrycjagalant.admissionscommittee.service.EnrollmentRequestService;
@@ -22,32 +19,53 @@ import java.util.List;
 
 import static com.patrycjagalant.admissionscommittee.utils.Constants.*;
 
+/**
+ * A controller class implementation from the MVC Pattern for the
+ * <br>{@link com.patrycjagalant.admissionscommittee.entity.EnrollmentRequest}
+ * model objects.
+ *
+ * @author Patrycja Galant
+ */
 @Controller
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/request")
 public class RequestController {
 
-    public static final String INCORRECT_REQUEST = "Incorrect request ID, please try again";
-    public static final String INCORRECT_REQUEST_ID = "Incorrect request ID: ";
-    public static final String REDIRECT_ALL_REQUESTS = "redirect:/request/all";
     private final EnrollmentRequestService requestService;
 
-    @RequestMapping(value = "/{id}/delete", method = {RequestMethod.DELETE, RequestMethod.POST})
+    /**
+     * A controller method for DELETE requests for deleting a request from the database.
+     * If the received Enrollment Request ID is correct and has been found in the database,
+     * the request will be deleted.
+     * Else, an error message will be returned to the client.
+     * @param id a {@link String} representing the Enrollment Request's ID number in the database
+     * @param redirectAttributes for supplying message attributes to the view
+     */
+    @RequestMapping(value = "/{id}/delete", method = {RequestMethod.DELETE, RequestMethod.GET})
     public String deleteRequest(@PathVariable String id,
-                                RedirectAttributes model) {
+                                RedirectAttributes redirectAttributes) {
         if (!ParamValidator.isIntegerOrLong(id)) {
             log.warn(INCORRECT_REQUEST_ID + id);
-            model.addAttribute(ERROR, INCORRECT_REQUEST);
+            redirectAttributes.addAttribute(ERROR, INCORRECT_REQUEST);
         } else {
             requestService.deleteRequest(Long.parseLong(id));
-            if (model.containsAttribute("username")) {
+            if (redirectAttributes.containsAttribute("username")) {
                 return REDIRECT_EDIT_APPLICANT;
             }
         }
         return REDIRECT_ALL_REQUESTS;
     }
 
+    /**
+     * A controller method for GET requests for viewing a paginated list of Enrollment Requests.
+     *
+     * @param page a {@link String} representing the current page number
+     * @param size a {@link String} representing the number of instances per page
+     * @param sortBy a {@link String} representing the object's field, by which the list is sorted
+     * @param sort a {@link Sort.Direction} for sorting order (ascending or descending)
+     * @param model for supplying attributes to the view
+     */
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getAllRequests(@RequestParam(defaultValue = "1") String page,
@@ -61,7 +79,6 @@ public class RequestController {
         model.addAttribute("sortBy", sortBy);
         return addPaginationModel(pageNumber, requests, model);
     }
-
     private String addPaginationModel(int page, Page<RequestWithNamesDto> paginated, Model model) {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", paginated.getTotalPages());
@@ -70,6 +87,13 @@ public class RequestController {
         return ALL_REQUESTS;
     }
 
+    /**
+     * A controller method for GET requests for viewing a statement form for the Enrollment Request.
+     *
+     * If a given ID is incorrect, an error message will be returned to the client.
+     * @param id a {@link String} representing the Enrollment Request's ID number in the database
+     * @param model for supplying message attributes to the view
+     */
     @GetMapping("/{id}/statement")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getStatementForm(@PathVariable String id,
@@ -91,6 +115,13 @@ public class RequestController {
         }
     }
 
+    /**
+     * A controller method for GET requests for viewing a paginated list of Enrollment Requests.
+     *
+     * Else, an error message will be returned to the client.
+     * @param id a {@link String} representing the Enrollment Request's ID number in the database
+     * @param model for supplying message attributes to the view
+     */
     @RequestMapping(value = "/{id}/submit-statement", method = {RequestMethod.PUT, RequestMethod.GET})
     public String submitStatement(@PathVariable String id,
                                   @RequestParam Status status,

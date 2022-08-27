@@ -7,7 +7,6 @@ import lombok.*;
 import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -28,8 +27,8 @@ public class UserDto {
             message = "{validation.username.pattern}")
     private String username;
 
-    @NotNull(message = "{validation.email}")
-    @ValidEmail(message = "{validation.email}")
+    @NotBlank(message = "{validation.email}")
+    @ValidEmail
     private String email;
 
     @NotBlank(message = "{validation.password.not.blank}")

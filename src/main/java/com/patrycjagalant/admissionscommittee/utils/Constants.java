@@ -12,7 +12,9 @@ public class Constants {
     public static final String FACULTIES = "faculties/allFaculties";
     public static final String ALL_APPLICANTS = "applicants/allApplicants";
     public static final String APPLICANTS_EDIT_PROFILE = "applicants/editProfile";
+
     // Redirects
+    public static final String REDIRECT_ALL_REQUESTS = "redirect:/request/all";
     public static final String REDIRECT_HOME = "redirect:/";
     public static final String REDIRECT_EDIT_ACCOUNT = "redirect:/user/{username}/edit";
     public static final String REDIRECT_REGISTER = "redirect:/register";
@@ -37,4 +39,6 @@ public class Constants {
     public static final String ENTER_USERNAME_TO_LOG_IN = "Please enter username to log in";
     public static final String COULD_NOT_FIND_SUBJECT = "Could not find subject with ID: ";
 
+    public static final String INCORRECT_REQUEST = "Incorrect request ID, please try again";
+    public static final String INCORRECT_REQUEST_ID = "Incorrect request ID: ";
 }
